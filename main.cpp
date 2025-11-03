@@ -8,7 +8,6 @@ IDE Used: Visual studio code
 #include <array>
 #include <list>
 #include "Plant.h"
-#include "Position.h"
 #include "Soil.h"
 #include "Sprinkler.h"
 #include "GardenNode.h"
@@ -22,6 +21,9 @@ using namespace std;
     //Parameters: map of crops, array of sprinklers, 2D array of garden nodes
 
 //Define function to simulate plant growth
+    //Parameters: map of crops
+
+//Define function to simulate random garden events
     //Parameters: map of crops
 
 //Define function to simulate fertilzation event
@@ -43,11 +45,11 @@ using namespace std;
         Determine fertilzation frequency
 
         Begin time based simulation: (Total of 90 one day time intervals)
-        For each interval:
-            Water crops, simulate weather events, simulate sprinklers
+            For each interval:
+                Water crops, simulate weather events, simulate sprinklers
 
-        Every 7 time intervals (1 week), output map contents and 2D garden plot
-        Every fertilization frequency number of time intervals, simulate fertilization events
-
-
+            Every 7 time intervals (1 week), output map contents and 2D garden plot
+            Every fertilization frequency number of time intervals, simulate fertilization events
+        
+        After simulation, output garden and plant data
     */

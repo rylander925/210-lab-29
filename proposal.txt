@@ -13,7 +13,6 @@ Each plant species will be a Plant class object, with differing ideal water leve
 
 A 2D array of positions with associated plants will also be stored to visually represent plants.
 Additionally, positions of sprinklers will be stored along with plants, which will water adjacent plants.
-Both sprinklers and plants will inherit from a GardenNode class which stores positions
 
 Simulated Events:
 The simulation will track the growth of plants each day based on nutrient and water levels.
