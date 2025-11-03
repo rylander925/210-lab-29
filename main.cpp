@@ -29,8 +29,25 @@ using namespace std;
 //Define function to read garden node data
     //Parameters: map of crops, array of sprinklers, 2D array of garden nodes, filename
 
+//Define function to output plant data
+    //Parameters: map of crops
+
+//Define function to output garden as a 2D rectangular plot
+
 //Define main function
     /*
         Read garden node data into map of crops, array of sprinklers, and 2D array of garden nodes
-        
+
+        Determine season
+
+        Determine fertilzation frequency
+
+        Begin time based simulation: (Total of 90 one day time intervals)
+        For each interval:
+            Water crops, simulate weather events, simulate sprinklers
+
+        Every 7 time intervals (1 week), output map contents and 2D garden plot
+        Every fertilization frequency number of time intervals, simulate fertilization events
+
+
     */
