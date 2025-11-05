@@ -10,7 +10,6 @@ IDE Used: Visual studio code
 #include "Plant.h"
 #include "Soil.h"
 #include "Sprinkler.h"
-#include "GardenNode.h"
 
 using namespace std;
 
