@@ -8,15 +8,15 @@
 class PlantSpecies {
     public:
         //default constructor
-        Plant();
+        PlantSpecies();
 
         //Partial constructor; healthy water range and nurtrient range set to default levels
-        Plant(string name, char displayToken, double idealWater, double idealNutrients);
+        PlantSpecies(string name, char displayToken, double idealWater, double idealNutrients);
 
         //Complete constructor
-        Plant(string name, char displayToken, 
+        PlantSpecies(string name, char displayToken, 
               double idealWater, double idealNutrients, 
-              double healthyWaterRange, double healthyNutrientRange
+              double healthyWaterRange, double healthyNutrientRange,
               double tolerableWaterRange, double tolerableNurtientRange);
 
         //Add standard getters and setters
@@ -48,6 +48,6 @@ class PlantSpecies {
         //Amount above and below water/nutrient levels that plant can survive
         double tolerableWaterRange;
         double tolerableNutrientRange;
-}
+};
 
 #endif
