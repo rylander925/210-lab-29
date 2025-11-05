@@ -3,6 +3,8 @@
 
 #include <string>
 
+using namespace std;
+
 //Include details about a partiWcular plant species
 //name, ideal water level, ideal nutrient level, display character
 class PlantSpecies {
@@ -23,7 +25,7 @@ class PlantSpecies {
         
         //Updates a growth cycle for a plant based on its current growth and soil health
         //Increases or decreases growth depending on soil health, and consumes soil health
-        void GrowthCycle(double& growth, Soil& soilInfo);
+        void GrowthCycle(double& growth, double& water, double& nutrients);
 
         //Outputs details about the plant species
         void Print();

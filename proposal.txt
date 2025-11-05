@@ -4,9 +4,11 @@ The software will track the growth of various plants on a garden plot, whose con
 due to weather events.
 
 Implementation:
-A map will be used to categorize different plant species. Each plant species will be 
+A FarmPlot class object will hold a map which will be used to categorize different plant species. Each plant species will be 
 associated with an array that stores growth level, water level, and nutrient level, all stored as percentages.
 Each plant species will be associated with a plant species object, with differing ideal water levels and nutrient levels.
+The FarmPlot object will contain various methods to display and update the map.
+Weather events will act on FarmPlot objects to modify their crops in various ways.
 
 Simulated Events:
 The simulation will track the growth of plants each day based on nutrient and water levels.

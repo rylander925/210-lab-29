@@ -8,32 +8,24 @@ IDE Used: Visual studio code
 #include <array>
 #include <list>
 #include "PlantSpecies.h"
-#include "Soil.h"
-#include "Sprinkler.h"
+#include "FarmPlot.h"
 
 using namespace std;
 
 //Define function to simulate affects of weather events on nutrient levels for one day
-    //Parameters: map of crops, season
+    //Parameters: farm plot, season
 
-//Define function to simulate sprinklers
-    //Parameters: map of crops, array of sprinklers, 2D array of garden nodes
+//Define function to simulate random garden events (distinct from weather)
+    //Parameters: farm plot
+
+//Define function to simulate watering event
+    //Parameters: farm plot, water amount
+    
+//Define function to simulate fertilzation event
+    //Parameters: farm plot, fertilizer amount
 
 //Define function to simulate plant growth
-    //Parameters: map of crops
-
-//Define function to simulate random garden events
-    //Parameters: map of crops
-
-//Define function to simulate fertilzation event
-
-//Define function to read garden node data
-    //Parameters: map of crops, array of sprinklers, 2D array of garden nodes, filename
-
-//Define function to output plant data
-    //Parameters: map of crops
-
-//Define function to output garden as a 2D rectangular plot
+    //Parameters: farm plot
 
 //Define main function
     /*
