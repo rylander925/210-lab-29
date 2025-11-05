@@ -1,6 +1,6 @@
 /*
 COMSC-210 | Lab 29 | Rylan Der
-IDE Used: Visual studio code 
+IDE Used: Visual studio code
 */
 
 //Include necessary headers, including for custom data types
