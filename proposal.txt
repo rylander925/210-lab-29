@@ -1,22 +1,15 @@
 Project Overview:
 My project will simulate a the growth of a garden over the course of a 90 day season.
-The software will track the growth of various plants based on soil conditions which change
+The software will track the growth of various plants on a garden plot, whose conditions change
 due to weather events.
 
 Implementation:
 A map will be used to categorize different plant species. Each plant species will be 
-associated with an array that stores three lists of positions, plant growth, and soil conditions.
-Positions will be stored as a struct holding an x and y coordinate, plant growth will be stored
-as a percentage of maximum growth, and soil quality will be stored as a struct holding a
-water level and nutrient level.
-Each plant species will be a Plant class object, with differing ideal water levels and nutrient levels.
-
-A 2D array of positions with associated plants will also be stored to visually represent plants.
-Additionally, positions of sprinklers will be stored along with plants, which will water adjacent plants.
+associated with an array that stores growth level, water level, and nutrient level, all stored as percentages.
+Each plant species will be associated with a plant species object, with differing ideal water levels and nutrient levels.
 
 Simulated Events:
 The simulation will track the growth of plants each day based on nutrient and water levels.
 Weather events will occur that change water or nutrient levels, with different seasons having
-differing rates of weather events. The user will have the ability to control water maintenence
-via sprinklers at different positions which water plants within a certain radius, as well as 
-fertilization periods. 
+differing rates of weather events. The user will have the ability to specify water and 
+fertilization amounts and frequencies.
