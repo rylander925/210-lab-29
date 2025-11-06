@@ -15,16 +15,16 @@ using namespace std;
 
 //Define enum of possible weather events
 //Values are stored as weights
-enum PrecipitationEvent { RAIN, SNOW, NEITHER };
+enum PrecipitationEvent { RAIN, SNOW, NO_PRECIPITATION };
 enum TemperatureEvent { COLD, HOT, TEMPERATE };
-enum WeatherEvent { WIND, NORMAL };
+enum WeatherEvent { WIND, NO_WEATHER };
 
 //Increase severity of event, does not apply to temperate condition
 //Values stored as weights of probability, effect is termined in weather function
 enum EffectMultipliers { LIGHT, MEDIUM, HEAVY };
 
 //Raise the weights of certain events
-enum GeographicMultipliers { TEMPERATURE_COEFFICIENT, HUMIDITY_COEFFICIENT, WIND_COEFFICIENT};
+enum GeographicMultipliers { TEMPERATURE_COEFFICIENT, HUMIDITY_COEFFICIENT, WIND_COEFFICIENT, SEVERITY_COEFFICIENT};
 
 //Define enum of possible age events, maps should be stored as integer weights
 enum AgeEvent { DISEASE, EATEN };
@@ -110,4 +110,39 @@ int main() {
     //(Add some message that simulation is over)
     farm.PrintInformation();
     farm.PrintPlot();
+}
+
+WeatherProfile ReadWeatherProfile(string filename) {
+    WeatherProfile season;
+
+    cout << "Reading weather profile..." << "...add implementation" << endl;
+
+    //Verify file open and read
+    
+    //dummy weights for now
+    season.precipitationWeights = {{RAIN, 1}, {SNOW, 1}, {NO_PRECIPITATION, 1}};
+    season.weatherWeights = {{WIND, 1}, {NO_WEATHER, 1}};
+    season.temperatureWeights = {{COLD, 1}, {HOT, 1}, {TEMPERATE, 1}};
+
+    return season;
+}
+
+LocationProfile ReadLocationProfile(string filename) {
+    LocationProfile locale;
+
+    cout << "Reading location profile..." << "...add implementation" << endl;
+
+    //Verify file open and read
+    
+    //dummy weights for now
+    locale.multipliers = {{TEMPERATURE_COEFFICIENT, 1}, {HUMIDITY_COEFFICIENT, 1}, {WIND_COEFFICIENT, 1}, {SEVERITY_COEFFICIENT, 1}};
+    locale.randomEventWegiths = {{EATEN, 1}, {DISEASE, 1}};
+
+    return locale;
+}
+
+//Define function to simulate affects of weather events on nutrient levels for one day
+    //Parameters: farm plot, Weather profile and location profile
+void WeatherFarm(FarmPlot& farm, WeatherProfile season, LocationProfile locale) {
+    cout << "Weathering farm..." << "...add implementation" << endl;
 }
