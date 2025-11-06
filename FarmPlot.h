@@ -46,41 +46,65 @@ class FarmPlot {
             //Parameters: filename
         void ReadData(string filename) {
             cout << "No file read implemented" << endl;
+
+            //Read file contents
         }
 
         //Define function to output plant information
             //Parameters: None; acts on map of crops
         void PrintInformation() const {
-            for (auto speciesPair : crops) {
-                speciesPair.first.Print();
+            cout << "Printing crop information: " << endl;
+            for (auto cropPair : crops) {
+                cropPair.first.Print();
+
+                cout << "Displaying each plant information using range based for loop for now; implement as table" << endl;
+                cout << "\tGrowth: " << endl;
+                for (double growth : cropPair.second.at(GROWTH)) {
+                    cout << "\t\t" << growth << endl;
+                }
+                cout << "\tWater: " << endl;
+                for (double water : cropPair.second.at(WATER)) {
+                    cout << "\t\t" << water << endl;
+                }
+                cout << "\tNutrients: " << endl;
+                for (double soil : cropPair.second.at(SOIL)) {
+                    cout << "\t\t" << soil << endl;
+                }
             }
         }
 
 
         //Define function to visually output garden as a 2D rectangular plot
             //Parameters: None; acts on map of crops
-        void PrintPlot() const;
+        void PrintPlot() const {
+            cout << "Displaying plant tokens for now. Implement as a plot based on number of each plant species" << endl;
+            for (auto cropPair : crops) {
+                cout << " " << cropPair.first.GetDisplayToken() << " ";
+            }
+            cout << endl;
+        }
 
-        //Define function to change water level associated with all plants, by summing input value
+        //Define function to change water levels, nutrient levels, and growth associated with all plants
         //(Negative input value to decrease)
             //Parameters: double with amount to increase water level
-        void UpdateWater(double waterValue);
+        void Update(double waterValue, double fertilizerValue, double growthValue) {
+            cout << "Called FarmPlot.Update" << endl;
 
-        //Define function to change soil health associated with all plants
-        //(Negative input value to decrease)
-            //Parameters: double with amount to increase soil health
-        void UpdateSoil(double fertilizerValue);
-
-        //Define function to change growth level associated with all plants
-        //(Negative input value to decrease)
-            //Parameters: double with amount to increase growth level
-        void UpdateGrowth(double growthValue);
+            //visit each pair and update respective values
+        }
 
         //Updates plant growth, water, and soil by a 1 day cycle
         //Will call respective update function in PlantSpecies for data of each crop
         //Plant harm will decrease growth value
         //Negative growth value will kill plant
-        void GrowthCycle();
+        void GrowthCycle() {
+            cout << "Called FarmPlot.GrowthCycle" << endl;
+            for (auto cropPair : crops) {
+                for (int i = 0; i < cropPair.second.at(0).size(); i++) {
+                    
+                }
+            }
+        }
 
         //Enum for readability of the map's value array's list indeces, publicly accessible
         enum CropData {GROWTH, WATER, SOIL};
