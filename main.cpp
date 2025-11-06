@@ -13,16 +13,18 @@ IDE Used: Visual studio code
 using namespace std;
 
 //Define function to simulate affects of weather events on nutrient levels for one day
-    //Parameters: farm plot, season
+//Pass a map of probabilities, which change based on season
+    //Parameters: farm plot, map of weights
+void WeatherFarm(FarmPlot& farm, map<string, double> weatherProbabilities);
 
 //Define function to simulate random garden events (distinct from weather)
     //Parameters: farm plot
+void AgeFarm(FarmPlot& farm, map<string, double> timeProbabilities);
 
 //Define function to simulate watering event
     //Parameters: farm plot, water amount
+void WaterFarm(FarmPlot& farm);
     
-//Define function to simulate fertilzation event
-    //Parameters: farm plot, fertilizer amount
 
 //Define function to simulate plant growth
     //Parameters: farm plot
@@ -37,10 +39,12 @@ using namespace std;
 
         Begin time based simulation: (Total of 90 one day time intervals)
             For each interval:
-                Water crops, simulate weather events, simulate sprinklers
+                simulate weather events and random time events
+                simulate growth cycle (call FarmPlot method)
 
-            Every 7 time intervals (1 week), output map contents and 2D garden plot
-            Every fertilization frequency number of time intervals, simulate fertilization events
+            Every 7 time intervals (1 week), output map contents and 2D garden plot (Call Print functions for FarmPlot)
+            Every fertilization frequency number of time intervals, simulate fertilization events (call UpdateSoil FarmPlot method)
+            Every watering frequency number of time intervals, simulate watering events (call UpdateWater FarmPlot method)
         
         After simulation, output garden and plant data
     */

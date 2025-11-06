@@ -11,6 +11,23 @@ using namespace std;
 
 class FarmPlot {
     public: 
+        //Default constructor
+        FarmPlot();
+
+        //Standard full constructor
+        FarmPlot(string name, map<PlantSpecies, array<list<double>, 3>> plotData);
+
+        //Constructor instantiates a framplot with a given name by reading data from specified file
+        FarmPlot(string name, string filename);
+
+        //Standard name getter
+        string GetName() const;
+
+        //Standard name setter
+        void SetName(string name);
+
+        //Hide map data from direct access for now
+
         //Define function to read garden node data
             //Parameters: filename
         void ReadData(string filename);
@@ -39,8 +56,8 @@ class FarmPlot {
         void UpdateGrowth(double growthValue);
 
         //Updates plant growth, water, and soil by a 1 day cycle
-        //Will call respective update commands for water, soil, and growth based off weights in PlantSpecies
-        void Update();
+        //Will call respective update function in PlantSpecies for data of each crop
+        void GrowthCycle();
 
         //Enum for readability of the map's value array's list indeces, publicly accessible
         enum CropData {GROWTH, WATER, SOIL};
