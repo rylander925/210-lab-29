@@ -13,7 +13,7 @@ class PlantSpecies {
         PlantSpecies();
 
         //Partial constructor; healthy water range and nurtrient range set to default levels
-        PlantSpecies(string name, char displayToken, double idealWater, double idealNutrients);
+        PlantSpecies(string name, char displayToken, double idealWater, double idealNutrients, double idealTemperature);
 
         //Complete constructor
         PlantSpecies(string name, char displayToken, 
@@ -42,6 +42,9 @@ class PlantSpecies {
 
         //nutrient level where plant can grow
         double idealNutrients;
+        
+        //In fahrenheight, ideal temp plant can grow
+        double idealTemperature;
 
         //Amount above and below water level/nutrient levels that plant can grow
         double healthyWaterRange;
@@ -50,6 +53,13 @@ class PlantSpecies {
         //Amount above and below water/nutrient levels that plant can survive
         double tolerableWaterRange;
         double tolerableNutrientRange;
+
+        //Amount above and below ideal temp where plant can grow
+        //wind/extreme weather events, will move temperatures towards extremes 
+        double healthyTemperatureRange;
+        
+        //Amount above and below ideal temp where plant can survive
+        double tolerableTemperatureRange;
 };
 
 #endif

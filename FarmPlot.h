@@ -57,6 +57,8 @@ class FarmPlot {
 
         //Updates plant growth, water, and soil by a 1 day cycle
         //Will call respective update function in PlantSpecies for data of each crop
+        //Plant harm will decrease growth value
+        //Negative growth value will kill plant
         void GrowthCycle();
 
         //Enum for readability of the map's value array's list indeces, publicly accessible
