@@ -35,6 +35,7 @@ class FarmPlot {
         //Define function to output plant information
             //Parameters: None; acts on map of crops
         void PrintInformation() const;
+        
 
         //Define function to visually output garden as a 2D rectangular plot
             //Parameters: None; acts on map of crops
