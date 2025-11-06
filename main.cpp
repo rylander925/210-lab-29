@@ -12,22 +12,31 @@ IDE Used: Visual studio code
 
 using namespace std;
 
+//Define enum of possible weather events
+//Values are stored as weights
+enum PrecipitationEvent { RAIN, SNOW, NEITHER };
+enum TemperatureEvent { COLD, HOT, TEMPERATE };
+enum ClimateEvent { WIND, NORMAL };
+
+//Increase severity of event, does not apply to temperate condition
+//Values stored as weights of probability, effect is termined in weather function
+enum EffectMultipliers { LIGHT, MEDIUM, HEAVY };
+
+//Raise the power of probabilities by 1/k, where k is the probability
+//High k is more probable, low k is imporbable
+//(k=2 is rolling with advantage, k=1/2 is rolling with disadvantage)
+enum GeographicMultipliers { TEMPERATURE_COEFFICIENT, HUMIDITY_COEFFICIENT, WIND_COEFFICIENT};
+
+//Define enum of possible age events
+enum AgeEvent { DISEASE, EATEN };
+
 //Define function to simulate affects of weather events on nutrient levels for one day
-//Pass a map of probabilities, which change based on season
+//Pass maps of probabilities; can use an array and use enums as indeces, but map forces explicit use of names
     //Parameters: farm plot, map of weights
-void WeatherFarm(FarmPlot& farm, map<string, double> weatherProbabilities);
+void WeatherFarm(FarmPlot& farm, map<ClimateEvent, double> weatherProbabilities);
 
-//Define function to simulate random garden events (distinct from weather)
-    //Parameters: farm plot
-void AgeFarm(FarmPlot& farm, map<string, double> timeProbabilities);
 
-//Define function to simulate watering event
-    //Parameters: farm plot, water amount
-void WaterFarm(FarmPlot& farm);
-    
-
-//Define function to simulate plant growth
-    //Parameters: farm plot
+const map<AgeEvent, 
 
 //Define main function
     /*
