@@ -15,7 +15,7 @@ class PlantSpecies {
             idealWater(0.5), idealNutrients(0.5), 
             healthyWaterRange(0.10), healthyNutrientRange(0.10),
             tolerableWaterRange(0.30), tolerableNutrientRange(0.30),
-            healthyTemperatureRange(10), tolerableTemperatureRange(20) {}
+            healthyTemperatureRange(10), tolerableTemperatureRange(20) { cout << "Called default constructor for PlantSpecies" << endl; }
 
         //Partial constructor; healthy water range and nurtrient range set to default levels
         PlantSpecies(string name, char displayToken, double idealWater, double idealNutrients, double idealTemperature) :
@@ -69,7 +69,12 @@ class PlantSpecies {
 
         //Outputs details about the plant species
         void Print() const {
-            cout << "Plant" << name << "FIXME: PlantSpecies.Print incomplete" << endl;
+            cout << "Plant Species: " << name << "FIXME: PlantSpecies.Print incomplete" << endl;
+        }
+
+        //Overload operator< for use in map
+        bool operator< (const PlantSpecies& otherPlant) const {
+            return name < otherPlant.name;
         }
         
     private:

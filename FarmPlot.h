@@ -13,10 +13,11 @@ class FarmPlot {
     public: 
         //Default constructor
         FarmPlot() : name("Unnamed Farm") {
+            cout << "Called farmplot default constructor" << endl;
             //fill with dummy values
             array<list<double>, 3> defaultArray;
 
-            defaultArray.fill(list<double>(1, 1));
+            defaultArray.fill(list<double>(3, 1));
 
             crops.insert(make_pair(PlantSpecies(), defaultArray));
         }
@@ -25,13 +26,12 @@ class FarmPlot {
         FarmPlot(string name, map<PlantSpecies, array<list<double>, 3>> plotData);
 
         //Constructor instantiates a framplot with a given name by reading data from specified file
-        FarmPlot(string name, string filename) {
+        FarmPlot(string name, string filename) : FarmPlot() {
             cout << "Called file read constructor for FarmPlot" << endl;
 
             ReadData(filename);
 
             cout << "Not implemented; calling default for now" << endl;
-            FarmPlot();
         }
 
         //Standard name getter
@@ -79,7 +79,8 @@ class FarmPlot {
         void PrintPlot() const {
             cout << "Displaying plant tokens for now. Implement as a plot based on number of each plant species" << endl;
             for (auto cropPair : crops) {
-                cout << " " << cropPair.first.GetDisplayToken() << " ";
+                for (int i = 0; i < cropPair.second.at(0).size(); i++)
+                    cout << " " << cropPair.first.GetDisplayToken() << " ";
             }
             cout << endl;
         }
@@ -99,9 +100,14 @@ class FarmPlot {
         //Negative growth value will kill plant
         void GrowthCycle() {
             cout << "Called FarmPlot.GrowthCycle" << endl;
-            for (auto cropPair : crops) {
-                for (int i = 0; i < cropPair.second.at(0).size(); i++) {
-                    
+            for (auto& cropPair : crops) {
+                for (list<double>::iterator waterIt = cropPair.second.at(WATER).begin(),
+                                            soilIt = cropPair.second.at(SOIL).begin(),
+                                            growthIt = cropPair.second.at(GROWTH).begin(); 
+                                            waterIt == cropPair.second.at(WATER).end(); //only one conditional for now, assumes each list has equal size
+                                            waterIt++, soilIt++, growthIt++
+                    ) {
+                    cropPair.first.GrowthCycle(*growthIt,*waterIt, *soilIt);
                 }
             }
         }

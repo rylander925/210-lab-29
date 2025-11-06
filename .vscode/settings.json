@@ -5,6 +5,7 @@
         "cstdlib": "cpp",
         "iostream": "cpp",
         "array": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "utility": "cpp"
     }
 }
