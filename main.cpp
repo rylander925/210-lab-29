@@ -141,8 +141,6 @@ LocationProfile ReadLocationProfile(string filename) {
     return locale;
 }
 
-//Define function to simulate affects of weather events on nutrient levels for one day
-    //Parameters: farm plot, Weather profile and location profile
 void WeatherFarm(FarmPlot& farm, WeatherProfile season, LocationProfile locale) {
     cout << "Weathering farm..." << "...add implementation" << endl;
 }
