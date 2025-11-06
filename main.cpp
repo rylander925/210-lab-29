@@ -16,27 +16,47 @@ using namespace std;
 //Values are stored as weights
 enum PrecipitationEvent { RAIN, SNOW, NEITHER };
 enum TemperatureEvent { COLD, HOT, TEMPERATE };
-enum ClimateEvent { WIND, NORMAL };
+enum WeatherEvent { WIND, NORMAL };
 
 //Increase severity of event, does not apply to temperate condition
 //Values stored as weights of probability, effect is termined in weather function
 enum EffectMultipliers { LIGHT, MEDIUM, HEAVY };
 
-//Raise the power of probabilities by 1/k, where k is the probability
-//High k is more probable, low k is imporbable
-//(k=2 is rolling with advantage, k=1/2 is rolling with disadvantage)
+//Raise the weights of certain events
 enum GeographicMultipliers { TEMPERATURE_COEFFICIENT, HUMIDITY_COEFFICIENT, WIND_COEFFICIENT};
 
-//Define enum of possible age events
+//Define enum of possible age events, maps should be stored as integer weights
 enum AgeEvent { DISEASE, EATEN };
 
+//hold weights for climate as a struct for organization purposes
+//Pass maps of probabilities; can use an array w/ enums as indeces, but map forces explicit use of names
+struct WeatherProfile {
+    map<PrecipitationEvent, int> precipitationWeights;
+    map<TemperatureEvent, int> temperatureWeights; 
+    map<WeatherEvent, int> weatherWeights;
+};
+
+//hold weights for locale as a struct for organization purposes
+struct LocationProfile {
+    map<GeographicMultipliers, double> multipliers;
+    map<AgeEvent, int> randomEventWegiths;
+};
+
+//Define function to read weights of weather weights
+    //Parameters: name of file to read from; should contain one weather profile (i.e. winter.txt separate from spring.txt)
+    //Structured to read until file end, with each line as a string of event name then a number (double or int)
+    //Attempt to add to the map; map will not add if already added
+WeatherProfile ReadWeatherProfile(string filename);
+
+//Define function to read weights of location weights
+    //Parameters: name of file to read from; should contain one location (i.e. desert.txt separate from coast.txt)
+    //Structured to read until file end, with each line as a string of event name then a number (double or int)
+    //Attempt to add to the map; map will not add if already added
+LocationProfile ReadLocationProfile(string filename);
+
 //Define function to simulate affects of weather events on nutrient levels for one day
-//Pass maps of probabilities; can use an array and use enums as indeces, but map forces explicit use of names
-    //Parameters: farm plot, map of weights
-void WeatherFarm(FarmPlot& farm, map<ClimateEvent, double> weatherProbabilities);
-
-
-const map<AgeEvent, 
+    //Parameters: farm plot, Weather profile and location profile
+void WeatherFarm(FarmPlot& farm, WeatherProfile season, LocationProfile locale);
 
 //Define main function
     /*
