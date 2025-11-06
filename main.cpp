@@ -7,6 +7,7 @@ IDE Used: Visual studio code
 #include <map>
 #include <array>
 #include <list>
+#include <iostream>
 #include "PlantSpecies.h"
 #include "FarmPlot.h"
 
@@ -59,21 +60,54 @@ LocationProfile ReadLocationProfile(string filename);
 void WeatherFarm(FarmPlot& farm, WeatherProfile season, LocationProfile locale);
 
 //Define main function
-    /*
-        Read garden node data into map of crops, array of sprinklers, and 2D array of garden nodes
+int main() {
+    const string FILENAME_SEASON;
+    const string FILENAME_LOCALE;
+    const string FILENAME_FARM;
+    const int SIMULATION_PERIOD = 90;
+    const int OUTPUT_INTERVAL = 7;
+    //Declare variables
+    WeatherProfile season;
+    LocationProfile locale;
+    string name;
+    int fertilizationInterval;
+    int wateringInterval;
 
-        Determine season
+    //Read garden node data into map of crops through constructor
+    FarmPlot farm(name, FILENAME_FARM);
 
-        Determine fertilzation frequency
+    //Read location and weather profile data
+    season = ReadWeatherProfile(FILENAME_SEASON);
+    locale = ReadLocationProfile(FILENAME_LOCALE);
 
-        Begin time based simulation: (Total of 90 one day time intervals)
-            For each interval:
-                simulate weather events and random time events
-                simulate growth cycle (call FarmPlot method)
+    //Determine fertilzation frequency from input
+    //Add prompt statements and input validation
+    cin >> fertilizationInterval;
+    cin >> wateringInterval;
 
-            Every 7 time intervals (1 week), output map contents and 2D garden plot (Call Print functions for FarmPlot)
-            Every fertilization frequency number of time intervals, simulate fertilization events (call UpdateSoil FarmPlot method)
-            Every watering frequency number of time intervals, simulate watering events (call UpdateWater FarmPlot method)
-        
-        After simulation, output garden and plant data
-    */
+    //Begin time based simulation: (Total of 90 one day time intervals)
+    for (int day = 1; day <= SIMULATION_PERIOD; day++) {
+        //For each interval:
+            //simulate weather events and random time events
+            WeatherFarm(farm, season, locale);
+
+            //simulate growth cycle (call FarmPlot method)
+            farm.GrowthCycle();
+
+        //Every 7 time intervals (1 week), output map contents and 2D garden plot (Call Print functions for FarmPlot)
+        if (day % OUTPUT_INTERVAL == 0) {
+            //Add counter for # of output intervals
+            farm.PrintInformation();
+            farm.PrintPlot();
+        }
+
+        //Every fertilization frequency number of time intervals, simulate fertilization events (call UpdateSoil FarmPlot method)
+        //Every watering frequency number of time intervals, simulate watering events (call UpdateWater FarmPlot method)
+        //(Takes same format as above display interval)
+    }
+    
+    //After simulation, output garden and plant data
+    //(Add some message that simulation is over)
+    farm.PrintInformation();
+    farm.PrintPlot();
+}
