@@ -10,25 +10,67 @@ using namespace std;
 class PlantSpecies {
     public:
         //default constructor
-        PlantSpecies();
+        PlantSpecies() :
+            name("Unnamed Plant"), displayToken('?'), 
+            idealWater(0.5), idealNutrients(0.5), 
+            healthyWaterRange(0.10), healthyNutrientRange(0.10),
+            tolerableWaterRange(0.30), tolerableNutrientRange(0.30),
+            healthyTemperatureRange(10), tolerableTemperatureRange(20) {}
 
         //Partial constructor; healthy water range and nurtrient range set to default levels
-        PlantSpecies(string name, char displayToken, double idealWater, double idealNutrients, double idealTemperature);
+        PlantSpecies(string name, char displayToken, double idealWater, double idealNutrients, double idealTemperature) :
+              name(name), displayToken(displayToken), 
+              idealWater(idealWater), idealNutrients(idealNutrients), 
+              healthyWaterRange(0.10), healthyNutrientRange(0.10),
+              tolerableWaterRange(0.30), tolerableNutrientRange(0.30),
+              healthyTemperatureRange(10), tolerableTemperatureRange(20) {}
 
         //Complete constructor
         PlantSpecies(string name, char displayToken, 
-              double idealWater, double idealNutrients, 
+              double idealWater, double idealNutrients, double idealTemperature,
               double healthyWaterRange, double healthyNutrientRange,
-              double tolerableWaterRange, double tolerableNurtientRange);
+              double tolerableWaterRange, double tolerableNutrientRange,
+              double healthyTemperatureRange, double tolerableTemperatureRange) :
 
-        //Add standard getters and setters
+              name(name), displayToken(displayToken), 
+              idealWater(idealWater), idealNutrients(idealNutrients), 
+              healthyWaterRange(healthyWaterRange), healthyNutrientRange(healthyNutrientRange),
+              tolerableWaterRange(tolerableWaterRange), tolerableNutrientRange(tolerableNutrientRange),
+              healthyTemperatureRange(healthyTemperatureRange), tolerableTemperatureRange(tolerableTemperatureRange) {}
+
+        //Add getters
+        string GetName() const { return name; }
+        char GetDisplayToken() const { return displayToken; }
+
+        //No setters beyond default values b/c used as key
         
         //Updates a growth cycle for a plant based on its current growth and soil health
         //Increases or decreases growth depending on soil health, and consumes soil health
-        void GrowthCycle(double& growth, double& water, double& nutrients);
+        void GrowthCycle(double& growth, double& water, double& nutrients) const {
+            cout << "FIXME: PlantSpecies.GrowthCycle incomplete" << endl;
+            double waterDifference = abs(water - idealWater);
+            double nutrientDifference = abs(nutrients - idealNutrients);
+            if (waterDifference >= tolerableWaterRange) {
+                cout << name << " has improper water levels" << endl;
+                growth -= 0.1;
+            } else if (waterDifference <= healthyWaterRange) {
+                cout << name << "has just enough water " << endl;
+                growth += -0.1;
+            }
+
+            if (nutrientDifference >= tolerableNutrientRange) {
+                cout << name << " has improper nutrient levels" << endl;
+                growth -= 0.1;
+            } else if (nutrientDifference <= healthyNutrientRange) {
+                cout << name << "has just enough nutrients" << endl;
+                growth += -0.1;
+            }
+        }
 
         //Outputs details about the plant species
-        void Print();
+        void Print() const {
+            cout << "Plant" << name << "FIXME: PlantSpecies.Print incomplete" << endl;
+        }
         
     private:
         //name of plant species

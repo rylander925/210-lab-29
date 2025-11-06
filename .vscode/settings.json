@@ -1,5 +1,10 @@
 {
     "files.associations": {
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "xstring": "cpp",
+        "cstdlib": "cpp",
+        "iostream": "cpp",
+        "array": "cpp",
+        "list": "cpp"
     }
 }

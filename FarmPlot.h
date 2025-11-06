@@ -12,29 +12,49 @@ using namespace std;
 class FarmPlot {
     public: 
         //Default constructor
-        FarmPlot() name("No name")
+        FarmPlot() : name("Unnamed Farm") {
+            //fill with dummy values
+            array<list<double>, 3> defaultArray;
+
+            defaultArray.fill(list<double>(1, 1));
+
+            crops.insert(make_pair(PlantSpecies(), defaultArray));
+        }
 
         //Standard full constructor
         FarmPlot(string name, map<PlantSpecies, array<list<double>, 3>> plotData);
 
         //Constructor instantiates a framplot with a given name by reading data from specified file
-        FarmPlot(string name, string filename);
+        FarmPlot(string name, string filename) {
+            cout << "Called file read constructor for FarmPlot" << endl;
+
+            ReadData(filename);
+
+            cout << "Not implemented; calling default for now" << endl;
+            FarmPlot();
+        }
 
         //Standard name getter
-        string GetName() const;
+        string GetName() const { return name; }
 
         //Standard name setter
-        void SetName(string name);
+        void SetName(string name) { this->name = name; }
 
         //Hide map data from direct access for now
 
         //Define function to read garden node data
             //Parameters: filename
-        void ReadData(string filename);
+        void ReadData(string filename) {
+            cout << "No file read implemented" << endl;
+        }
 
         //Define function to output plant information
             //Parameters: None; acts on map of crops
-        void PrintInformation() const;
+        void PrintInformation() const {
+            for (auto speciesPair : crops) {
+                speciesPair.first.Print();
+            }
+        }
 
 
         //Define function to visually output garden as a 2D rectangular plot
