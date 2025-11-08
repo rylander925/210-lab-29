@@ -70,7 +70,10 @@ class PlantSpecies {
 
         //Outputs details about the plant species
         void Print() const {
-            cout << "Plant Species: " << name << "FIXME: PlantSpecies.Print incomplete" << endl;
+            Util::CoutLine();
+            cout << "Plant Species \"" << name << "\" (" << displayToken << ") Information: " << endl;
+            cout << "\tIdeal water: " << idealWater << endl;
+            cout << "\t\t"
         }
 
         //Overload operator< for use in map
