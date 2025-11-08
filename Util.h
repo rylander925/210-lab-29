@@ -25,10 +25,12 @@ class Util {
      * @param columnHeaders Title above each column
      * @param rowHeaders Title in front of each row
      * @param data Data in each column, as a 2D array of [rows][columns]
+     * @note Sets cout to left alignment
      */
     template<typename T, size_t columns, size_t rows>
     static void CoutTable(array<string, columns> columnHeaders, array<string, rows> rowHeaders, array<array<T, columns>, rows> data, int width = TABLE_DEFAULT_WIDTH) {
         //Output first row with headers
+        cout << left; //Set cout to left
         cout << setw(width) << ""; //first column left blank for row lables
         for (string header : columnHeaders) cout << setw(width) << header;
         cout << endl;
@@ -59,7 +61,7 @@ class Util {
     }
     private:
         static const int TABLE_DEFAULT_WIDTH = 20;
-        static const int LINE_DEFAULT_WIDTH = 50;
+        static const int LINE_DEFAULT_WIDTH = 100;
         static const char LINE_DEFAULT_CHAR = '=';
 };
 

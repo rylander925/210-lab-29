@@ -14,31 +14,31 @@ class PlantSpecies {
         //default constructor
         PlantSpecies() :
             name("Unnamed Plant"), displayToken('?'), 
-            idealWater(0.5), idealNutrients(0.5), 
-            healthyWaterRange(0.10), healthyNutrientRange(0.10),
-            tolerableWaterRange(0.30), tolerableNutrientRange(0.30),
-            healthyTemperatureRange(10), tolerableTemperatureRange(20) { cout << "Called default constructor for PlantSpecies" << endl; }
+            idealWater(0.5), idealNutrients(0.5), idealTemperature(60),
+            healthyWaterRange(0.10), healthyNutrientRange(0.10), healthyTemperatureRange(10),
+            tolerableWaterRange(0.30), tolerableNutrientRange(0.30), tolerableTemperatureRange(20) 
+            { cout << "Called default constructor for PlantSpecies" << endl; }
 
-        //Partial constructor; healthy water range and nurtrient range set to default levels
-        PlantSpecies(string name, char displayToken, double idealWater, double idealNutrients, double idealTemperature) :
-              name(name), displayToken(displayToken), 
-              idealWater(idealWater), idealNutrients(idealNutrients), 
-              healthyWaterRange(0.10), healthyNutrientRange(0.10),
-              tolerableWaterRange(0.30), tolerableNutrientRange(0.30),
-              healthyTemperatureRange(10), tolerableTemperatureRange(20) {}
+        //Partial constructor; specify name, token, and ideal levels--ranges set to default levels
+        PlantSpecies(string name, char displayToken, double idealWater, double idealNutrients, double idealTemperature) : PlantSpecies() { 
+                this->name = name;
+                this->displayToken = displayToken;
+                this->idealWater = idealWater;
+                this->idealNutrients = idealNutrients;
+                this->idealTemperature = idealTemperature;
+        }
 
         //Complete constructor
         PlantSpecies(string name, char displayToken, 
               double idealWater, double idealNutrients, double idealTemperature,
-              double healthyWaterRange, double healthyNutrientRange,
-              double tolerableWaterRange, double tolerableNutrientRange,
-              double healthyTemperatureRange, double tolerableTemperatureRange) :
-
+              double healthyWaterRange, double healthyNutrientRange, double healthyTemperatureRange,
+              double tolerableWaterRange, double tolerableNutrientRange, double tolerableTemperatureRange) 
+              :
               name(name), displayToken(displayToken), 
-              idealWater(idealWater), idealNutrients(idealNutrients), 
-              healthyWaterRange(healthyWaterRange), healthyNutrientRange(healthyNutrientRange),
-              tolerableWaterRange(tolerableWaterRange), tolerableNutrientRange(tolerableNutrientRange),
-              healthyTemperatureRange(healthyTemperatureRange), tolerableTemperatureRange(tolerableTemperatureRange) {}
+              idealWater(idealWater), idealNutrients(idealNutrients), idealTemperature(idealTemperature),
+              healthyWaterRange(healthyWaterRange), healthyNutrientRange(healthyNutrientRange), healthyTemperatureRange(healthyTemperatureRange),
+              tolerableWaterRange(tolerableWaterRange), tolerableNutrientRange(tolerableNutrientRange), tolerableTemperatureRange(tolerableTemperatureRange) 
+        {}
 
         //Add getters
         string GetName() const { return name; }
@@ -69,21 +69,27 @@ class PlantSpecies {
             }
         }
 
-        //Outputs details about the plant species
+        /**
+         * Outputs details about the plant species formatted as a table
+         * @test
+         */
         void Print() const {
-            const static int ROWS = 3;
-            const static int COLUMNS = 3;
-
+            //Output is enclosed by lines
             Util::CoutLine();
             cout << "Plant Species \"" << name << "\" (" << displayToken << ") Care Information: " << endl;
+            
+            //Display details as table
+            const static int ROWS = 3;
+            const static int COLUMNS = 3;
             array<string, COLUMNS> columnTitles = {"Ideal", "Healthy (+\\-)", "Tolerable (+\\-)"};
             array<string, ROWS> rowTitles = {"Water", "Nutrients", "Temperature (F)"}; 
             array<array<double, COLUMNS>, ROWS> tableData = { array<double, COLUMNS>{idealWater, healthyWaterRange, tolerableWaterRange},
                                                               array<double, COLUMNS>{idealNutrients, healthyNutrientRange, tolerableNutrientRange},
                                                               array<double, COLUMNS>{idealTemperature, healthyTemperatureRange, tolerableTemperatureRange}
                                                             };
-
             Util::CoutTable(columnTitles, rowTitles, tableData);
+
+            Util::CoutLine();
         }
 
         //Overload operator< for use in map
