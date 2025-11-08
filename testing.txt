@@ -3,5 +3,44 @@ main
 FarmPlot
 
 PlantSpecies
+    Constructors
+        Test via PlantSpecies::Print() function, which has already been tested to function properly
+        main() function calls Print() function and FarmPlot constructor, will be tested by modifying the call 
+        to the PlantSpecies() constructor inside FarmPlot(), then calling FarmPlot::PrintInformation() in main, which calls PlantSpecies::Print()
+            in FarmPlot(), modified between
+                ...
+                crops.insert(make_pair(PlantSpecies(), defaultArray));
+                crops.insert(make_pair(PlantSpecies("COOL BEANS", 'C', 0.69, 0.42, 67), defaultArray));
+                crops.insert(make_pair(PlantSpecies("COOL BEANS", 'C', 0.69, 0.42, 67), defaultArray));
+                crops.insert(make_pair(PlantSpecies("COOL BEANS", 'C', 0.69, 0.42, 67, 0.1, 0.2, 0.3, 0.01, 0.02, 0.03), defaultArray));
+                ...
+            in FarmPlot::PrintInformation
+                cout << "Printing crop information: " << endl;
+                for (auto cropPair : crops)
+                    cropPair.first.Print();
+                ...
+            in main, 
+                FarmPlot farm(name, FILENAME_FARM);
+                ...
+                farm.PrintInformation();
+                ...
 
 Util
+    CoutLine()
+        Test by executing with different values
+            Util::CoutLine(10, '+');
+            Util::CoutLine(10);
+            Util::CoutLine();
+        Expected output is 10 + signs, 10 = signs, 100 = signs
+    
+    CoutTable()
+        Test as part of Print functions by FarmPlot and PlantSpecies
+        e.g. in PlantSpecies::Print(),
+            array<string, COLUMNS> columnTitles = {"Ideal", "Healthy (+\\-)", "Tolerable (+\\-)"};
+            array<string, ROWS> rowTitles = {"Water", "Nutrients", "Temperature (F)"}; 
+            array<array<double, COLUMNS>, ROWS> tableData = { array<double, COLUMNS>{idealWater, healthyWaterRange, tolerableWaterRange},
+                                                              array<double, COLUMNS>{idealNutrients, healthyNutrientRange, tolerableNutrientRange},
+                                                              array<double, COLUMNS>{idealTemperature, healthyTemperatureRange, tolerableTemperatureRange}
+                                                            };
+            Util::CoutTable(columnTitles, rowTitles, tableData);
+        Expected output is a table, titled according to the column and row titles, with proper data values
