@@ -27,16 +27,20 @@ class Util {
      * @param data Data in each column, as a 2D array of [rows][columns]
      */
     template<typename T, size_t columns, size_t rows>
-    static void CoutTable(string columnHeaders[columns], string rowHeaders[rows], T data[rows][columns], int width = TABLE_DEFAULT_WIDTH) {
+    static void CoutTable(array<string, columns> columnHeaders, array<string, rows> rowHeaders, array<array<T, columns>, rows> data, int width = TABLE_DEFAULT_WIDTH) {
         //Output first row with headers
         cout << setw(width) << ""; //first column left blank for row lables
         for (string header : columnHeaders) cout << setw(width) << header;
         cout << endl;
 
-        for (T rowData[] : data) {
-            for (T value : rowData) {
-                
-            }
+        //Output data for rest of the rows
+        for (int rowNum = 0; rowNum < rows; rowNum++) {
+            //Output row title
+            cout << setw(width) << rowHeaders.at(rowNum);
+
+            //followed by data in the row
+            for (T val : data.at(rowNum)) cout << setw(width) << val;
+            cout << endl;
         }
     }
     

@@ -2,6 +2,7 @@
 #define PLANTSPECIES_H
 
 #include <string>
+#include <array>
 #include "Util.h"
 
 using namespace std;
@@ -70,10 +71,19 @@ class PlantSpecies {
 
         //Outputs details about the plant species
         void Print() const {
+            const static int ROWS = 3;
+            const static int COLUMNS = 3;
+
             Util::CoutLine();
-            cout << "Plant Species \"" << name << "\" (" << displayToken << ") Information: " << endl;
-            cout << "\tIdeal water: " << idealWater << endl;
-            cout << "\t\t"
+            cout << "Plant Species \"" << name << "\" (" << displayToken << ") Care Information: " << endl;
+            array<string, COLUMNS> columnTitles = {"Ideal", "Healthy (+\\-)", "Tolerable (+\\-)"};
+            array<string, ROWS> rowTitles = {"Water", "Nutrients", "Temperature (F)"}; 
+            array<array<double, COLUMNS>, ROWS> tableData = { array<double, COLUMNS>{idealWater, healthyWaterRange, tolerableWaterRange},
+                                                              array<double, COLUMNS>{idealNutrients, healthyNutrientRange, tolerableNutrientRange},
+                                                              array<double, COLUMNS>{idealTemperature, healthyTemperatureRange, tolerableTemperatureRange}
+                                                            };
+
+            Util::CoutTable(columnTitles, rowTitles, tableData);
         }
 
         //Overload operator< for use in map
