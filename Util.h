@@ -4,6 +4,8 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <array>
+#include <list>
 #include <fstream>
 
 using namespace std;
@@ -29,6 +31,32 @@ class Util {
      */
     template<typename T, size_t columns, size_t rows>
     static void CoutTable(array<string, columns> columnHeaders, array<string, rows> rowHeaders, array<array<T, columns>, rows> data, int width = TABLE_DEFAULT_WIDTH) {
+        //Output first row with headers
+        cout << left; //Set cout to left
+        cout << setw(width) << ""; //first column left blank for row lables
+        for (string header : columnHeaders) cout << setw(width) << header;
+        cout << endl;
+
+        //Output data for rest of the rows
+        for (int rowNum = 0; rowNum < rows; rowNum++) {
+            //Output row title
+            cout << setw(width) << rowHeaders.at(rowNum);
+
+            //followed by data in the row
+            for (T val : data.at(rowNum)) cout << setw(width) << val;
+            cout << endl;
+        }
+    }
+
+    /**
+     * Outputs a formatted table
+     * @param columnHeaders Title above each column
+     * @param rowHeaders Title in front of each row
+     * @param data Data in each column, as a 2D data structure of an array of lists
+     * @note Sets cout to left alignment
+     */
+    template<typename T, size_t columns, size_t rows>
+    static void CoutTable(array<string, columns> columnHeaders, array<string, rows> rowHeaders, array<list<T>, rows> data, int width = TABLE_DEFAULT_WIDTH) {
         //Output first row with headers
         cout << left; //Set cout to left
         cout << setw(width) << ""; //first column left blank for row lables

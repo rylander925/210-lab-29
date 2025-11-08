@@ -5,6 +5,7 @@
 #include <array>
 #include <list>
 #include <string>
+#include "Util.h"
 #include "PlantSpecies.h"
 
 using namespace std;
@@ -50,12 +51,18 @@ class FarmPlot {
             //Read file contents
         }
 
-        //Define function to output plant information
-            //Parameters: None; acts on map of crops
+        /**
+         * Outputs information of each plant species and each plant associated with each plant species as a table
+         */
         void PrintInformation() const {
             cout << "Printing crop information: " << endl;
             for (auto cropPair : crops) {
+                Util::CoutLine();
+                //Display information about plant species
                 cropPair.first.Print();
+                
+                const static int TABLE_COLUMNS = 3; //Growth, water, nutrients
+                int tableRows = cropPair.second.at(GROWTH).size(); //Assumed each column has equal # of values (which it should if created properly)
 
                 cout << "Displaying each plant information using range based for loop for now; implement as table" << endl;
                 cout << "\tGrowth: " << endl;
@@ -70,6 +77,8 @@ class FarmPlot {
                 for (double soil : cropPair.second.at(SOIL)) {
                     cout << "\t\t" << soil << endl;
                 }
+
+                Util::CoutLine();
             }
         }
 
