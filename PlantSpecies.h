@@ -2,6 +2,7 @@
 #define PLANTSPECIES_H
 
 #include <string>
+#include "Util.h"
 
 using namespace std;
 
