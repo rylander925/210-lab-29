@@ -58,25 +58,23 @@ class FarmPlot {
             cout << "Printing crop information: " << endl;
             for (auto cropPair : crops) {
                 Util::CoutLine();
+                
                 //Display information about plant species
                 cropPair.first.Print();
                 
-                const static int TABLE_COLUMNS = 3; //Growth, water, nutrients
-                int tableRows = cropPair.second.at(GROWTH).size(); //Assumed each column has equal # of values (which it should if created properly)
+                //Display as Horizontal table for now, for ease of use with Util::CoutTable
+                const static int TABLE_ROWS = 3;
+                int tableColumns = cropPair.second.at(GROWTH).size(); //Assumed each column has equal # of values (which it should if created properly)
+                
+                //Create row headers with data labels
+                array<string, TABLE_ROWS> rowHeaders = {"Growth", "Water", "Nutrients"};
 
-                cout << "Displaying each plant information using range based for loop for now; implement as table" << endl;
-                cout << "\tGrowth: " << endl;
-                for (double growth : cropPair.second.at(GROWTH)) {
-                    cout << "\t\t" << growth << endl;
-                }
-                cout << "\tWater: " << endl;
-                for (double water : cropPair.second.at(WATER)) {
-                    cout << "\t\t" << water << endl;
-                }
-                cout << "\tNutrients: " << endl;
-                for (double soil : cropPair.second.at(SOIL)) {
-                    cout << "\t\t" << soil << endl;
-                }
+                //Create column headers to display plant #
+                list<string> columnHeaders; 
+                for (int i = 0; i < tableColumns; i++) columnHeaders.push_back("#" + to_string(i+1));
+
+                //Output table
+                Util::CoutTable(columnHeaders, rowHeaders, cropPair.second);
 
                 Util::CoutLine();
             }

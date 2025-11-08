@@ -49,14 +49,14 @@ class Util {
     }
 
     /**
-     * Outputs a formatted table
+     * Outputs a formatted table with variable columns using lists
      * @param columnHeaders Title above each column
      * @param rowHeaders Title in front of each row
      * @param data Data in each column, as a 2D data structure of an array of lists
      * @note Sets cout to left alignment
      */
-    template<typename T, size_t columns, size_t rows>
-    static void CoutTable(array<string, columns> columnHeaders, array<string, rows> rowHeaders, array<list<T>, rows> data, int width = TABLE_DEFAULT_WIDTH) {
+    template<typename T, size_t rows>
+    static void CoutTable(list<string> columnHeaders, array<string, rows> rowHeaders, array<list<T>, rows> data, int width = TABLE_DEFAULT_WIDTH) {
         //Output first row with headers
         cout << left; //Set cout to left
         cout << setw(width) << ""; //first column left blank for row lables
