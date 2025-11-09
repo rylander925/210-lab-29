@@ -45,31 +45,33 @@ class FarmPlot {
 
         //Define function to read garden node data
             //Parameters: filename
-        void ReadData(string filename) {
+        void ReadData(string speciesFilename, string plantDataFilename) {
             cout << "No file read implemented" << endl;
             list<PlantSpecies> plants;
-            ifstream cropFile;
+            ifstream speciesFile, plantDataFile;
             stringstream lineStream;
             string line, name, biomeClass, plantType;
             char tokenCharacter;
             int R, G, B;
+            int numPlant, growth, water, soil;
 
             //Fill each entry with default values for now
             array<list<double>, 3> defaultArray;
-            defaultArray.at(GROWTH) = list<double>(3, 0.1);
-            defaultArray.at(WATER) = list<double>(3, 0.4);
-            defaultArray.at(SOIL) = list<double>(3, 0.4);
+            defaultArray.at(GROWTH) = list<double>(3, defaultGrowth);
+            defaultArray.at(WATER) = list<double>(3, defaultWater);
+            defaultArray.at(SOIL) = list<double>(3, defaultSoil);
 
-            //Read file contents
-            Util::VerifyFileOpen(cropFile, filename);
+            //Open files 
+            Util::VerifyFileOpen(speciesFile, speciesFilename);
+            Util::VerifyFileOpen(plantDataFile, plantDataFilename);
 
             //Read information about plant species into a plant species object 
                 //name, token (character, color), biome class, plant type
                 //File formatting: 
                 //  name
                 //  tokenCharacter R G B biomeClass plantType
-            while(getline(cropFile, name)) {
-                getline(cropFile, line);
+            while(getline(speciesFile, name)) {
+                getline(speciesFile, line);
                 cout << name << endl;
                 cout << line << endl;
                 lineStream.str(line);
