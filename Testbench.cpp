@@ -6,6 +6,7 @@
 #include "FarmPlot.h"
 #include "Util.h"
 #include "Token.h"
+#include "Weather.h"
 
 //PlantSpecies
 void PlantSpeciesConstruction() {
@@ -155,6 +156,8 @@ void FarmPlotUpdate() {
     //Plants with restrictive conditions should be dead
     filePlot.PrintInformation();
 }
+
+void WeatherProfileRead()
 
 int main() {
     FarmPlotUpdate();
