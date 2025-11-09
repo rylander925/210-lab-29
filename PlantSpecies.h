@@ -14,19 +14,14 @@ class PlantSpecies {
         //default constructor
         PlantSpecies() :
             name("Unnamed Plant"), displayToken('?'), 
-            idealWater(0.5), idealNutrients(0.5), idealTemperature(60),
-            healthyWaterRange(0.10), healthyNutrientRange(0.10), healthyTemperatureRange(10),
-            tolerableWaterRange(0.30), tolerableNutrientRange(0.30), tolerableTemperatureRange(20) 
+            idealWater(0.5), idealNutrients(0.5), idealTemperature(60)
             { cout << "Called default constructor for PlantSpecies" << endl; }
 
         //Partial constructor; specify name, token, and ideal levels--ranges set to default levels
-        PlantSpecies(string name, char displayToken, double idealWater, double idealNutrients, double idealTemperature) : PlantSpecies() { 
-                this->name = name;
-                this->displayToken = displayToken;
-                this->idealWater = idealWater;
-                this->idealNutrients = idealNutrients;
-                this->idealTemperature = idealTemperature;
-        }
+        PlantSpecies(string name, char displayToken, double idealWater, double idealNutrients, double idealTemperature) : 
+            name(name), displayToken(displayToken), 
+            idealWater(idealWater), idealNutrients(idealNutrients), idealTemperature(idealTemperature) 
+        {}
 
         //Complete constructor
         PlantSpecies(string name, char displayToken, 
@@ -40,11 +35,29 @@ class PlantSpecies {
               tolerableWaterRange(tolerableWaterRange), tolerableNutrientRange(tolerableNutrientRange), tolerableTemperatureRange(tolerableTemperatureRange) 
         {}
 
-        //Add getters
+        //Add getters for name and display token
         string GetName() const { return name; }
         char GetDisplayToken() const { return displayToken; }
 
-        //No setters beyond default values b/c used as key
+        //Add setters to change ranges and cycle weights if needed
+        void SetHealthyRanges(double water, double nutrient, double temperature) {
+            healthyWaterRange = water;
+            healthyNutrientRange = nutrient;
+            healthyTemperatureRange = temperature;
+        }
+
+        void SetTolerableRanges(double water, double nutrient, double temperature) {
+            tolerableWaterRange = water;
+            tolerableNutrientRange = nutrient;
+            tolerableTemperatureRange = temperature;
+        }
+
+        void SetCycleWeights(double growthIncrease, double growthDecrease, double waterDecrease, double nutrientDecrease) {
+            cycleGrowthIncrease = growthIncrease;
+            cycleGrowthDecrease = growthDecrease;
+            cycleWaterDecrease = waterDecrease;
+            cycleNutrientDecrease = nutrientDecrease;
+        }
         
         //Updates a growth cycle for a plant based on its current growth and soil health
         //Increases or decreases growth depending on soil health, and consumes soil health
@@ -52,23 +65,28 @@ class PlantSpecies {
             cout << "FIXME: PlantSpecies.GrowthCycle incomplete" << endl;
             double waterDifference = abs(water - idealWater);
             double nutrientDifference = abs(nutrients - idealNutrients);
+            
+            //Decrease, not change, or increase growth if according to water level 
             if (waterDifference >= tolerableWaterRange) {
                 cout << name << " has improper water levels" << endl;
-                growth -= 0.1;
+                growth -= cycleGrowthDecrease;
             } else if (waterDifference <= healthyWaterRange) {
                 cout << name << "has just enough water " << endl;
-                growth += -0.1;
+                growth += cycleGrowthIncrease;
             }
 
+            //Decrease, not change, or increase growth if according to nutrient level 
             if (nutrientDifference >= tolerableNutrientRange) {
                 cout << name << " has improper nutrient levels" << endl;
-                growth -= 0.1;
+                growth -= cycleGrowthDecrease;
             } else if (nutrientDifference <= healthyNutrientRange) {
                 cout << name << "has just enough nutrients" << endl;
-                growth += -0.1;
+                growth += cycleGrowthIncrease;
             }
-            water -= 0.01;
-            nutrients -= 0.01;
+
+            //Decrease water levels
+            water -= cycleWaterDecrease;
+            nutrients -= cycleNutrientDecrease;
         }
 
         /**
@@ -107,42 +125,35 @@ class PlantSpecies {
         }
         
     private:
-        //How much plant grows/shrinks per growth cycle
-        //May change from constant values to custom per plant later
-        const double GROWTH_INCREASE = 0.05;
-        const double GROWTH_DECREASE = 0.1;
-        const double WATER_DECREASE = 0.05;
-        const double NUTRIENT_DECREASE = 0.005;
-        
+        //Basic information
         //name of plant species
         string name;
 
         //character to display when printing the 2D garden array
         char displayToken;
 
-        //water level where plant can grow
-        double idealWater;
-
-        //nutrient level where plant can grow
-        double idealNutrients;
+        //levels where plant can grow
+        double idealWater;       //As a percent
+        double idealNutrients;   //As a percent
+        double idealTemperature; //In fahrenheight, ideal temp plant can grow
         
-        //In fahrenheight, ideal temp plant can grow
-        double idealTemperature;
-
+        //Weights for plant survival, initialized by default, but can be modified through explicit changes
         //Amount above and below water level/nutrient levels that plant can grow
-        double healthyWaterRange;
-        double healthyNutrientRange;
-
-        //Amount above and below water/nutrient levels that plant can survive
-        double tolerableWaterRange;
-        double tolerableNutrientRange;
-
-        //Amount above and below ideal temp where plant can grow
-        //wind/extreme weather events, will move temperatures towards extremes 
-        double healthyTemperatureRange;
+        double healthyWaterRange = 0.1;
+        double healthyNutrientRange = 0.1;
+        double healthyTemperatureRange = 10;
         
-        //Amount above and below ideal temp where plant can survive
-        double tolerableTemperatureRange;
+        //Amount above and below water/nutrient levels that plant can survive
+        double tolerableWaterRange = 0.2;
+        double tolerableNutrientRange = 0.3;
+        double tolerableTemperatureRange = 20;
+
+        //How much plant grows/shrinks per growth cycle
+        //May change from constant values to custom per plant later
+        double cycleGrowthIncrease = 0.05;
+        double cycleGrowthDecrease = 0.1;
+        double cycleWaterDecrease = 0.05;
+        double cycleNutrientDecrease = 0.005;
 };
 
 #endif
