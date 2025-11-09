@@ -66,45 +66,85 @@ struct Weather {
     WeatherProfile weatherProfile;
     LocationProfile locationProfile;
 
-    void DayCycle() {
+    static const double COLD_TEMP_MULT;
+    static const double HOT_TEMP_MULT;
+    static const double SNOW_COLD_MULT;
+    static const double RAIN_COLD_MULT;
+    static const double WIND_COLD_MULT;
+    static const double LIGHT_PROBABILITY_MULT; 
+    static const double HEAVY_PROBABILITY_MULT;
+    static const double LIGHT_TEMP_EXP;
+    static const double HEAVY_TEMP_EXP;
+
+    void DayWeatherCycle() {
         //random chance to keep current weather condition, or roll weather conditions again (allowing repeats)
+        //roll severity
+        if (!RollProbability(persistance)) {
+            //Increase probabilities based on geopraphic multipliers
+            auto effectiveWeights = weatherProfile.severityWeights;
+            effectiveWeights.at(MEDIUM) *= locationProfile.multipliers.at(SEVERITY_COEFFICIENT);
+            effectiveWeights.at(HEAVY) *= locationProfile.multipliers.at(SEVERITY_COEFFICIENT);
+            
+            //Roll modified weights 
+           severity = RollWeights(effectiveWeights);
+        }
+
         //roll precipitation
         if (!RollProbability(persistance)) {
             auto effectiveWeights = weatherProfile.precipitationWeights;
             effectiveWeights.at(RAIN) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
             effectiveWeights.at(SNOW) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
-            severity = RollWeights(effectiveWeights);
-        }
-        if (!RollProbability(persistance)) {
-            auto effectiveWeights = weatherProfile.precipitationWeights;
-            effectiveWeights.at(RAIN) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
-            effectiveWeights.at(SNOW) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
+
             precipitation = RollWeights(effectiveWeights);
         }
-        if (!RollProbability(persistance)) wind = RollWeights(weatherProfile.weatherWeights);
+
+        //roll wind
         if (!RollProbability(persistance)) {
-            map<TemperatureEvent, int> effectiveWeights = weatherProfile.temperatureWeights;
+            auto effectiveWeights = weatherProfile.weatherWeights;
+            effectiveWeights.at(WIND) *= locationProfile.multipliers.at(WIND_COEFFICIENT);
+
+            wind = RollWeights(effectiveWeights);
+        }
+
+        //roll temperature
+        if (!RollProbability(persistance)) {
+            auto effectiveWeights = weatherProfile.temperatureWeights;
+
+            //Increase probability of cold based on rain/snow and severity
             switch(precipitation) {
                 case SNOW: 
-                    effectiveWeights.at(COLD) *= 5; //allow follow through, snow is 10x more likely to be cold
+                    effectiveWeights.at(COLD) *= SNOW_COLD_MULT; //allow follow through
                 case RAIN: 
-                    effectiveWeights.at(COLD) *= 2;
+                    effectiveWeights.at(COLD) *= RAIN_COLD_MULT;
                     switch(severity) {
-                        case LIGHT: effectiveWeights.at(COLD) *= 0.75; break;
-                        case HEAVY: effectiveWeights.at(COLD) *= 2;    break;
+                        case LIGHT: effectiveWeights.at(COLD) *= LIGHT_PROBABILITY_MULT; break;
+                        case HEAVY: effectiveWeights.at(COLD) *= HEAVY_PROBABILITY_MULT; break;
                     }
                     break;
             }
+
+            //Increase probability of cold based on wind and severity
             if (wind == WIND) {
-                effectiveWeights.at(COLD) *= 1.5;
+                effectiveWeights.at(COLD) *= WIND_COLD_MULT;
                 switch(severity) {
-                    case LIGHT: effectiveWeights.at(COLD) *= 0.8; //will be an integer
-                    case HEAVY: effectiveWeights.at(COLD) *= 2;
+                    case LIGHT: effectiveWeights.at(COLD) *= LIGHT_PROBABILITY_MULT; break;//will be an integer
+                    case HEAVY: effectiveWeights.at(COLD) *= HEAVY_PROBABILITY_MULT; break;
                 }
             }
 
+            //Roll temperature event and determine temperature
+            switch(RollWeights(effectiveWeights)) {
+                double mult = 1;
+                case COLD: mult *= COLD_TEMP_MULT; break;
+                case HOT:  mult *= HOT_TEMP_MULT;  break;
+                default:
+                    switch(severity) {
+                        case LIGHT: mult = pow(mult, LIGHT_TEMP_EXP); break;
+                        case HEAVY: mult = pow(mult, HEAVY_TEMP_EXP); break;
+                    }
+                    temperature = weatherProfile.baselineTemperature * mult;
+            }
         }
-        
     }
 
     /**
@@ -151,5 +191,15 @@ struct Weather {
         return RollWeights(mult * probability, mult * (1 - probability)); //rolls probability by converting to weights, and rolling the weights
     }
 };
+
+const double Weather::COLD_TEMP_MULT = 0.85;
+const double Weather::HOT_TEMP_MULT = 1.15;
+const double Weather::SNOW_COLD_MULT = 5;
+const double Weather::RAIN_COLD_MULT = 2;
+const double Weather::WIND_COLD_MULT = 1.5;
+const double Weather::LIGHT_PROBABILITY_MULT = 0.75;
+const double Weather::HEAVY_PROBABILITY_MULT = 2; 
+const double Weather::LIGHT_TEMP_EXP = 0.5;
+const double Weather::HEAVY_TEMP_EXP = 2;
 
 #endif
