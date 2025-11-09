@@ -9,6 +9,7 @@
         "utility": "cpp",
         "iosfwd": "cpp",
         "map": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "sstream": "cpp"
     }
 }

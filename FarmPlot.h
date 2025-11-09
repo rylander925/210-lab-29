@@ -7,6 +7,7 @@
 #include <list>
 #include <string>
 #include <sstream>
+#include <cmath>
 #include "Token.h"
 #include "Util.h"
 #include "PlantSpecies.h"
@@ -30,12 +31,8 @@ class FarmPlot {
         FarmPlot(string name, map<PlantSpecies, array<list<double>, 3>> plotData);
 
         //Constructor instantiates a framplot with a given name by reading data from specified file
-        FarmPlot(string name, string filename) : FarmPlot() {
-            cout << "Called file read constructor for FarmPlot" << endl;
-
+        FarmPlot(string name, string filename){
             ReadData(filename);
-
-            cout << "Not implemented; calling default for now" << endl;
         }
 
         //Standard name getter
@@ -50,11 +47,18 @@ class FarmPlot {
             //Parameters: filename
         void ReadData(string filename) {
             cout << "No file read implemented" << endl;
+            list<PlantSpecies> plants;
             ifstream cropFile;
             stringstream lineStream;
             string line, name, biomeClass, plantType;
             char tokenCharacter;
             int R, G, B;
+
+            //Fill each entry with default values for now
+            array<list<double>, 3> defaultArray;
+            defaultArray.at(GROWTH) = list<double>(3, 0.1);
+            defaultArray.at(WATER) = list<double>(3, 0.4);
+            defaultArray.at(SOIL) = list<double>(3, 0.4);
 
             //Read file contents
             Util::VerifyFileOpen(cropFile, filename);
@@ -66,18 +70,16 @@ class FarmPlot {
                 //  tokenCharacter R G B biomeClass plantType
             while(getline(cropFile, name)) {
                 getline(cropFile, line);
+                cout << name << endl;
+                cout << line << endl;
                 lineStream.str(line);
                 lineStream >> tokenCharacter >> R >> G >> B >> biomeClass >> plantType;
                 map<string, BiomeClass> biomeMap = {{"plain", PLAIN}, {"coast", COAST}, {"forest", FOREST}, {"tropic", TROPIC}, {"desert", DESERT}};
                 map<string, PlantTypeModifier> plantMap = {{"plant", PLANT}, {"flower", FLOWER}, {"tree", TREE}};
-
-                PlantSpecies(name, Token(tokenCharacter, R, G, B), biomeMap.at(biomeClass), plantMap.at(plantType));
+                crops.insert(make_pair(PlantSpecies(name, Token(tokenCharacter, R, G, B), biomeMap.at(biomeClass), plantMap.at(plantType)), defaultArray));
+                lineStream.clear();
+                lineStream.str("");
             }
-
-            //Read information about each plant, and populate the array of lists with that information
-                //initial growth, water, nutrient levels
-
-            //Insert pair of plant species and array into map
 
             cropFile.close();
         }
@@ -117,12 +119,12 @@ class FarmPlot {
         //Define function to visually output garden as a 2D rectangular plot
             //Parameters: None; acts on map of crops
         void PrintPlot() const {
-            cout << "Displaying plant tokens for now. Implement as a plot based on number of each plant species" << endl;
+            cout << "Plot of crops:" << endl;
             for (auto cropPair : crops) {
                 for (int i = 0; i < cropPair.second.at(0).size(); i++)
-                    cout << " " << cropPair.first.GetDisplayToken() << " ";
+                    cout << cropPair.first.GetDisplayToken();
+                cout << endl;
             }
-            cout << endl;
         }
 
         //Define function to change water levels, nutrient levels, and growth associated with all plants

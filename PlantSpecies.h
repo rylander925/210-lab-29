@@ -79,13 +79,13 @@ class PlantSpecies {
                     idealNutrients = 0.5;
                     idealTemperature = 70;
 
-                    healthyWaterRange = 0.1;
-                    healthyNutrientRange = 0.2;
-                    healthyTemperatureRange = 15;
+                    healthyWaterRange = 0.15;
+                    healthyNutrientRange = 0.15;
+                    healthyTemperatureRange = 10;
 
                     tolerableWaterRange = 0.2;
-                    tolerableNutrientRange = 0.4;
-                    tolerableTemperatureRange = 25;
+                    tolerableNutrientRange = 0.25;
+                    tolerableTemperatureRange = 20;
 
                     cycleGrowthIncrease = 0.03;
                     cycleGrowthDecrease = 0.1;
@@ -102,8 +102,8 @@ class PlantSpecies {
                     healthyTemperatureRange = 10;
 
                     tolerableWaterRange = 0.15;
-                    tolerableNutrientRange = 0.4;
-                    tolerableTemperatureRange = 20;
+                    tolerableNutrientRange = 0.3;
+                    tolerableTemperatureRange = 15;
 
                     cycleGrowthIncrease = 0.02;
                     cycleGrowthDecrease = 0.05;
@@ -116,11 +116,11 @@ class PlantSpecies {
                     idealTemperature = 70;
 
                     healthyWaterRange = 0.2;
-                    healthyNutrientRange = 0.3;
+                    healthyNutrientRange = 0.25;
                     healthyTemperatureRange = 15;
 
-                    tolerableWaterRange = 0.3;
-                    tolerableNutrientRange = 0.5;
+                    tolerableWaterRange = 0.25;
+                    tolerableNutrientRange = 0.3;
                     tolerableTemperatureRange = 20;
 
                     cycleGrowthIncrease = 0.02;
@@ -151,12 +151,12 @@ class PlantSpecies {
                     idealNutrients = 0.4;
                     idealTemperature = 75;
 
-                    healthyWaterRange = 0.2;
-                    healthyNutrientRange = 0.3;
+                    healthyWaterRange = 0.25;
+                    healthyNutrientRange = 0.25;
                     healthyTemperatureRange = 25;
 
-                    tolerableWaterRange = 0.35;
-                    tolerableNutrientRange = 0.35;
+                    tolerableWaterRange = 0.3;
+                    tolerableNutrientRange = 0.3;
                     tolerableTemperatureRange = 35;
 
                     cycleGrowthIncrease = 0.02;
