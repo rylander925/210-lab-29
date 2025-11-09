@@ -58,10 +58,10 @@ LocationProfile ReadLocationProfile(string filename);
 void WeatherFarm(FarmPlot& farm, WeatherProfile season, LocationProfile locale);
 
 struct Weather {
-    double persistance;
-    double temperature;
+    double persistance; //percent chance a weather condition does not change
+    double temperature; //temperature in F
     PrecipitationEvent precipitation;
-    WeatherEvent wind;
+    WeatherEvent wind; 
     EffectMultipliers severity;
     WeatherProfile weatherProfile;
     LocationProfile locationProfile;
@@ -75,8 +75,34 @@ struct Weather {
     static const double HEAVY_PROBABILITY_MULT;
     static const double LIGHT_TEMP_EXP;
     static const double HEAVY_TEMP_EXP;
+    static const int DAILY_TEMP_VARIATION = 3;
 
-    void DayWeatherCycle() {
+    void Print() {
+        static const int PRECISION = 1;
+        auto oldPrecision = cout.precision();
+        string modifier, rain, miscWeather;
+        switch (severity) {
+            case (LIGHT): modifier = "Light"; break;
+            case (MEDIUM): modifier = "Moderate"; break;
+            case (HEAVY): modifier = "Severe"; break;
+        }
+        switch(precipitation) {
+            case (RAIN): rain = "Rainy"; break;
+            case (SNOW): rain = "Snowy"; break;
+            case (NO_PRECIPITATION): rain = "No rain"; break;
+        }
+        if (wind == WIND) {
+            miscWeather = "Windy";
+        }
+        cout << "Current weather conditions:" << modifier << ", " << rain << ", " << miscWeather;
+        cout << "\tTemperature: " << setprecision(1) << temperature << "F";
+
+    }
+
+    /**
+     * Rolls weather events to determine weather conditions
+     */
+    void CycleWeather() {
         //random chance to keep current weather condition, or roll weather conditions again (allowing repeats)
         //roll severity
         if (!RollProbability(persistance)) {
@@ -112,8 +138,7 @@ struct Weather {
 
             //Increase probability of cold based on rain/snow and severity
             switch(precipitation) {
-                case SNOW: 
-                    effectiveWeights.at(COLD) *= SNOW_COLD_MULT; //allow follow through
+                case SNOW: effectiveWeights.at(COLD) *= SNOW_COLD_MULT; //allow follow through
                 case RAIN: 
                     effectiveWeights.at(COLD) *= RAIN_COLD_MULT;
                     switch(severity) {
@@ -132,19 +157,21 @@ struct Weather {
                 }
             }
 
-            //Roll temperature event and determine temperature
+            //Roll temperature event based on modified weights and determine temperature
+            double mult = 1;
             switch(RollWeights(effectiveWeights)) {
-                double mult = 1;
                 case COLD: mult *= COLD_TEMP_MULT; break;
                 case HOT:  mult *= HOT_TEMP_MULT;  break;
-                default:
-                    switch(severity) {
-                        case LIGHT: mult = pow(mult, LIGHT_TEMP_EXP); break;
-                        case HEAVY: mult = pow(mult, HEAVY_TEMP_EXP); break;
-                    }
-                    temperature = weatherProfile.baselineTemperature * mult;
             }
+            //Modifies multiplier based on severity by exponentiating so unaffected if mult is one
+            switch(severity) {
+                case LIGHT: mult = pow(mult, LIGHT_TEMP_EXP); break;
+                case HEAVY: mult = pow(mult, HEAVY_TEMP_EXP); break;
+            }
+            temperature = weatherProfile.baselineTemperature * mult;
         }
+        //Outside of temperature persistance, add slight variations in temperature each day, in a range of +/- DAILY_TEMP_VARIATION
+        temperature += (rand() % (DAILY_TEMP_VARIATION * 2 + 1)) - DAILY_TEMP_VARIATION;
     }
 
     /**
