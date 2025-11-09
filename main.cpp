@@ -134,6 +134,12 @@ int main() {
     farm.PrintPlot();
 }
 
+//Define function to simulate affects of weather events on nutrient levels for one day
+    //Parameters: farm plot, Weather profile and location profile
+void WeatherFarm(FarmPlot& farm, double& temperature, WeatherProfile season, LocationProfile locale) {
+
+}
+
 WeatherProfile ReadWeatherProfile(string filename) {
     WeatherProfile season;
 
