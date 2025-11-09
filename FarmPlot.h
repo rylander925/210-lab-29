@@ -54,9 +54,10 @@ class FarmPlot {
             //Read file contents
 
             //Read information about plant species into a plant species object 
-                //name, token, ideal water, nutrient level, temperature
+                //name, token, biome class (or specific weights)
 
             //Read information about each plant, and populate the array of lists with that information
+                //initial growth, water, nutrient levels
 
             //Insert pair of plant species and array into map
         }
