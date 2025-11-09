@@ -1,6 +1,8 @@
 main
 
 FarmPlot
+    PrintInformation()
+        Test by calling from main, after reading various data values
 
 PlantSpecies
     Constructors

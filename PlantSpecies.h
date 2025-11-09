@@ -67,6 +67,8 @@ class PlantSpecies {
                 cout << name << "has just enough nutrients" << endl;
                 growth += -0.1;
             }
+            water -= 0.01;
+            nutrients -= 0.01;
         }
 
         /**
@@ -105,6 +107,13 @@ class PlantSpecies {
         }
         
     private:
+        //How much plant grows/shrinks per growth cycle
+        //May change from constant values to custom per plant later
+        const double GROWTH_INCREASE = 0.05;
+        const double GROWTH_DECREASE = 0.1;
+        const double WATER_DECREASE = 0.05;
+        const double NUTRIENT_DECREASE = 0.005;
+        
         //name of plant species
         string name;
 

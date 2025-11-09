@@ -113,9 +113,10 @@ class FarmPlot {
                 for (list<double>::iterator waterIt = cropPair.second.at(WATER).begin(),
                                             soilIt = cropPair.second.at(SOIL).begin(),
                                             growthIt = cropPair.second.at(GROWTH).begin(); 
-                                            waterIt == cropPair.second.at(WATER).end(); //only one conditional for now, assumes each list has equal size
-                                            waterIt++, soilIt++, growthIt++
-                    ) {
+                     waterIt != cropPair.second.at(WATER).end(); //only one conditional for now, assumes each list has equal size
+                     waterIt++, soilIt++, growthIt++
+                    ) 
+                {
                     cropPair.first.GrowthCycle(*growthIt,*waterIt, *soilIt);
                 }
             }
