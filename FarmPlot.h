@@ -112,7 +112,7 @@ class FarmPlot {
             const static int TABLE_ROWS = 3;
             const static int TABLE_DATA_WIDTH = 10;
 
-            cout << "Printing crop information: " << endl;
+            cout << "Farm plot \"" << name << "\" information:" << endl;
             for (auto cropPair : crops) {
                 Util::CoutLine();
                 
@@ -146,16 +146,19 @@ class FarmPlot {
         void PrintPlot() const {
             cout << "Plot of crops:" << endl;
             for (auto cropPair : crops) {
+                cout << setw(15) << cropPair.first.GetName() << '\t';
                 for (int i = 0; i < cropPair.second.at(0).size(); i++)
                     cout << cropPair.first.GetDisplayToken();
                 cout << endl;
             }
         }
 
-        //Define function to change water levels, nutrient levels, and growth associated with all plants
-        //Removes dead crops
-        //(Negative input value to decrease)
-            //Parameters: double with amount to increase water level
+        /** Change water levels, nutrient levels, and growth associated with all plants, removing dead crops (Negative input value to decrease)
+         * @param growthValue Amount to change growth values (may be negative)
+         * @param waterValue Amount to change water values (may be negative)
+         * @param soilValue Amount to change soil values (may be negative)
+         * @param showFlags If true, shows when plants die, as well as a message when function is called
+         */
         void Update(double growthValue, double waterValue, double soilValue, bool showFlags = false) {
             if (showFlags) cout << "Called FarmPlot::Update()" << endl;
 

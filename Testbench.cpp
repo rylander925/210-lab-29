@@ -137,7 +137,7 @@ void FarmPlotGrowthCycle() {
 }
 
 void FarmPlotUpdate() {
-    double growth = 0.2, water = -0.1, soil = -0.1;
+    double growth = 0, water = -0, soil = -0.01;
     //Initialize a farm plot, display initial data
     FarmPlot filePlot("File plot", "data/reducedSpeciesInfo.txt", "data/reducedPlantData.txt");
     filePlot.PrintInformation();

@@ -10,8 +10,14 @@ FarmPlot
         See FarmPlotConstruction() for test code
     
     GrowthCycle()
-        Instatiate a farm plot, and run cycles, tracking plant death and plant conditions throughout
+        Instantiates a farm plot, and run cycles, tracking plant death and plant conditions throughout
         See FarmPlotGrowthCycle() for test code
+    
+    UpdateCycle()
+        Instantiated a farm plot, and run updates for given values of growth/soil/water changes.
+        Use both negative and positive values, and check large values for valid maximum ranges,
+        and low values for valid minimum ranges and crops properly die.
+        See FarmPlotUpdate() for test code
 
 
 PlantSpecies

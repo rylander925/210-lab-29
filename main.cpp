@@ -64,22 +64,26 @@ void WeatherFarm(FarmPlot& farm, WeatherProfile season, LocationProfile locale);
 int main() {
     const string FILENAME_SEASON;
     const string FILENAME_LOCALE;
-    const string FILENAME_FARM;
+    const string FILENAME_SPECIES = "data/speciesInfo.txt";
+    const string FILENAME_PLANT_DATA = "data/plantData.txt";
     const int SIMULATION_PERIOD = 90;
-    const int OUTPUT_INTERVAL = 7;
+    const int OUTPUT_INTERVAL = 30;
+    const double FERTILIZATION_AMOUNT = 0.04;
+    const double WATERING_AMOUNT = 0.01;
 
     //Declare variables
     WeatherProfile season;
     LocationProfile locale;
-    string name;
-    int fertilizationInterval;
-    int wateringInterval;
-    double temperature;
+    string name = "Farmplot";
+    int fertilizationInterval = 10;
+    int wateringInterval = 1;
+    double temperature = 60;
 
     cout << fixed << setprecision(3); 
 
     //Read garden node data into map of crops through constructor
-    FarmPlot farm(name, FILENAME_FARM);
+    FarmPlot farm(name, FILENAME_SPECIES, FILENAME_PLANT_DATA);
+    farm.PrintInformation();
 
     //Read location and weather profile data
     season = ReadWeatherProfile(FILENAME_SEASON);
@@ -87,8 +91,8 @@ int main() {
 
     //Determine fertilzation frequency from input
     //Add prompt statements and input validation
-    cin >> fertilizationInterval;
-    cin >> wateringInterval;
+    //cin >> fertilizationInterval;
+    //cin >> wateringInterval;
 
     //Begin time based simulation: (Total of 90 one day time intervals)
     for (int day = 1; day <= SIMULATION_PERIOD; day++) {
@@ -98,24 +102,30 @@ int main() {
             Util::CoutLine(Util::LINE_DEFAULT_WIDTH, '~');
             cout << "Week " << day / OUTPUT_INTERVAL + 1 << endl;
             //Add counter for # of output intervals
-            farm.PrintInformation();
+            //farm.PrintInformation();
             farm.PrintPlot();
+        }
+        
+        //Every fertilization frequency number of time intervals, simulate fertilization events (call UpdateSoil FarmPlot method)
+        if (day % fertilizationInterval == 0) {
+            farm.Update(0, 0, FERTILIZATION_AMOUNT);
+            cout << "Fertilized crops" << endl;
+        }
+
+        //Every watering frequency number of time intervals, simulate watering events (call UpdateWater FarmPlot method)
+        if (day % wateringInterval == 0) {
+            farm.Update(0, WATERING_AMOUNT, 0);
+            cout << "Watered crops" << endl;
         }
 
         Util::CoutLine(Util::LINE_DEFAULT_WIDTH / 5, '_');
         cout << "Day " << day % OUTPUT_INTERVAL + 1 << endl;
 
-        //For each interval:
         //simulate weather events and random time events
         WeatherFarm(farm, season, locale);
         
         //simulate growth cycle (call FarmPlot method)
         farm.GrowthCycle(temperature);
-        
-
-        //Every fertilization frequency number of time intervals, simulate fertilization events (call UpdateSoil FarmPlot method)
-        //Every watering frequency number of time intervals, simulate watering events (call UpdateWater FarmPlot method)
-        //(Takes same format as above display interval)
     }
     
     //After simulation, output garden and plant data
