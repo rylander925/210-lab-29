@@ -67,7 +67,7 @@ void PlantSpeciesGrowthCycle() {
     cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
 
     Util::CoutLine();
-    cout << "test with everything set to boundry tolerable, growth should not decrease or increase" << endl;
+    cout << "test with everything set to boundry healthy, growth should increase 3 times" << endl;
     growth = 0.5;
     water = plant.GetIdealWater() - plant.GetHealthyWaterRange();
     nutrients = plant.GetIdealNutrient() - plant.GetHealthyNutrientRange();
@@ -78,8 +78,24 @@ void PlantSpeciesGrowthCycle() {
     cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
 
     Util::CoutLine();
-    cout << "Run again, should now be at tolerable levels, growth should not increase" << endl;
+    cout << "Run again, water and nutrients should be tolerable, growth should increase 1 times due to temperature" << endl;
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
+    plant.GrowthCycle(growth, water, nutrients, temperature, true);
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
 
+    Util::CoutLine();
+    cout << "test with everything set to boundry tolerable, growth should not increase or decrease" << endl;
+    growth = 0.5;
+    water = plant.GetIdealWater() + plant.GetTolerableWaterRange();
+    nutrients = plant.GetIdealNutrient() + plant.GetTolerableNutrientRange();
+    temperature = plant.GetIdealTemperature() + plant.GetTolerableTemperatureRange();
+
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
+    plant.GrowthCycle(growth, water, nutrients, temperature, true);
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
+
+    Util::CoutLine();
+    cout << "Run again, water and nutrients should be intolerable, growth should decrease 2 times" << endl;
     cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
     plant.GrowthCycle(growth, water, nutrients, temperature, true);
     cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 

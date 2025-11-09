@@ -111,7 +111,7 @@ class PlantSpecies {
             double nutrientDifference = abs(nutrients - idealNutrients);
             double temperatureDifference = abs(temperature - idealTemperature);
 
-            //Check for tolerable ranges
+            //Check for tolerable ranges; only allow plant to grow if all conditions are tolerable
             if (waterDifference <= tolerableWaterRange && nutrientDifference <= tolerableNutrientRange && temperatureDifference <= tolerableTemperatureRange) {
                 //Allow plant to grow for each healthy condition, up to a maximum of 1 (100%)
                 if (waterDifference <= healthyWaterRange) {
@@ -142,8 +142,6 @@ class PlantSpecies {
                     growth -= cycleGrowthDecrease;
                 }
             }
-            
-            
 
             //Decrease water levels
             water -= (water > 0) ? cycleWaterDecrease : 0;
@@ -200,6 +198,16 @@ class PlantSpecies {
         }
         
     private:
+        /**
+         * Compares if a < b within a range for double comparison
+         * @param a Double to check if less than b
+         * @param b Other double
+         * @param epsilon Maximum difference between b and a to qualify as 'equal'
+         */
+        bool lessThan(double a, double b, double epsilon = 0.00001) {
+            return (b - a) > epsilon;
+        }
+
         //Basic information
         //name of plant species
         string name;
