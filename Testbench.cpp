@@ -86,9 +86,9 @@ void PlantSpeciesGrowthCycle() {
     Util::CoutLine();
     cout << "test with everything set to boundry tolerable, growth should not increase or decrease" << endl;
     growth = 0.5;
-    water = plant.GetIdealWater() + plant.GetTolerableWaterRange();
-    nutrients = plant.GetIdealNutrient() + plant.GetTolerableNutrientRange();
-    temperature = plant.GetIdealTemperature() + plant.GetTolerableTemperatureRange();
+    water = plant.GetIdealWater() - plant.GetTolerableWaterRange();
+    nutrients = plant.GetIdealNutrient() - plant.GetTolerableNutrientRange();
+    temperature = plant.GetIdealTemperature() - plant.GetTolerableTemperatureRange();
 
     cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
     plant.GrowthCycle(growth, water, nutrients, temperature, true);

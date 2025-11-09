@@ -15,6 +15,14 @@ PlantSpecies
         Tested via a PlantSpecies object initialized w/ default constructor, and checking values
             PlantSpecies defaultPlant;
             defaultPlant.Print();
+        
+    GrowthCycle()
+        Test by running with various conditions, and checking if growth values are correct.
+            Check: Values where growth/water/nutrients shouldn't change
+                    (growth does not increase above 1, water/nutrients do not decrease below 0)
+                   Boundary values for tolerance/healthy ranges
+                   
+        See PlantSpeciesGrowthCycle() for code
 
 Util
     CoutLine()
