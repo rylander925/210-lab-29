@@ -75,17 +75,16 @@ class PlantSpecies {
         //Updates a growth cycle for a plant based on its current growth and soil health
         //Increases or decreases growth depending on soil health, and consumes soil health
         void GrowthCycle(double& growth, double& water, double& nutrients) const {
-            cout << "FIXME: PlantSpecies.GrowthCycle incomplete" << endl;
             double waterDifference = abs(water - idealWater);
             double nutrientDifference = abs(nutrients - idealNutrients);
             
             //Decrease, not change, or increase growth if according to water level 
             if (waterDifference >= tolerableWaterRange) {
                 cout << name << " has improper water levels" << endl;
-                growth -= cycleGrowthDecrease;
+                growth -= cycleGrowthDecrease;                    //allow decrease to negative numbers b/c farmPlot should remove negative values
             } else if (waterDifference <= healthyWaterRange) {
                 cout << name << "has just enough water " << endl;
-                growth += cycleGrowthIncrease;
+                growth += (growth < 1) ? cycleGrowthIncrease : 0; //only increase up to 1
             }
 
             //Decrease, not change, or increase growth if according to nutrient level 
@@ -94,12 +93,12 @@ class PlantSpecies {
                 growth -= cycleGrowthDecrease;
             } else if (nutrientDifference <= healthyNutrientRange) {
                 cout << name << " has just enough nutrients" << endl;
-                growth += cycleGrowthIncrease;
+                growth += (growth < 1) ? cycleGrowthIncrease : 0; //only increase up to 1
             }
 
             //Decrease water levels
-            water -= cycleWaterDecrease;
-            nutrients -= cycleNutrientDecrease;
+            water -= (water > 0) ? cycleWaterDecrease : 0;
+            nutrients -= (nutrients > 0) ? cycleNutrientDecrease : 0;
         }
 
         /**
@@ -123,6 +122,7 @@ class PlantSpecies {
             //Display details as table
             array<string, COLUMNS> columnTitles = {"Ideal", "Healthy (+\\-)", "Tolerable (+\\-)"};
             array<string, ROWS> rowTitles = {"Water", "Nutrients", "Temperature (F)"}; 
+            cout << fixed << setprecision(1);
             array<array<double, COLUMNS>, ROWS> tableData = { array<double, COLUMNS>{idealWater, healthyWaterRange, tolerableWaterRange},
                                                               array<double, COLUMNS>{idealNutrients, healthyNutrientRange, tolerableNutrientRange},
                                                               array<double, COLUMNS>{idealTemperature, healthyTemperatureRange, tolerableTemperatureRange}
@@ -130,6 +130,7 @@ class PlantSpecies {
             Util::CoutTable(columnTitles, rowTitles, tableData, TABLE_WIDTH, TABLE_HEADER_WIDTH);
 
             cout << endl;
+            cout << fixed << setprecision(3);
             cout << "Growth rate / decrease: " << cycleGrowthIncrease << " / " << cycleGrowthDecrease << endl;
             cout << "Water / nutrient consumption: " << cycleWaterDecrease << " / " << cycleNutrientDecrease << endl;
 

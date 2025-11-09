@@ -53,7 +53,6 @@ class FarmPlot {
 
         /**
          * Outputs information of each plant species and each plant associated with each plant species as a table
-         * @test
          */
         void PrintInformation() const {
             const static int TABLE_ROWS = 3;
@@ -77,6 +76,7 @@ class FarmPlot {
                 for (int i = 0; i < tableColumns; i++) columnHeaders.push_back("#" + to_string(i+1));
 
                 //Output table
+                cout << fixed << setprecision(3);
                 Util::CoutTable(columnHeaders, rowHeaders, cropPair.second, TABLE_DATA_WIDTH);
 
                 Util::CoutLine();

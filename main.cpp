@@ -67,12 +67,15 @@ int main() {
     const string FILENAME_FARM;
     const int SIMULATION_PERIOD = 90;
     const int OUTPUT_INTERVAL = 7;
+
     //Declare variables
     WeatherProfile season;
     LocationProfile locale;
     string name;
     int fertilizationInterval;
     int wateringInterval;
+
+    cout << fixed << setprecision(3); 
 
     //Read garden node data into map of crops through constructor
     FarmPlot farm(name, FILENAME_FARM);
