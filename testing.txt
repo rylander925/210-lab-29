@@ -1,8 +1,14 @@
 main
 
 FarmPlot
-    PrintInformation()
-        Test by calling from main, after reading various data values
+    FarmPlot(), ReadData(), PrintInformation(), PrintPlot()
+        Tested farmplot read with print and plot functions, by checking if it read correct values. 
+        FarmPlot() constructor calls ReadData(), only other functionality sets farm name.
+        Initially tested with smaller amount of data before filling in the entire file with data
+        See FarmPlotConstruction() for test code
+    
+    GrowthCycle()
+        Instatiate a farm plot, and run cycles, tracking plant death and plant conditions throughout
 
 PlantSpecies
     Constructors
@@ -21,7 +27,7 @@ PlantSpecies
             Check: Values where growth/water/nutrients shouldn't change
                     (growth does not increase above 1, water/nutrients do not decrease below 0)
                    Boundary values for tolerance/healthy ranges
-                   
+
         See PlantSpeciesGrowthCycle() for code
 
 Util

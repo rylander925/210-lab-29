@@ -106,13 +106,36 @@ void PlantSpeciesGrowthCycle() {
 }
 
 void FarmPlotConstruction() {
+    //initialize by default and with partial constructor
     FarmPlot defaultPlot;
     FarmPlot filePlot("File plot", "data/speciesinfo.txt", "data/plantData.txt");
+
+    //display information to verify correct read
     defaultPlot.PrintInformation();
     filePlot.PrintInformation();
     filePlot.PrintPlot();
 }
 
+void FarmPlotGrowthCycle() {
+    double temp = 50;
+    //Initialize a farm plot, display initial data
+    FarmPlot filePlot("File plot", "data/reducedSpeciesInfo.txt", "data/reducedPlantData.txt");
+    filePlot.PrintInformation();
+    filePlot.PrintPlot();
+    
+    //run growth cycles, showing details of plants when they die
+    for (int i = 0; i < 10; i++) {
+        Util::CoutLine();
+        cout << "Cycle " << i + 1 << endl;
+        filePlot.GrowthCycle(temp, true);
+        filePlot.PrintPlot();
+    }
+
+    //show information after to verify all negative growth plants died
+    //Plants with restrictive conditions should be dead
+    filePlot.PrintInformation();
+}
+
 int main() {
-    FarmPlotConstruction();
+    FarmPlotGrowthCycle();
 }

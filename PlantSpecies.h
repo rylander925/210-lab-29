@@ -245,38 +245,39 @@ class PlantSpecies {
             double temperatureDifference = abs(temperature - idealTemperature);
 
             //Check for tolerable ranges; only allow plant to grow if all conditions are tolerable
-            if (lessThanEqualTo(waterDifference, tolerableWaterRange)  && lessThanEqualTo(nutrientDifference, tolerableNutrientRange) && lessThanEqualTo(temperatureDifference, tolerableTemperatureRange)) {
+            if (Util::lessThanEqualTo(waterDifference, tolerableWaterRange)  && Util::lessThanEqualTo(nutrientDifference, tolerableNutrientRange) && Util::lessThanEqualTo(temperatureDifference, tolerableTemperatureRange)) {
                 //Allow plant to grow for each healthy condition, up to a maximum of 1 (100%)
-                if (lessThanEqualTo(waterDifference, healthyWaterRange)) {
+                if (Util::lessThanEqualTo(waterDifference, healthyWaterRange)) {
                     if (showMessages) cout << name << " has just enough water " << endl;
-                    growth += (growth < 1) ? cycleGrowthIncrease : 0;
+                    growth += cycleGrowthIncrease;
                 }
-                if (lessThanEqualTo(nutrientDifference, healthyNutrientRange)) {
+                if (Util::lessThanEqualTo(nutrientDifference, healthyNutrientRange)) {
                     if (showMessages) cout << name << " has just enough nutrients " << endl;
-                    growth += (growth < 1) ? cycleGrowthIncrease : 0;
+                    growth += cycleGrowthIncrease;
                 }
-                if (lessThanEqualTo(temperatureDifference, healthyTemperatureRange)) {
+                if (Util::lessThanEqualTo(temperatureDifference, healthyTemperatureRange)) {
                     if (showMessages) cout << name << " is at just the right temperature " << endl;
-                    growth += (growth < 1) ? cycleGrowthIncrease : 0;
+                    growth += cycleGrowthIncrease;
                 }
             } else {
-                if (showMessages) cout << "Some intolerable conditions present" << endl;
                 //Decrease for each intolerable condition
                 //allow growth to decrease to negative numbers b/c farmPlot should remove negative values
-                if (greaterThan(waterDifference, tolerableWaterRange)) {
+                if (Util::greaterThan(waterDifference, tolerableWaterRange)) {
                     if (showMessages) cout << name << " has improper water levels" << endl;
                     growth -= cycleGrowthDecrease; 
                 }
-                if (greaterThan(nutrientDifference, tolerableNutrientRange)) {
+                if (Util::greaterThan(nutrientDifference, tolerableNutrientRange)) {
                     if (showMessages) cout << name << " has improper nutrient levels" << endl;
                     growth -= cycleGrowthDecrease;
                 }
-                if (greaterThan(temperatureDifference, tolerableTemperatureRange)) {
+                if (Util::greaterThan(temperatureDifference, tolerableTemperatureRange)) {
                     if (showMessages) cout << name << " is at an improper temperature" << endl;
                     growth -= cycleGrowthDecrease;
                 }
             }
-
+            //adjust growth back down to < 1 if it has grown greater
+            (growth > 1) ? growth = 1 : false;
+            //(No need to check fro negative growth, because FarmPlot::GrowthCycle() will kill negative growth crops)
             //Decrease water levels
             water -= (water > 0) ? cycleWaterDecrease : 0;
             nutrients -= (nutrients > 0) ? cycleNutrientDecrease : 0;
@@ -332,13 +333,6 @@ class PlantSpecies {
         }
         
     private:
-        //Add comparison operators within a range epsilon to eliminate effect of floating point imprecision
-        static const double DEFAULT_EPSILON;
-        bool lessThan(double a, double b, double epsilon = DEFAULT_EPSILON) const { return (b - a) > epsilon; }
-        bool greaterThan(double a, double b, double epsilon = DEFAULT_EPSILON) const { return lessThan(b, a, epsilon); }
-        bool lessThanEqualTo(double a, double b, double epsilon = DEFAULT_EPSILON) const { return !greaterThan(a, b, epsilon); }
-        bool greaterThanEqualTo(double a, double b, double epsilon = DEFAULT_EPSILON) const { return !lessThan(a, b, epsilon); }
-
         //Basic information
         //name of plant species
         string name;
@@ -369,7 +363,4 @@ class PlantSpecies {
         double cycleWaterDecrease = 0.05;
         double cycleNutrientDecrease = 0.005;
 };
-
-const double PlantSpecies::DEFAULT_EPSILON = 0.00001;
-
 #endif

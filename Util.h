@@ -94,6 +94,15 @@ class Util {
     static const int TABLE_DEFAULT_WIDTH = 20;
     static const int LINE_DEFAULT_WIDTH = 100;
     static const char LINE_DEFAULT_CHAR = '=';
+
+    //Add comparison operators within a range epsilon to eliminate effect of floating point imprecision
+    static const double DEFAULT_EPSILON;
+    static bool lessThan(double a, double b, double epsilon = DEFAULT_EPSILON) { return (b - a) > epsilon; }
+    static bool greaterThan(double a, double b, double epsilon = DEFAULT_EPSILON) { return lessThan(b, a, epsilon); }
+    static bool lessThanEqualTo(double a, double b, double epsilon = DEFAULT_EPSILON) { return !greaterThan(a, b, epsilon); }
+    static bool greaterThanEqualTo(double a, double b, double epsilon = DEFAULT_EPSILON) { return !lessThan(a, b, epsilon); }
 };
+
+const double Util::DEFAULT_EPSILON = 0.00001;
 
 #endif

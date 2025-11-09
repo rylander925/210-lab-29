@@ -44,8 +44,11 @@ class FarmPlot {
 
         //Hide map data from direct access for now
 
-        //Define function to read garden node data
-            //Parameters: filename
+        /**
+         * Read data from files into map of crops
+         * @param speciesFilename File containing information about plant species. Formatted as "name \n tokenCharacter R G B biomeType plantType \n"
+         * @param plantDataFilename File containing information about intial plant conditions for each species. Formatted as "numPlants growth water soil"
+         */
         void ReadData(string speciesFilename, string plantDataFilename) {
             static const map<string, BiomeClass> BIOME_MAP = {{"plain", PLAIN}, {"coast", COAST}, {"forest", FOREST}, {"tropic", TROPIC}, {"desert", DESERT}};
             static const map<string, PlantTypeModifier> PLANT_MAP = {{"plant", PLANT}, {"flower", FLOWER}, {"tree", TREE}};
@@ -76,25 +79,28 @@ class FarmPlot {
                 //  numPlants growth water soil
             while(getline(speciesFile, name) && getline(plantDataFile, plantDataLine)) {
                 getline(speciesFile, speciesLine);
-
+                
+                //move data from stringstream to dummy variables, according to their format
                 speciesSS.str(speciesLine);
                 speciesSS >> tokenCharacter >> R >> G >> B >> biomeClass >> plantType;
-
                 plantDataSS.str(plantDataLine);
                 plantDataSS >> numPlants >> growth >> water >> soil;
 
+                //instantiate an array of lists holding plant data for each species
                 array<list<double>, 3> dataArray;
                 dataArray.at(GROWTH) = list<double>(numPlants, growth);
                 dataArray.at(WATER) = list<double>(numPlants, water);
                 dataArray.at(SOIL) = list<double>(numPlants, soil);
 
+                //insert species information and plant data into map
                 crops.insert(make_pair(PlantSpecies(name, Token(tokenCharacter, R, G, B), BIOME_MAP.at(biomeClass), PLANT_MAP.at(plantType)), dataArray));
+
+                //clear streams for next plant
                 speciesSS.str("");
                 speciesSS.clear();
                 plantDataSS.str("");
                 plantDataSS.clear();
             }
-
             speciesFile.close();
             plantDataFile.close();
         }
@@ -112,27 +118,31 @@ class FarmPlot {
                 
                 //Display information about plant species
                 cropPair.first.Print();
-                
-                //Display as Horizontal table for now, for ease of use with Util::CoutTable
-                int tableColumns = cropPair.second.at(GROWTH).size(); //Assumed each column has equal # of values (which it should if created properly)
-                
-                //Create row headers with data labels
-                array<string, TABLE_ROWS> rowHeaders = {"Growth", "Water", "Nutrients"};
 
-                //Create column headers to display plant #
-                list<string> columnHeaders; 
-                for (int i = 0; i < tableColumns; i++) columnHeaders.push_back("#" + to_string(i+1));
+                if (cropPair.second.at(GROWTH).empty()) {
+                    cout << "All plants died" << endl;
+                } else {
+                    //Display as Horizontal table for now, for ease of use with Util::CoutTable
+                    int tableColumns = cropPair.second.at(GROWTH).size(); //Assumed each column has equal # of values (which it should if created properly)
+                    
+                    //Create row headers with data labels
+                    array<string, TABLE_ROWS> rowHeaders = {"Growth", "Water", "Nutrients"};
 
-                //Output table
-                cout << fixed << setprecision(3);
-                Util::CoutTable(columnHeaders, rowHeaders, cropPair.second, TABLE_DATA_WIDTH);
+                    //Create column headers to display plant #
+                    list<string> columnHeaders; 
+                    for (int i = 0; i < tableColumns; i++) columnHeaders.push_back("#" + to_string(i+1));
 
+                    //Output table
+                    cout << fixed << setprecision(3);
+                    Util::CoutTable(columnHeaders, rowHeaders, cropPair.second, TABLE_DATA_WIDTH);
+                }
                 Util::CoutLine();
             }
         }
 
-        //Define function to visually output garden as a 2D rectangular plot
-            //Parameters: None; acts on map of crops
+        /**
+         * Outputs number of each plant species as a histogram
+         */
         void PrintPlot() const {
             cout << "Plot of crops:" << endl;
             for (auto cropPair : crops) {
@@ -151,21 +161,38 @@ class FarmPlot {
             //visit each pair and update respective values
         }
 
-        //Updates plant growth, water, and soil by a 1 day cycle
-        //Will call respective update function in PlantSpecies for data of each crop
-        //Plant harm will decrease growth value
-        //Negative growth value will kill plant
-        void GrowthCycle(double temperature) {
+        /**
+         * Updates plant growth, water, and soil by a 1 day cycle
+         * Call respective GrowthCycle function in PlantSpecies for data of each crop
+         * Plant harm will decrease growth value, and negative growth value will kill plant, removing it from the list of data
+         * @param temperature Temperature to run growth cycle at, determining growth/damage to plants
+         * @param showDeathFlag If true, display a message whenever a plant dies, along with its health information
+         * @param showGrowthFlag If true, displays a message with every update to growth levels (from PlantSpecies::GrowthCycle())
+         */
+        void GrowthCycle(double temperature, bool showDeathFlag = false, bool showGrowthFlags = false) {
             cout << "Called FarmPlot.GrowthCycle" << endl;
             for (auto& cropPair : crops) {
-                for (list<double>::iterator waterIt = cropPair.second.at(WATER).begin(),
-                                            soilIt = cropPair.second.at(SOIL).begin(),
-                                            growthIt = cropPair.second.at(GROWTH).begin(); 
-                     waterIt != cropPair.second.at(WATER).end(); //only one conditional for now, assumes each list has equal size
-                     waterIt++, soilIt++, growthIt++
-                    ) 
-                {
-                    cropPair.first.GrowthCycle(*growthIt,*waterIt, *soilIt, temperature);
+                list<double>::iterator waterIt = cropPair.second.at(WATER).begin(),
+                                       soilIt = cropPair.second.at(SOIL).begin(),
+                                       growthIt = cropPair.second.at(GROWTH).begin(); 
+                while(waterIt != cropPair.second.at(WATER).end()) { //only one conditional for now, assumes each list has equal size
+                    //update crops by running a growth cycle
+                    cropPair.first.GrowthCycle(*growthIt,*waterIt, *soilIt, temperature, showGrowthFlags);
+
+                    //remove dead crops
+                    if (*growthIt < 0) {
+                        //display message when crops died if showDeathFlags is set
+                        if (showDeathFlag) cout << "A " << cropPair.first.GetName() << " has died. (G,W,S): (" << *growthIt << ", " << *waterIt << ", " << *soilIt << ")" << endl;
+
+                        //erase crop at associated position and increment iterator
+                        cropPair.second.at(GROWTH).erase(growthIt++);
+                        cropPair.second.at(WATER).erase(waterIt++);
+                        cropPair.second.at(SOIL).erase(soilIt++);
+                    } else { //traverse normally if crop is not dead
+                        growthIt++;
+                        waterIt++;
+                        soilIt++;
+                    }
                 }
             }
         }
