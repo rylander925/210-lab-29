@@ -3,6 +3,7 @@
 
 #include <string>
 #include <array>
+#include <exception>
 #include "Util.h"
 
 using namespace std;
@@ -24,11 +25,11 @@ class PlantSpecies {
             this->idealWater = (idealWater <= 1 && idealWater >= 0) ? idealWater : -1; //set to error value to flag
             this->idealNutrients = (idealNutrients <= 1 && idealNutrients >= 0) ? idealNutrients : -1;
 
-            if (idealWater == -1) {
-                cout << "ERROR: Ideal water set to improper value" << endl;
+            if (this->idealWater < 0) {
+                throw invalid_argument("idealWater set to value outside 0-1");
             }
-            if (idealNutrients == -1) {
-                cout << "ERROR: Ideal nutrients set to improper value" << endl;
+            if (this->idealNutrients < 0) {
+                throw invalid_argument("idealNutrients set to value outside 0-1");
             }
         }
 
@@ -36,8 +37,22 @@ class PlantSpecies {
         PlantSpecies(string name, char displayToken, 
               double idealWater, double idealNutrients, double idealTemperature,
               double healthyWaterRange, double healthyNutrientRange, double healthyTemperatureRange,
-              double tolerableWaterRange, double tolerableNutrientRange, double tolerableTemperatureRange) : PlantSpecies(name, displayToken, idealWater, idealNutrients, idealTemperature)
-        {}
+              double tolerableWaterRange, double tolerableNutrientRange, double tolerableTemperatureRange,
+              double cycleGrowthIncrease, double cycleGrowthDecrease, double cycleWaterDecrease, double cycleSoilDecrease) : PlantSpecies(name, displayToken, idealWater, idealNutrients, idealTemperature)
+        {
+            //Probably will not use much, so doesn't bother checking for invalid ranges
+            this->healthyWaterRange = healthyWaterRange; 
+            this->healthyNutrientRange = healthyNutrientRange; 
+            this->healthyTemperatureRange = healthyTemperatureRange;
+            this->tolerableWaterRange = tolerableWaterRange;
+            this->tolerableNutrientRange = tolerableNutrientRange;
+            this->tolerableTemperatureRange = tolerableTemperatureRange;
+
+            this->cycleGrowthIncrease = cycleGrowthIncrease;
+            this->cycleGrowthDecrease = cycleGrowthDecrease;
+            this->cycleWaterDecrease = cycleWaterDecrease;
+            this->cycleNutrientDecrease = cycleNutrientDecrease;
+        }
 
         //Add getters for name and display token
         string GetName() const { return name; }
