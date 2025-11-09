@@ -6,6 +6,7 @@
 #include <array>
 #include <list>
 #include <string>
+#include <sstream>
 #include "Token.h"
 #include "Util.h"
 #include "PlantSpecies.h"
@@ -50,19 +51,35 @@ class FarmPlot {
         void ReadData(string filename) {
             cout << "No file read implemented" << endl;
             ifstream cropFile;
-            string name, biomeClass, plantType;
+            stringstream lineStream;
+            string line, name, biomeClass, plantType;
             char tokenCharacter;
             int R, G, B;
 
             //Read file contents
+            Util::VerifyFileOpen(cropFile, filename);
 
             //Read information about plant species into a plant species object 
                 //name, token (character, color), biome class, plant type
+                //File formatting: 
+                //  name
+                //  tokenCharacter R G B biomeClass plantType
+            while(getline(cropFile, name)) {
+                getline(cropFile, line);
+                lineStream.str(line);
+                lineStream >> tokenCharacter >> R >> G >> B >> biomeClass >> plantType;
+                map<string, BiomeClass> biomeMap = {{"plain", PLAIN}, {"coast", COAST}, {"forest", FOREST}, {"tropic", TROPIC}, {"desert", DESERT}};
+                map<string, PlantTypeModifier> plantMap = {{"plant", PLANT}, {"flower", FLOWER}, {"tree", TREE}};
+
+                PlantSpecies(name, Token(tokenCharacter, R, G, B), biomeMap.at(biomeClass), plantMap.at(plantType));
+            }
 
             //Read information about each plant, and populate the array of lists with that information
                 //initial growth, water, nutrient levels
 
             //Insert pair of plant species and array into map
+
+            cropFile.close();
         }
 
         /**

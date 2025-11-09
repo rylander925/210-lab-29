@@ -40,6 +40,12 @@ class PlantSpecies {
             }
         }
 
+        PlantSpecies(string name, Token displayToken, BiomeClass biomeClass, PlantTypeModifier plantType) : 
+            name(name), displayToken(displayToken)
+        {
+            SetPlantType(biomeClass, plantType);
+        }
+
         //Complete constructor
         PlantSpecies(string name, Token displayToken, 
               double idealWater, double idealNutrients, double idealTemperature,
@@ -66,10 +72,8 @@ class PlantSpecies {
          * @param biomeClass Preset type
          * May move to store weights in a file
          */
-        void SetPlantType(string biomeName, string plantTypeName) {
-            BiomeClass biomeClass = biomeClassMap.at(biomeName);
-            PlantTypeModifier plantType = plantTypeMap.at(plantTypeName);
-            switch(biomeClass) {
+        void SetPlantType(BiomeClass biomeName, PlantTypeModifier plantTypeName) {
+            switch(biomeName) {
                 case(PLAIN): //'default' values
                     idealWater = 0.5;
                     idealNutrients = 0.5;
@@ -161,7 +165,7 @@ class PlantSpecies {
                     cycleNutrientDecrease = 0.001;
                     break;
             }
-            switch(plantType) {
+            switch(plantTypeName) {
                 //plant is 'default', leave unchanged
                 case (FLOWER): //slightly less resistant
                     idealWater += 0.05;
@@ -367,7 +371,5 @@ class PlantSpecies {
 };
 
 const double PlantSpecies::DEFAULT_EPSILON = 0.00001;
-static const map<string, BiomeClass> biomeClassMap = {{"plain", PLAIN}, {"coast", COAST}, {"forest", FOREST}, {"tropic", TROPIC,}, {"desert", DESERT}};
-static const map<string, PlantTypeModifier> plantTypeMap {{"plant", PLANT}, {"flower", FLOWER}, {"tree", TREE}};
 
 #endif

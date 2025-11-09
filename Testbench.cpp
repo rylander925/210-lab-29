@@ -11,9 +11,11 @@
 void PlantSpeciesConstruction() {
     PlantSpecies defaultPlant;
     PlantSpecies partialPlant("Partial Plant", Token('P'), 0.11, 0.12, 13);
+    PlantSpecies templatePlant("Template Plant", Token('T'), DESERT, FLOWER);
     PlantSpecies completePlant("Complete Plant", Token('C', 50, 175, 50), 0.21, 0.22, 23, 0.24, 0.25, 26, 0.27, 0.28, 29, 0.30, 0.31, 0.32, 0.33);
     defaultPlant.Print();
     partialPlant.Print();
+    templatePlant.Print();
     completePlant.Print();
     //Check error messages
     try {
