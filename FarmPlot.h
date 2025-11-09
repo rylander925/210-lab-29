@@ -50,12 +50,14 @@ class FarmPlot {
         void ReadData(string filename) {
             cout << "No file read implemented" << endl;
             ifstream cropFile;
-
+            string name, biomeClass, plantType;
+            char tokenCharacter;
+            int R, G, B;
 
             //Read file contents
 
             //Read information about plant species into a plant species object 
-                //name, token, biome class (or specific weights)
+                //name, token (character, color), biome class, plant type
 
             //Read information about each plant, and populate the array of lists with that information
                 //initial growth, water, nutrient levels

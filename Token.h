@@ -22,10 +22,16 @@ struct Token {
     static const int MAX = 255;
 
     //Prints to console ANSI code to set text to a given RGB Value
-    void ColorText() { cout << "\033[38;2;" << R << ";" << G << ";" << B << "m"; }
+    void ColorText(ostream& os = cout) const { os << "\033[38;2;" << R << ";" << G << ";" << B << "m"; }
 
     //Prints to console ANSI code to reset text formatting
-    void ResetText() { cout << "\033[0m"; }
-};
+    void ResetText(ostream& os = cout) const { os << "\033[0m"; }
 
+    friend ostream& operator<<(ostream& os, const Token& token) {
+        token.ColorText(os);
+        cout << token.character;
+        token.ResetText(os);
+        return os;
+    }
+};
 #endif

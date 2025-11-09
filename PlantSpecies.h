@@ -3,18 +3,22 @@
 
 #include <string>
 #include <array>
+#include <iostream>
 #include <exception>
 #include "Util.h"
 #include "Token.h"
 
 using namespace std;
 
+enum BiomeClass { PLAIN, COAST, FOREST, TROPIC, DESERT };
+enum PlantTypeModifier{ PLANT, FLOWER, TREE };
+
 //Include details about a partiWcular plant species
 //name, ideal water level, ideal nutrient level, display character
 class PlantSpecies {
     public:
-        static enum BiomeClass { PLAIN, COAST, FOREST, TROPIC, DESERT };
-        static enum TypeModifier{ PLANT, FLOWER, TREE };
+        static const map<string, BiomeClass> biomeClassMap;
+        static const map<string, PlantTypeModifier> plantTypeMap;
         //default constructor
         PlantSpecies() :
             name("Unnamed Plant"), displayToken('?'), 
@@ -62,7 +66,9 @@ class PlantSpecies {
          * @param biomeClass Preset type
          * May move to store weights in a file
          */
-        void SetBiomeClass(BiomeClass biomeClass) {
+        void SetPlantType(string biomeName, string plantTypeName) {
+            BiomeClass biomeClass = biomeClassMap.at(biomeName);
+            PlantTypeModifier plantType = plantTypeMap.at(plantTypeName);
             switch(biomeClass) {
                 case(PLAIN): //'default' values
                     idealWater = 0.5;
@@ -155,11 +161,31 @@ class PlantSpecies {
                     cycleNutrientDecrease = 0.001;
                     break;
             }
+            switch(plantType) {
+                //plant is 'default', leave unchanged
+                case (FLOWER): //slightly less resistant
+                    idealWater += 0.05;
+                    idealNutrients += 0.05;
+                    healthyWaterRange -= 0.05;
+                    healthyNutrientRange -= 0.05;
+                    tolerableWaterRange -= 0.05;
+                    tolerableNutrientRange -= 0.05;
+                    break;
+                case (TREE): //more resistant, grow slower
+                    healthyWaterRange += 0.05;
+                    healthyNutrientRange += 0.05;
+                    healthyTemperatureRange += 5;
+                    tolerableWaterRange += 0.05;
+                    tolerableNutrientRange += 0.05;
+                    tolerableTemperatureRange += 5;
+                    cycleGrowthIncrease /= 4;
+                    break;
+            }
         }
         
         //Add getters for name and display token
         string GetName() const { return name; }
-        char GetDisplayToken() const { return displayToken; }
+        Token GetDisplayToken() const { return displayToken; }
         
         //Add getters for ranges and weights if needed
         double GetIdealWater() const { return idealWater; }
@@ -341,5 +367,7 @@ class PlantSpecies {
 };
 
 const double PlantSpecies::DEFAULT_EPSILON = 0.00001;
+static const map<string, BiomeClass> biomeClassMap = {{"plain", PLAIN}, {"coast", COAST}, {"forest", FOREST}, {"tropic", TROPIC,}, {"desert", DESERT}};
+static const map<string, PlantTypeModifier> plantTypeMap {{"plant", PLANT}, {"flower", FLOWER}, {"tree", TREE}};
 
 #endif
