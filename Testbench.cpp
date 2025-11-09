@@ -137,7 +137,7 @@ void FarmPlotGrowthCycle() {
 }
 
 void FarmPlotUpdate() {
-    double growth, water, soil;
+    double growth = 0.2, water = -0.1, soil = -0.1;
     //Initialize a farm plot, display initial data
     FarmPlot filePlot("File plot", "data/reducedSpeciesInfo.txt", "data/reducedPlantData.txt");
     filePlot.PrintInformation();
@@ -147,7 +147,7 @@ void FarmPlotUpdate() {
     for (int i = 0; i < 10; i++) {
         Util::CoutLine();
         cout << "Cycle " << i + 1 << endl;
-        filePlot.Update(0.1, 0.1, 0.1);
+        filePlot.Update(growth, water, soil);
         filePlot.PrintPlot();
     }
 
@@ -157,5 +157,5 @@ void FarmPlotUpdate() {
 }
 
 int main() {
-    FarmPlotGrowthCycle();
+    FarmPlotUpdate();
 }

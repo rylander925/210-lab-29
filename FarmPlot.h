@@ -156,19 +156,24 @@ class FarmPlot {
         //Removes dead crops
         //(Negative input value to decrease)
             //Parameters: double with amount to increase water level
-        void Update(double waterValue, double fertilizerValue, double growthValue, bool showFlags = false) {
+        void Update(double growthValue, double waterValue, double soilValue, bool showFlags = false) {
             if (showFlags) cout << "Called FarmPlot::Update()" << endl;
 
             //Increments values of all crops of all species
             for (auto& cropPair : crops) {
-                list<double>::iterator waterIt = cropPair.second.at(WATER).begin(),
-                                       soilIt = cropPair.second.at(SOIL).begin(),
-                                       growthIt = cropPair.second.at(GROWTH).begin(); 
+                list<double>::iterator growthIt = cropPair.second.at(GROWTH).begin(),
+                                       waterIt = cropPair.second.at(WATER).begin(),
+                                       soilIt = cropPair.second.at(SOIL).begin();
                 while(waterIt != cropPair.second.at(WATER).end()) { //only one conditional for now, assumes each list has equal size
                     //increment crops by input values
-                    *growthIt = (growthValue + *growthIt > 1) ? 1 : growthValue + *growthIt;
-                    *soilIt = (fertilizerValue + *soilIt > 1) ? 1 : fertilizerValue + *soilIt;
-                    *waterIt = (waterValue + *waterIt > 1) ? 1 : waterValue + *waterIt;
+                    *growthIt += growthValue;
+                    *waterIt += waterValue;
+                    *soilIt += soilValue;
+                    
+                    //Check and adjust to valid ranges. negative growth values will accounted for when killing plants
+                    (*growthIt > 1) ? *growthIt = 1 : false;
+                    (*waterIt > 1) ? *waterIt = 1 : (*waterIt < 0) ? *waterIt = 0 : false;
+                    (*soilIt > 1) ? *soilIt = 1 : (*soilIt < 0) ? *soilIt = 0 : false;
 
                     //remove dead crops
                     if (*growthIt < 0) {

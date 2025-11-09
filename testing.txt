@@ -1,3 +1,5 @@
+All test functions are in Testbench.cpp
+
 main
 
 FarmPlot
@@ -9,6 +11,8 @@ FarmPlot
     
     GrowthCycle()
         Instatiate a farm plot, and run cycles, tracking plant death and plant conditions throughout
+        See FarmPlotGrowthCycle() for test code
+
 
 PlantSpecies
     Constructors
