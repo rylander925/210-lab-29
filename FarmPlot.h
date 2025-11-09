@@ -107,7 +107,7 @@ class FarmPlot {
         //Will call respective update function in PlantSpecies for data of each crop
         //Plant harm will decrease growth value
         //Negative growth value will kill plant
-        void GrowthCycle() {
+        void GrowthCycle(double temperature) {
             cout << "Called FarmPlot.GrowthCycle" << endl;
             for (auto& cropPair : crops) {
                 for (list<double>::iterator waterIt = cropPair.second.at(WATER).begin(),
@@ -117,7 +117,7 @@ class FarmPlot {
                      waterIt++, soilIt++, growthIt++
                     ) 
                 {
-                    cropPair.first.GrowthCycle(*growthIt,*waterIt, *soilIt);
+                    cropPair.first.GrowthCycle(*growthIt,*waterIt, *soilIt, temperature);
                 }
             }
         }

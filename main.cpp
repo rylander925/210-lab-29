@@ -74,6 +74,7 @@ int main() {
     string name;
     int fertilizationInterval;
     int wateringInterval;
+    double temperature;
 
     cout << fixed << setprecision(3); 
 
@@ -109,7 +110,7 @@ int main() {
         WeatherFarm(farm, season, locale);
         
         //simulate growth cycle (call FarmPlot method)
-        farm.GrowthCycle();
+        farm.GrowthCycle(temperature);
         
 
         //Every fertilization frequency number of time intervals, simulate fertilization events (call UpdateSoil FarmPlot method)

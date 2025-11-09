@@ -74,9 +74,10 @@ class PlantSpecies {
         
         //Updates a growth cycle for a plant based on its current growth and soil health
         //Increases or decreases growth depending on soil health, and consumes soil health
-        void GrowthCycle(double& growth, double& water, double& nutrients) const {
+        void GrowthCycle(double& growth, double& water, double& nutrients, double temperature) const {
             double waterDifference = abs(water - idealWater);
             double nutrientDifference = abs(nutrients - idealNutrients);
+            double temperatureDifference = abs(temperature - idealTemperature);
             
             //Decrease, not change, or increase growth if according to water level 
             if (waterDifference >= tolerableWaterRange) {
@@ -93,6 +94,15 @@ class PlantSpecies {
                 growth -= cycleGrowthDecrease;
             } else if (nutrientDifference <= healthyNutrientRange) {
                 cout << name << " has just enough nutrients" << endl;
+                growth += (growth < 1) ? cycleGrowthIncrease : 0; //only increase up to 1
+            }
+
+            //Decrease, not change, or increase growth if according to temperature 
+            if (temperatureDifference >= tolerableTemperatureRange) {
+                cout << name << " is at an improper temperature" << endl;
+                growth -= cycleGrowthDecrease;
+            } else if (temperatureDifference <= healthyTemperatureRange) {
+                cout << name << " is at just the right temperature" << endl;
                 growth += (growth < 1) ? cycleGrowthIncrease : 0; //only increase up to 1
             }
 
@@ -122,14 +132,18 @@ class PlantSpecies {
             //Display details as table
             array<string, COLUMNS> columnTitles = {"Ideal", "Healthy (+\\-)", "Tolerable (+\\-)"};
             array<string, ROWS> rowTitles = {"Water", "Nutrients", "Temperature (F)"}; 
-            cout << fixed << setprecision(1);
-            array<array<double, COLUMNS>, ROWS> tableData = { array<double, COLUMNS>{idealWater, healthyWaterRange, tolerableWaterRange},
-                                                              array<double, COLUMNS>{idealNutrients, healthyNutrientRange, tolerableNutrientRange},
-                                                              array<double, COLUMNS>{idealTemperature, healthyTemperatureRange, tolerableTemperatureRange}
-                                                            };
-            Util::CoutTable(columnTitles, rowTitles, tableData, TABLE_WIDTH, TABLE_HEADER_WIDTH);
+            array<array<double, COLUMNS>, ROWS> tableData = 
+                { 
+                    array<double, COLUMNS>{idealWater, healthyWaterRange, tolerableWaterRange},
+                    array<double, COLUMNS>{idealNutrients, healthyNutrientRange, tolerableNutrientRange},
+                    array<double, COLUMNS>{idealTemperature, healthyTemperatureRange, tolerableTemperatureRange}
+                };
 
+            cout << fixed << setprecision(1);
+            Util::CoutTable(columnTitles, rowTitles, tableData, TABLE_WIDTH, TABLE_HEADER_WIDTH);
             cout << endl;
+
+            //Output details about cycle growth/resource consumption
             cout << fixed << setprecision(3);
             cout << "Growth rate / decrease: " << cycleGrowthIncrease << " / " << cycleGrowthDecrease << endl;
             cout << "Water / nutrient consumption: " << cycleWaterDecrease << " / " << cycleNutrientDecrease << endl;
