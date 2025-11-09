@@ -53,8 +53,12 @@ class FarmPlot {
 
         /**
          * Outputs information of each plant species and each plant associated with each plant species as a table
+         * @test
          */
         void PrintInformation() const {
+            const static int TABLE_ROWS = 3;
+            const static int TABLE_DATA_WIDTH = 5;
+
             cout << "Printing crop information: " << endl;
             for (auto cropPair : crops) {
                 Util::CoutLine();
@@ -63,7 +67,6 @@ class FarmPlot {
                 cropPair.first.Print();
                 
                 //Display as Horizontal table for now, for ease of use with Util::CoutTable
-                const static int TABLE_ROWS = 3;
                 int tableColumns = cropPair.second.at(GROWTH).size(); //Assumed each column has equal # of values (which it should if created properly)
                 
                 //Create row headers with data labels
@@ -74,7 +77,7 @@ class FarmPlot {
                 for (int i = 0; i < tableColumns; i++) columnHeaders.push_back("#" + to_string(i+1));
 
                 //Output table
-                Util::CoutTable(columnHeaders, rowHeaders, cropPair.second);
+                Util::CoutTable(columnHeaders, rowHeaders, cropPair.second, TABLE_DATA_WIDTH);
 
                 Util::CoutLine();
             }

@@ -74,22 +74,29 @@ class PlantSpecies {
          * @test
          */
         void Print() const {
+            const static int TABLE_HEADER_WIDTH = 20;
+            const static int TABLE_WIDTH = 15;
+            const static char TABLE_CHAR = '-';
+            const static int ROWS = 3;
+            const static int COLUMNS = 3;
+
+            //width of line above and below data display
+            int lineWidth = COLUMNS * TABLE_WIDTH + TABLE_HEADER_WIDTH;
+
             //Output is enclosed by lines
-            Util::CoutLine();
+            Util::CoutLine(lineWidth, TABLE_CHAR);
             cout << "Plant Species \"" << name << "\" (" << displayToken << ") Care Information: " << endl;
             
             //Display details as table
-            const static int ROWS = 3;
-            const static int COLUMNS = 3;
             array<string, COLUMNS> columnTitles = {"Ideal", "Healthy (+\\-)", "Tolerable (+\\-)"};
             array<string, ROWS> rowTitles = {"Water", "Nutrients", "Temperature (F)"}; 
             array<array<double, COLUMNS>, ROWS> tableData = { array<double, COLUMNS>{idealWater, healthyWaterRange, tolerableWaterRange},
                                                               array<double, COLUMNS>{idealNutrients, healthyNutrientRange, tolerableNutrientRange},
                                                               array<double, COLUMNS>{idealTemperature, healthyTemperatureRange, tolerableTemperatureRange}
                                                             };
-            Util::CoutTable(columnTitles, rowTitles, tableData);
+            Util::CoutTable(columnTitles, rowTitles, tableData, TABLE_WIDTH, TABLE_HEADER_WIDTH);
 
-            Util::CoutLine();
+            Util::CoutLine(lineWidth, TABLE_CHAR);
         }
 
         //Overload operator< for use in map
