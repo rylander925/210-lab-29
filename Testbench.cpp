@@ -136,6 +136,26 @@ void FarmPlotGrowthCycle() {
     filePlot.PrintInformation();
 }
 
+void FarmPlotUpdate() {
+    double growth, water, soil;
+    //Initialize a farm plot, display initial data
+    FarmPlot filePlot("File plot", "data/reducedSpeciesInfo.txt", "data/reducedPlantData.txt");
+    filePlot.PrintInformation();
+    filePlot.PrintPlot();
+    
+    //run growth cycles, showing details of plants when they die
+    for (int i = 0; i < 10; i++) {
+        Util::CoutLine();
+        cout << "Cycle " << i + 1 << endl;
+        filePlot.Update(0.1, 0.1, 0.1);
+        filePlot.PrintPlot();
+    }
+
+    //show information after to verify all negative growth plants died
+    //Plants with restrictive conditions should be dead
+    filePlot.PrintInformation();
+}
+
 int main() {
     FarmPlotGrowthCycle();
 }

@@ -153,12 +153,38 @@ class FarmPlot {
         }
 
         //Define function to change water levels, nutrient levels, and growth associated with all plants
+        //Removes dead crops
         //(Negative input value to decrease)
             //Parameters: double with amount to increase water level
-        void Update(double waterValue, double fertilizerValue, double growthValue) {
-            cout << "Called FarmPlot.Update" << endl;
+        void Update(double waterValue, double fertilizerValue, double growthValue, bool showFlags = false) {
+            if (showFlags) cout << "Called FarmPlot::Update()" << endl;
 
-            //visit each pair and update respective values
+            //Increments values of all crops of all species
+            for (auto& cropPair : crops) {
+                list<double>::iterator waterIt = cropPair.second.at(WATER).begin(),
+                                       soilIt = cropPair.second.at(SOIL).begin(),
+                                       growthIt = cropPair.second.at(GROWTH).begin(); 
+                while(waterIt != cropPair.second.at(WATER).end()) { //only one conditional for now, assumes each list has equal size
+                    //increment crops by input values
+                    *growthIt = (growthValue + *growthIt > 1) ? 1 : growthValue + *growthIt;
+                    *soilIt = (fertilizerValue + *soilIt > 1) ? 1 : fertilizerValue + *soilIt;
+                    *waterIt = (waterValue + *waterIt > 1) ? 1 : waterValue + *waterIt;
+
+                    //remove dead crops
+                    if (*growthIt < 0) {
+                        //display message when crops died if showDeathFlags is set
+                        if (showFlags) cout << "A " << cropPair.first.GetName() << " has died. (G,W,S): (" << *growthIt << ", " << *waterIt << ", " << *soilIt << ")" << endl;
+                        //erase crop at associated position and increment iterator
+                        cropPair.second.at(GROWTH).erase(growthIt++);
+                        cropPair.second.at(WATER).erase(waterIt++);
+                        cropPair.second.at(SOIL).erase(soilIt++);
+                    } else { //traverse normally if crop is not dead
+                        growthIt++;
+                        waterIt++;
+                        soilIt++;
+                    }
+                }
+            }
         }
 
         /**
@@ -167,10 +193,12 @@ class FarmPlot {
          * Plant harm will decrease growth value, and negative growth value will kill plant, removing it from the list of data
          * @param temperature Temperature to run growth cycle at, determining growth/damage to plants
          * @param showDeathFlag If true, display a message whenever a plant dies, along with its health information
-         * @param showGrowthFlag If true, displays a message with every update to growth levels (from PlantSpecies::GrowthCycle())
+         * @param showGrowthFlag If true, displays a message with every update to growth levels (from PlantSpecies::GrowthCycle()), as well as when function is called
          */
         void GrowthCycle(double temperature, bool showDeathFlag = false, bool showGrowthFlags = false) {
-            cout << "Called FarmPlot.GrowthCycle" << endl;
+            if (showGrowthFlags) cout << "Called FarmPlot::GrowthCycle()" << endl;
+
+            //Calls update function on each crop, removing them from the list if they die
             for (auto& cropPair : crops) {
                 list<double>::iterator waterIt = cropPair.second.at(WATER).begin(),
                                        soilIt = cropPair.second.at(SOIL).begin(),
