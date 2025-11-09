@@ -13,7 +13,7 @@ using namespace std;
 //Define enum of possible weather events
 //Values are stored as weights
 enum PrecipitationEvent { RAIN, SNOW, NO_PRECIPITATION };
-enum TemperatureEvent { COLD, HOT, TEMPERATE };
+enum TemperatureEvent { COLD, TEMPERATE, HOT };
 enum WeatherEvent { WIND, NO_WEATHER };
 
 //Increase severity of event, does not apply to temperate condition
@@ -43,6 +43,59 @@ struct WeatherProfile {
         weatherWeights = {{WIND, 0}, {NO_WEATHER, 0}};
         severityWeights = {{LIGHT, 0}, {MEDIUM, 0}, {HEAVY, 0}};
         baselineTemperatureMult = 1.0;
+    }
+
+    /**
+     * Read weather profile data from file, formatted with weights as integers:
+     * name (as string)
+     * rain snow no_precipitation
+     * cold temperate hot
+     * light medium heavy
+     * baseLineTemperatureMult (as double)
+     * @param filename
+     * 
+     */
+    void ReadWeatherProfile(string filename) {
+        string rainLine, temperatureLine, weatherLine, severityLine;
+        stringstream ss;
+
+        //Open file stream and read contents to variables and lines holding weights
+        ifstream infile;
+        Util::VerifyFileOpen(infile, filename);
+        getline(infile, name);
+        getline(infile, rainLine);
+        getline(infile, temperatureLine);
+        getline(infile, weatherLine);
+        getline(infile, severityLine);
+        infile >> baselineTemperatureMult;
+        infile.close();
+
+        //Store lines holding weights into stringstream, and read into maps for each map of weights
+        ss.str(rainLine);
+        for(auto& pair : precipitationWeights) {
+            ss >> pair.second;
+        }
+        ss.clear();
+        ss.str("");
+
+        ss.str(temperatureLine);
+        for(auto& pair : temperatureWeights) {
+            ss >> pair.second;
+        }
+        ss.clear();
+        ss.str("");
+
+        ss.str(weatherLine);
+        for(auto& pair : weatherWeights) {
+            ss >> pair.second;
+        }
+        ss.clear();
+        ss.str("");
+
+        ss.str(severityLine);
+        for(auto& pair : severityWeights) {
+            ss >> pair.second;
+        }       
     }
 
     /**
@@ -132,7 +185,6 @@ struct Weather {
         }
         cout << "Current weather conditions:" << modifier << ", " << rain << ", " << miscWeather;
         cout << "\tTemperature: " << setprecision(1) << temperature << "F";
-
     }
 
     /**
@@ -208,27 +260,6 @@ struct Weather {
         }
         //Outside of temperature persistance, add slight variations in temperature each day, in a range of +/- DAILY_TEMP_VARIATION
         temperature += (rand() % (DAILY_TEMP_VARIATION * 2 + 1)) - DAILY_TEMP_VARIATION;
-    }
-
-    //Define function to read weights of weather weights
-    //Parameters: name of file to read from; should contain one weather profile (i.e. winter.txt separate from spring.txt)
-    //Structured to read until file end, with each line as a string of event name then a number (double or int)
-    //Attempt to add to the map; map will not add if already added
-    void ReadWeatherProfile(string filename) {
-        ifstream infile;
-        Util::VerifyFileOpen(infile, filename);
-        string name, rainLine, temperatureLine, weatherLine, severityLine;
-        double baselineTemperature;
-        stringstream ss;
-
-        getline(infile, name);
-        getline(infile, rainLine);
-        getline(infile, temperatureLine);
-        getline(infile, weatherLine);
-        infile >> baselineTemperature;
-        infile.close();
-
-        
     }
 
 //Define function to read weights of location weights
