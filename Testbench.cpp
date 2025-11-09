@@ -31,18 +31,61 @@ void PlantSpeciesConstruction() {
 }
 
 void PlantSpeciesGrowthCycle() {
-    PlantSpecies defaultPlant;
-    defaultPlant.Print();
+    PlantSpecies plant;
+    plant.Print();
     double growth = 0;
     double water = 0;
     double nutrients = 0;
     double temperature = 0;
 
     //test with everything set to 0, should decrease 3 times
-    cout << "Testing with everything set to 0, expected should decrease growth 3 times" << endl;
-    defaultPlant.GrowthCycle(growth, water, nutrients, temperature, true);
+    cout << "Testing with everything set to 0, expected should decrease growth 3 times; water and nutrients should not be decremented" << endl;
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
+    plant.GrowthCycle(growth, water, nutrients, temperature, true);
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
+
+    Util::CoutLine();
+    cout << "test with everything set to ideal values, growth set to 0, should increase 3 times, and water/nutrients should be decremented" << endl;
+    growth = 0;
+    water = plant.GetIdealWater();
+    nutrients = plant.GetIdealNutrient();
+    temperature = plant.GetIdealTemperature();
+
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
+    plant.GrowthCycle(growth, water, nutrients, temperature, true);
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
+
+    Util::CoutLine();
+    cout << "test with everything set to ideal values, growth set to 1, growth should not increase" << endl;
+    growth = 1;
+    water = plant.GetIdealWater();
+    nutrients = plant.GetIdealNutrient();
+    temperature = plant.GetIdealTemperature();
+
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
+    plant.GrowthCycle(growth, water, nutrients, temperature, true);
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
+
+    Util::CoutLine();
+    cout << "test with everything set to boundry tolerable, growth should not decrease or increase" << endl;
+    growth = 0.5;
+    water = plant.GetIdealWater() - plant.GetHealthyWaterRange();
+    nutrients = plant.GetIdealNutrient() - plant.GetHealthyNutrientRange();
+    temperature = plant.GetIdealTemperature() - plant.GetHealthyTemperatureRange();
+
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
+    plant.GrowthCycle(growth, water, nutrients, temperature, true);
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
+
+    Util::CoutLine();
+    cout << "Run again, should now be at tolerable levels, growth should not increase" << endl;
+
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
+    plant.GrowthCycle(growth, water, nutrients, temperature, true);
+    cout << "Growth: " << growth << ", Water: " << water << ", Nutrients: " << nutrients << ", Temp: " << temperature << endl; 
+
 }
 
 int main() {
-    PlantSpeciesConstruction();
+    PlantSpeciesGrowthCycle();
 }

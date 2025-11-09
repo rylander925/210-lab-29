@@ -59,9 +59,14 @@ class PlantSpecies {
         char GetDisplayToken() const { return displayToken; }
         
         //Add getters for ranges and weights if needed
+        double GetIdealWater() const { return idealWater; }
+        double GetIdealNutrient() const { return idealNutrients; }
+        double GetIdealTemperature() const { return idealTemperature; }
+
         double GetHealthyWaterRange() const { return healthyWaterRange; }
         double GetHealthyNutrientRange() const { return healthyNutrientRange; }
         double GetHealthyTemperatureRange() const { return healthyTemperatureRange; }
+
         double GetTolerableWaterRange() const { return tolerableWaterRange; }
         double GetTolerableNutrientRange() const { return tolerableNutrientRange; }
         double GetTolerableTemperatureRange() const { return tolerableTemperatureRange; }
