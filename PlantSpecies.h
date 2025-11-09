@@ -96,39 +96,54 @@ class PlantSpecies {
             cycleNutrientDecrease = nutrientDecrease;
         }
         
-        //Updates a growth cycle for a plant based on its current growth and soil health
-        //Increases or decreases growth depending on soil health, and consumes soil health
+        /**
+         * Updates growth, water, and nutrients based off water, nutrient, and temperature levels.
+         * Will not grow unless all conditions are tolerable, and in that case will grow for each healthy condition
+         * Will shrink for every intolerable condition
+         * @param growth Current growth value of plant
+         * @param water Current water level of plant
+         * @param nutrients Current nutrient level of plant
+         * @param temperature Current temperature of plant
+         * @param showMessages If true, will show messages about plant conditions
+         */
         void GrowthCycle(double& growth, double& water, double& nutrients, double temperature, bool showMessages = false) const {
             double waterDifference = abs(water - idealWater);
             double nutrientDifference = abs(nutrients - idealNutrients);
             double temperatureDifference = abs(temperature - idealTemperature);
+
+            //Check for tolerable ranges
+            if (waterDifference <= tolerableWaterRange && nutrientDifference <= tolerableNutrientRange && temperatureDifference <= tolerableTemperatureRange) {
+                //Allow plant to grow for each healthy condition, up to a maximum of 1 (100%)
+                if (waterDifference <= healthyWaterRange) {
+                    if (showMessages) cout << name << " has just enough water " << endl;
+                    growth += (growth < 1) ? cycleGrowthIncrease : 0;
+                }
+                if (nutrientDifference <= healthyNutrientRange) {
+                    if (showMessages) cout << name << " has just enough nutrients " << endl;
+                    growth += (growth < 1) ? cycleGrowthIncrease : 0;
+                }
+                if (temperatureDifference <= healthyTemperatureRange) {
+                    if (showMessages) cout << name << " is at just the right temperature " << endl;
+                    growth += (growth < 1) ? cycleGrowthIncrease : 0;
+                }
+            } else {
+                //Decrease for each intolerable condition
+                //allow growth to decrease to negative numbers b/c farmPlot should remove negative values
+                if (waterDifference > tolerableWaterRange) {
+                    if (showMessages) cout << name << " has improper water levels" << endl;
+                    growth -= cycleGrowthDecrease; 
+                }
+                if (nutrientDifference > tolerableNutrientRange) {
+                    if (showMessages) cout << name << " has improper nutrient levels" << endl;
+                    growth -= cycleGrowthDecrease;
+                }
+                if (temperatureDifference > tolerableTemperatureRange) {
+                    if (showMessages) cout << name << " is at an improper temperature" << endl;
+                    growth -= cycleGrowthDecrease;
+                }
+            }
             
-            //Decrease, not change, or increase growth if according to water level 
-            if (waterDifference >= tolerableWaterRange) {
-                if (showMessages) cout << name << " has improper water levels" << endl;
-                growth -= cycleGrowthDecrease;                    //allow decrease to negative numbers b/c farmPlot should remove negative values
-            } else if (waterDifference <= healthyWaterRange) {
-                if (showMessages) cout << name << "has just enough water " << endl;
-                growth += (growth < 1) ? cycleGrowthIncrease : 0; //only increase up to 1
-            }
-
-            //Decrease, not change, or increase growth if according to nutrient level 
-            if (nutrientDifference >= tolerableNutrientRange) {
-                if (showMessages) cout << name << " has improper nutrient levels" << endl;
-                growth -= cycleGrowthDecrease;
-            } else if (nutrientDifference <= healthyNutrientRange) {
-                if (showMessages) cout << name << " has just enough nutrients" << endl;
-                growth += (growth < 1) ? cycleGrowthIncrease : 0; //only increase up to 1
-            }
-
-            //Decrease, not change, or increase growth if according to temperature 
-            if (temperatureDifference >= tolerableTemperatureRange) {
-                if (showMessages) cout << name << " is at an improper temperature" << endl;
-                growth -= cycleGrowthDecrease;
-            } else if (temperatureDifference <= healthyTemperatureRange) {
-                if (showMessages) cout << name << " is at just the right temperature" << endl;
-                growth += (growth < 1) ? cycleGrowthIncrease : 0; //only increase up to 1
-            }
+            
 
             //Decrease water levels
             water -= (water > 0) ? cycleWaterDecrease : 0;
