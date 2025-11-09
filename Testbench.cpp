@@ -107,7 +107,7 @@ void PlantSpeciesGrowthCycle() {
 
 void FarmPlotConstruction() {
     FarmPlot defaultPlot;
-    FarmPlot filePlot("File plot", "data/speciesinfo.txt");
+    FarmPlot filePlot("File plot", "data/speciesinfo.txt", "data/plantData.txt");
     defaultPlot.PrintInformation();
     filePlot.PrintInformation();
     filePlot.PrintPlot();

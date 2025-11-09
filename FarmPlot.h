@@ -31,8 +31,9 @@ class FarmPlot {
         FarmPlot(string name, map<PlantSpecies, array<list<double>, 3>> plotData);
 
         //Constructor instantiates a framplot with a given name by reading data from specified file
-        FarmPlot(string name, string filename){
-            ReadData(filename);
+        FarmPlot(string name, string speciesFilename, string plantDataFilename){
+            this->name = name;
+            ReadData(speciesFilename, plantDataFilename);
         }
 
         //Standard name getter
@@ -46,44 +47,56 @@ class FarmPlot {
         //Define function to read garden node data
             //Parameters: filename
         void ReadData(string speciesFilename, string plantDataFilename) {
-            cout << "No file read implemented" << endl;
-            list<PlantSpecies> plants;
+            static const map<string, BiomeClass> BIOME_MAP = {{"plain", PLAIN}, {"coast", COAST}, {"forest", FOREST}, {"tropic", TROPIC}, {"desert", DESERT}};
+            static const map<string, PlantTypeModifier> PLANT_MAP = {{"plant", PLANT}, {"flower", FLOWER}, {"tree", TREE}};
+
+            //various input streams
             ifstream speciesFile, plantDataFile;
-            stringstream lineStream;
-            string line, name, biomeClass, plantType;
+            stringstream speciesSS, plantDataSS;
+            
+            //dummy variables for species data
+            string speciesLine, name, biomeClass, plantType;
             char tokenCharacter;
             int R, G, B;
-            int numPlant, growth, water, soil;
 
-            //Fill each entry with default values for now
-            array<list<double>, 3> defaultArray;
-            defaultArray.at(GROWTH) = list<double>(3, defaultGrowth);
-            defaultArray.at(WATER) = list<double>(3, defaultWater);
-            defaultArray.at(SOIL) = list<double>(3, defaultSoil);
+            //dummy variables for plant data
+            string plantDataLine;
+            int numPlants;
+            double growth, water, soil;
 
             //Open files 
             Util::VerifyFileOpen(speciesFile, speciesFilename);
             Util::VerifyFileOpen(plantDataFile, plantDataFilename);
 
             //Read information about plant species into a plant species object 
-                //name, token (character, color), biome class, plant type
-                //File formatting: 
+                //File formatting for species: 
                 //  name
                 //  tokenCharacter R G B biomeClass plantType
-            while(getline(speciesFile, name)) {
-                getline(speciesFile, line);
-                cout << name << endl;
-                cout << line << endl;
-                lineStream.str(line);
-                lineStream >> tokenCharacter >> R >> G >> B >> biomeClass >> plantType;
-                map<string, BiomeClass> biomeMap = {{"plain", PLAIN}, {"coast", COAST}, {"forest", FOREST}, {"tropic", TROPIC}, {"desert", DESERT}};
-                map<string, PlantTypeModifier> plantMap = {{"plant", PLANT}, {"flower", FLOWER}, {"tree", TREE}};
-                crops.insert(make_pair(PlantSpecies(name, Token(tokenCharacter, R, G, B), biomeMap.at(biomeClass), plantMap.at(plantType)), defaultArray));
-                lineStream.clear();
-                lineStream.str("");
+                //File formatting for plant data:
+                //  numPlants growth water soil
+            while(getline(speciesFile, name) && getline(plantDataFile, plantDataLine)) {
+                getline(speciesFile, speciesLine);
+
+                speciesSS.str(speciesLine);
+                speciesSS >> tokenCharacter >> R >> G >> B >> biomeClass >> plantType;
+
+                plantDataSS.str(plantDataLine);
+                plantDataSS >> numPlants >> growth >> water >> soil;
+
+                array<list<double>, 3> dataArray;
+                dataArray.at(GROWTH) = list<double>(numPlants, growth);
+                dataArray.at(WATER) = list<double>(numPlants, water);
+                dataArray.at(SOIL) = list<double>(numPlants, soil);
+
+                crops.insert(make_pair(PlantSpecies(name, Token(tokenCharacter, R, G, B), BIOME_MAP.at(biomeClass), PLANT_MAP.at(plantType)), dataArray));
+                speciesSS.str("");
+                speciesSS.clear();
+                plantDataSS.str("");
+                plantDataSS.clear();
             }
 
-            cropFile.close();
+            speciesFile.close();
+            plantDataFile.close();
         }
 
         /**

@@ -158,8 +158,6 @@ Lantana
 L 240 150 80 tropic flower
 Mimosa
 M 230 190 110 tropic plant
-Nightshade
-N 150 60 200 forest plant
 Poinsettia
 P 255 70 90 tropic flower
 Quinoa
@@ -264,13 +262,7 @@ Spruce
 S 60 100 70 forest tree
 Fir Tree
 F 60 110 70 forest tree
-Tamarisk
-T 160 180 90 desert tree
 Joshua Tree
 J 110 160 90 desert tree
 Prickly Pear
 P 90 200 110 desert plant
-Sagebrush
-S 130 200 100 desert plant
-Mesquite
-M 110 150 70 desert tree
