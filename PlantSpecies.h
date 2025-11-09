@@ -5,7 +5,7 @@
 #include <array>
 #include <exception>
 #include "Util.h"
-#include "Color.h"
+#include "Token.h"
 
 using namespace std;
 
@@ -18,11 +18,11 @@ class PlantSpecies {
         //default constructor
         PlantSpecies() :
             name("Unnamed Plant"), displayToken('?'), 
-            idealWater(0.5), idealNutrients(0.5), idealTemperature(60), tokenColor(Color(50, 175, 50))
+            idealWater(0.5), idealNutrients(0.5), idealTemperature(60)
             { cout << "Called default constructor for PlantSpecies" << endl; }
 
         //Partial constructor; specify name, token, and ideal levels--ranges set to default levels
-        PlantSpecies(string name, char displayToken, double idealWater, double idealNutrients, double idealTemperature) : 
+        PlantSpecies(string name, Token displayToken, double idealWater, double idealNutrients, double idealTemperature) : 
             name(name), displayToken(displayToken), idealTemperature(idealTemperature)
         {
             this->idealWater = (idealWater <= 1 && idealWater >= 0) ? idealWater : -1; //set to error value to flag
@@ -36,14 +36,8 @@ class PlantSpecies {
             }
         }
 
-        //Partial constructor if color is specified
-        PlantSpecies(string name, char displayToken, Color tokenColor, double idealWater, double idealNutrients, double idealTemperature) 
-        : PlantSpecies(name, displayToken, idealWater, idealNutrients, idealTemperature) {
-            this->tokenColor = tokenColor;
-        }
-
         //Complete constructor
-        PlantSpecies(string name, char displayToken, Color tokenColor, 
+        PlantSpecies(string name, Token displayToken, 
               double idealWater, double idealNutrients, double idealTemperature,
               double healthyWaterRange, double healthyNutrientRange, double healthyTemperatureRange,
               double tolerableWaterRange, double tolerableNutrientRange, double tolerableTemperatureRange,
@@ -320,8 +314,7 @@ class PlantSpecies {
         string name;
 
         //character to display when printing the 2D garden array
-        char displayToken;
-        Color tokenColor;
+        Token displayToken;
 
         //levels where plant can grow
         double idealWater;       //As a percent
