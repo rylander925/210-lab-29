@@ -50,6 +50,7 @@ struct WeatherProfile {
      * name (as string)
      * rain snow no_precipitation
      * cold temperate hot
+     * wind no_wind
      * light medium heavy
      * baseLineTemperatureMult (as double)
      * @param filename
@@ -104,7 +105,7 @@ struct WeatherProfile {
     void Print() {
         auto oldPrecision = cout.precision();
         cout << "Weather profile \"" << name << "\": " << endl;
-        cout << "\tBase temperature: " << setprecision(2) << baselineTemperatureMult << "F" << endl;
+        cout << "\tTemperature multiplier: " << setprecision(2) << baselineTemperatureMult << endl;
         cout << "\tWeights: " << endl;
         cout << "\t\tLight: " << severityWeights.at(LIGHT) << ", Medium: " << severityWeights.at(MEDIUM) << ", Heavy: " << severityWeights.at(HEAVY) << endl;
         cout << "\t\tRain: " << precipitationWeights.at(RAIN) << ", Snow: " << precipitationWeights.at(SNOW) << ", None: " << precipitationWeights.at(NO_PRECIPITATION) << endl;

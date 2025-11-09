@@ -19,7 +19,6 @@ FarmPlot
         and low values for valid minimum ranges and crops properly die.
         See FarmPlotUpdate() for test code
 
-
 PlantSpecies
     Constructors
         Test via PlantSpecies::Print() function, which has already been tested to function via default constructor
@@ -39,6 +38,11 @@ PlantSpecies
                    Boundary values for tolerance/healthy ranges
 
         See PlantSpeciesGrowthCycle() for code
+
+Weather
+    WeatherProfile constructor, print, and read functions
+        Tested in conjunction with eachother by constructing several weatherProfile objects, reading to some of them, and printing all of them
+        See WeatherProfileRead()
 
 Util
     CoutLine()
