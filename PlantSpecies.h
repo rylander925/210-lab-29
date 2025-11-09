@@ -38,6 +38,19 @@ class PlantSpecies {
         //Add getters for name and display token
         string GetName() const { return name; }
         char GetDisplayToken() const { return displayToken; }
+        
+        //Add getters for ranges and weights if needed
+        double GetHealthyWaterRange() const { return healthyWaterRange; }
+        double GetHealthyNutrientRange() const { return healthyNutrientRange; }
+        double GetHealthyTemperatureRange() const { return healthyTemperatureRange; }
+        double GetTolerableWaterRange() const { return tolerableWaterRange; }
+        double GetTolerableNutrientRange() const { return tolerableNutrientRange; }
+        double GetTolerableTemperatureRange() const { return tolerableTemperatureRange; }
+
+        double GetCycleGrowthIncrease() const { return cycleGrowthIncrease; }
+        double GetCycleGrowthDecrease() const { return cycleGrowthDecrease; }
+        double GetCycleWaterDecrease() const { return cycleWaterDecrease; }
+        double GetCycleNutrientDecrease() const { return cycleNutrientDecrease; }
 
         //Add setters to change ranges and cycle weights if needed
         void SetHealthyRanges(double water, double nutrient, double temperature) {
@@ -80,7 +93,7 @@ class PlantSpecies {
                 cout << name << " has improper nutrient levels" << endl;
                 growth -= cycleGrowthDecrease;
             } else if (nutrientDifference <= healthyNutrientRange) {
-                cout << name << "has just enough nutrients" << endl;
+                cout << name << " has just enough nutrients" << endl;
                 growth += cycleGrowthIncrease;
             }
 
@@ -115,6 +128,10 @@ class PlantSpecies {
                                                               array<double, COLUMNS>{idealTemperature, healthyTemperatureRange, tolerableTemperatureRange}
                                                             };
             Util::CoutTable(columnTitles, rowTitles, tableData, TABLE_WIDTH, TABLE_HEADER_WIDTH);
+
+            cout << endl;
+            cout << "Growth rate / decrease: " << cycleGrowthIncrease << " / " << cycleGrowthDecrease << endl;
+            cout << "Water / nutrient consumption: " << cycleWaterDecrease << " / " << cycleNutrientDecrease << endl;
 
             Util::CoutLine(lineWidth, TABLE_CHAR);
         }

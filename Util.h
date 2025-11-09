@@ -91,10 +91,9 @@ class Util {
             throw ios_base::failure("File open error");
             }
     }
-    private:
-        static const int TABLE_DEFAULT_WIDTH = 20;
-        static const int LINE_DEFAULT_WIDTH = 100;
-        static const char LINE_DEFAULT_CHAR = '=';
+    static const int TABLE_DEFAULT_WIDTH = 20;
+    static const int LINE_DEFAULT_WIDTH = 100;
+    static const char LINE_DEFAULT_CHAR = '=';
 };
 
 #endif

@@ -57,7 +57,7 @@ class FarmPlot {
          */
         void PrintInformation() const {
             const static int TABLE_ROWS = 3;
-            const static int TABLE_DATA_WIDTH = 5;
+            const static int TABLE_DATA_WIDTH = 10;
 
             cout << "Printing crop information: " << endl;
             for (auto cropPair : crops) {
