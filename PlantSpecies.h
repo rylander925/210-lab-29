@@ -12,6 +12,7 @@ using namespace std;
 //name, ideal water level, ideal nutrient level, display character
 class PlantSpecies {
     public:
+        enum BiomeClass { PLAIN, COAST, FOREST, TROPIC, DESERT };
         //default constructor
         PlantSpecies() :
             name("Unnamed Plant"), displayToken('?'), 
@@ -54,6 +55,106 @@ class PlantSpecies {
             this->cycleNutrientDecrease = cycleNutrientDecrease;
         }
 
+        /**
+         * Presets for growth weights
+         * @param biomeClass Preset type
+         * May move to store weights in a file
+         */
+        void SetBiomeClass(BiomeClass biomeClass) {
+            switch(biomeClass) {
+                case(PLAIN): //'default' values
+                    idealWater = 0.5;
+                    idealNutrients = 0.5;
+                    idealTemperature = 70;
+
+                    healthyWaterRange = 0.1;
+                    healthyNutrientRange = 0.2;
+                    healthyTemperatureRange = 15;
+
+                    tolerableWaterRange = 0.2;
+                    tolerableNutrientRange = 0.4;
+                    tolerableTemperatureRange = 25;
+
+                    cycleGrowthIncrease = 0.03;
+                    cycleGrowthDecrease = 0.1;
+                    cycleWaterDecrease = 0.01;
+                    cycleNutrientDecrease = 0.002;
+                    break;
+                case(COAST): //more water required, cooler temperatures, more hearty
+                    idealWater = 0.6;
+                    idealNutrients = 0.4;
+                    idealTemperature = 60;
+
+                    healthyWaterRange = 0.1;
+                    healthyNutrientRange = 0.2;
+                    healthyTemperatureRange = 10;
+
+                    tolerableWaterRange = 0.15;
+                    tolerableNutrientRange = 0.4;
+                    tolerableTemperatureRange = 20;
+
+                    cycleGrowthIncrease = 0.02;
+                    cycleGrowthDecrease = 0.05;
+                    cycleWaterDecrease = 0.02;
+                    cycleNutrientDecrease = 0.001;
+                    break;
+                case(FOREST): //slightly more water, more hearty esp in nutrients
+                    idealWater = 0.55;
+                    idealNutrients = 0.5;
+                    idealTemperature = 70;
+
+                    healthyWaterRange = 0.2;
+                    healthyNutrientRange = 0.3;
+                    healthyTemperatureRange = 15;
+
+                    tolerableWaterRange = 0.3;
+                    tolerableNutrientRange = 0.5;
+                    tolerableTemperatureRange = 20;
+
+                    cycleGrowthIncrease = 0.02;
+                    cycleGrowthDecrease = 0.05;
+                    cycleWaterDecrease = 0.01;
+                    cycleNutrientDecrease = 0.002;
+                    break;
+                case(TROPIC): //more water, higher temperatures, low tolerance, grows faster
+                    idealWater = 0.9;
+                    idealNutrients = 0.6;
+                    idealTemperature = 75;
+
+                    healthyWaterRange = 0.1;
+                    healthyNutrientRange = 0.1;
+                    healthyTemperatureRange = 5;
+
+                    tolerableWaterRange = 0.15;
+                    tolerableNutrientRange = 0.2;
+                    tolerableTemperatureRange = 10;
+
+                    cycleGrowthIncrease = 0.05;
+                    cycleGrowthDecrease = 0.1;
+                    cycleWaterDecrease = 0.02;
+                    cycleNutrientDecrease = 0.003;
+                    break;
+                case(DESERT):
+                    idealWater = 0.4;
+                    idealNutrients = 0.4;
+                    idealTemperature = 75;
+
+                    healthyWaterRange = 0.2;
+                    healthyNutrientRange = 0.3;
+                    healthyTemperatureRange = 25;
+
+                    tolerableWaterRange = 0.35;
+                    tolerableNutrientRange = 0.35;
+                    tolerableTemperatureRange = 35;
+
+                    cycleGrowthIncrease = 0.02;
+                    cycleGrowthDecrease = 0.05;
+                    cycleWaterDecrease = 0.005;
+                    cycleNutrientDecrease = 0.001;
+
+            }
+        }
+        
         //Add getters for name and display token
         string GetName() const { return name; }
         char GetDisplayToken() const { return displayToken; }

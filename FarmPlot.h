@@ -2,6 +2,7 @@
 #define FARMPLOT_H
 
 #include <map>
+#include <fstream>
 #include <array>
 #include <list>
 #include <string>
@@ -47,8 +48,17 @@ class FarmPlot {
             //Parameters: filename
         void ReadData(string filename) {
             cout << "No file read implemented" << endl;
+            ifstream cropFile;
+
 
             //Read file contents
+
+            //Read information about plant species into a plant species object 
+                //name, token, ideal water, nutrient level, temperature
+
+            //Read information about each plant, and populate the array of lists with that information
+
+            //Insert pair of plant species and array into map
         }
 
         /**
