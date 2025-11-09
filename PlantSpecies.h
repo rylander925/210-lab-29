@@ -19,20 +19,24 @@ class PlantSpecies {
 
         //Partial constructor; specify name, token, and ideal levels--ranges set to default levels
         PlantSpecies(string name, char displayToken, double idealWater, double idealNutrients, double idealTemperature) : 
-            name(name), displayToken(displayToken), 
-            idealWater(idealWater), idealNutrients(idealNutrients), idealTemperature(idealTemperature) 
-        {}
+            name(name), displayToken(displayToken), idealTemperature(idealTemperature) 
+        {
+            this->idealWater = (idealWater <= 1 && idealWater >= 0) ? idealWater : -1; //set to error value to flag
+            this->idealNutrients = (idealNutrients <= 1 && idealNutrients >= 0) ? idealNutrients : -1;
+
+            if (idealWater == -1) {
+                cout << "ERROR: Ideal water set to improper value" << endl;
+            }
+            if (idealNutrients == -1) {
+                cout << "ERROR: Ideal nutrients set to improper value" << endl;
+            }
+        }
 
         //Complete constructor
         PlantSpecies(string name, char displayToken, 
               double idealWater, double idealNutrients, double idealTemperature,
               double healthyWaterRange, double healthyNutrientRange, double healthyTemperatureRange,
-              double tolerableWaterRange, double tolerableNutrientRange, double tolerableTemperatureRange) 
-              :
-              name(name), displayToken(displayToken), 
-              idealWater(idealWater), idealNutrients(idealNutrients), idealTemperature(idealTemperature),
-              healthyWaterRange(healthyWaterRange), healthyNutrientRange(healthyNutrientRange), healthyTemperatureRange(healthyTemperatureRange),
-              tolerableWaterRange(tolerableWaterRange), tolerableNutrientRange(tolerableNutrientRange), tolerableTemperatureRange(tolerableTemperatureRange) 
+              double tolerableWaterRange, double tolerableNutrientRange, double tolerableTemperatureRange) : PlantSpecies(name, displayToken, idealWater, idealNutrients, idealTemperature)
         {}
 
         //Add getters for name and display token
@@ -113,7 +117,6 @@ class PlantSpecies {
 
         /**
          * Outputs details about the plant species formatted as a table
-         * @test
          */
         void Print() const {
             const static int TABLE_HEADER_WIDTH = 20;
@@ -124,6 +127,9 @@ class PlantSpecies {
 
             //width of line above and below data display
             int lineWidth = COLUMNS * TABLE_WIDTH + TABLE_HEADER_WIDTH;
+
+            //Store original precision to reset precision back later
+            auto originalPrecision = cout.precision();
 
             //Output is enclosed by lines
             Util::CoutLine(lineWidth, TABLE_CHAR);
@@ -139,7 +145,7 @@ class PlantSpecies {
                     array<double, COLUMNS>{idealTemperature, healthyTemperatureRange, tolerableTemperatureRange}
                 };
 
-            cout << fixed << setprecision(1);
+            cout << fixed << setprecision(2);
             Util::CoutTable(columnTitles, rowTitles, tableData, TABLE_WIDTH, TABLE_HEADER_WIDTH);
             cout << endl;
 
@@ -149,6 +155,8 @@ class PlantSpecies {
             cout << "Water / nutrient consumption: " << cycleWaterDecrease << " / " << cycleNutrientDecrease << endl;
 
             Util::CoutLine(lineWidth, TABLE_CHAR);
+
+            cout << setprecision(originalPrecision);
         }
 
         //Overload operator< for use in map

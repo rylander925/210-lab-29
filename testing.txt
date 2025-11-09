@@ -7,25 +7,16 @@ FarmPlot
 PlantSpecies
     Constructors
         Test via PlantSpecies::Print() function, which has already been tested to function properly
-        main() function calls Print() function and FarmPlot constructor, will be tested by modifying the call 
-        to the PlantSpecies() constructor inside FarmPlot(), then calling FarmPlot::PrintInformation() in main, which calls PlantSpecies::Print()
-            in FarmPlot(), modified between
-                ...
-                crops.insert(make_pair(PlantSpecies(), defaultArray));
-                crops.insert(make_pair(PlantSpecies("COOL BEANS", 'C', 0.69, 0.42, 67), defaultArray));
-                crops.insert(make_pair(PlantSpecies("COOL BEANS", 'C', 0.69, 0.42, 67), defaultArray));
-                crops.insert(make_pair(PlantSpecies("COOL BEANS", 'C', 0.69, 0.42, 67, 0.1, 0.2, 0.3, 0.01, 0.02, 0.03), defaultArray));
-                ...
-            in FarmPlot::PrintInformation
-                cout << "Printing crop information: " << endl;
-                for (auto cropPair : crops)
-                    cropPair.first.Print();
-                ...
-            in main, 
-                FarmPlot farm(name, FILENAME_FARM);
-                ...
-                farm.PrintInformation();
-                ...
+        Call various constructors with values, check that it prints correct values
+
+        void PlantSpeciesConstruction() {
+            PlantSpecies defaultPlant;
+            PlantSpecies partialPlant("Partial Plant", 'P', 0.11, 0.12, 13);
+            PlantSpecies completePlant("Complete Plant", 'C', 0.21, 0.22, 23, 0.24, 0.25, 26, 0.27, 0.28, 29);
+            defaultPlant.Print();
+            partialPlant.Print();
+            completePlant.Print();
+        }
 
 Util
     CoutLine()
