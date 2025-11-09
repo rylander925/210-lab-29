@@ -31,6 +31,8 @@ struct WeatherProfile {
     map<PrecipitationEvent, int> precipitationWeights;
     map<TemperatureEvent, int> temperatureWeights; 
     map<WeatherEvent, int> weatherWeights;
+    map<EffectMultipliers, int> severityWeights;
+    double baselineTemperature;
 };
 
 //hold weights for locale as a struct for organization purposes
@@ -62,12 +64,45 @@ struct Weather {
     WeatherEvent wind;
     EffectMultipliers severity;
     WeatherProfile weatherProfile;
-    LocationProfile LocationProfile;
+    LocationProfile locationProfile;
 
     void DayCycle() {
         //random chance to keep current weather condition, or roll weather conditions again (allowing repeats)
-        if (RollProbability(persistance)) {
-            
+        //roll precipitation
+        if (!RollProbability(persistance)) {
+            auto effectiveWeights = weatherProfile.precipitationWeights;
+            effectiveWeights.at(RAIN) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
+            effectiveWeights.at(SNOW) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
+            severity = RollWeights(effectiveWeights);
+        }
+        if (!RollProbability(persistance)) {
+            auto effectiveWeights = weatherProfile.precipitationWeights;
+            effectiveWeights.at(RAIN) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
+            effectiveWeights.at(SNOW) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
+            precipitation = RollWeights(effectiveWeights);
+        }
+        if (!RollProbability(persistance)) wind = RollWeights(weatherProfile.weatherWeights);
+        if (!RollProbability(persistance)) {
+            map<TemperatureEvent, int> effectiveWeights = weatherProfile.temperatureWeights;
+            switch(precipitation) {
+                case SNOW: 
+                    effectiveWeights.at(COLD) *= 5; //allow follow through, snow is 10x more likely to be cold
+                case RAIN: 
+                    effectiveWeights.at(COLD) *= 2;
+                    switch(severity) {
+                        case LIGHT: effectiveWeights.at(COLD) *= 0.75; break;
+                        case HEAVY: effectiveWeights.at(COLD) *= 2;    break;
+                    }
+                    break;
+            }
+            if (wind == WIND) {
+                effectiveWeights.at(COLD) *= 1.5;
+                switch(severity) {
+                    case LIGHT: effectiveWeights.at(COLD) *= 0.8; //will be an integer
+                    case HEAVY: effectiveWeights.at(COLD) *= 2;
+                }
+            }
+
         }
         
     }
