@@ -6,6 +6,7 @@
 #include <string>
 #include <fstream>
 #include "FarmPlot.h"
+#include "Util.h"
 
 using namespace std;
 
@@ -28,30 +29,65 @@ enum AgeEvent { DISEASE, EATEN };
 //hold weights for climate as a struct for organization purposes
 //Pass maps of probabilities; can use an array w/ enums as indeces, but map forces explicit use of names
 struct WeatherProfile {
+    string name;
     map<PrecipitationEvent, int> precipitationWeights;
     map<TemperatureEvent, int> temperatureWeights; 
     map<WeatherEvent, int> weatherWeights;
     map<EffectMultipliers, int> severityWeights;
-    double baselineTemperature;
-};
+    double baselineTemperatureMult;
+
+    WeatherProfile() {
+        name = "No name";
+        precipitationWeights = {{RAIN, 0}, {SNOW, 0}, {NO_PRECIPITATION, 0}};
+        temperatureWeights = {{COLD, 0}, {TEMPERATE, 0}, {HOT, 0}};
+        weatherWeights = {{WIND, 0}, {NO_WEATHER, 0}};
+        severityWeights = {{LIGHT, 0}, {MEDIUM, 0}, {HEAVY, 0}};
+        baselineTemperatureMult = 1.0;
+    }
+
+    /**
+     * Outputs weather profile details
+     */
+    void Print() {
+        auto oldPrecision = cout.precision();
+        cout << "Weather profile \"" << name << "\": " << endl;
+        cout << "\tBase temperature: " << setprecision(2) << baselineTemperatureMult << "F" << endl;
+        cout << "\tWeights: " << endl;
+        cout << "\t\tLight: " << severityWeights.at(LIGHT) << ", Medium: " << severityWeights.at(MEDIUM) << ", Heavy: " << severityWeights.at(HEAVY) << endl;
+        cout << "\t\tRain: " << precipitationWeights.at(RAIN) << ", Snow: " << precipitationWeights.at(SNOW) << ", None: " << precipitationWeights.at(NO_PRECIPITATION) << endl;
+        cout << "\t\tCold: " << temperatureWeights.at(COLD) << ", Temperate: " << temperatureWeights.at(TEMPERATE) << ", Hot: " << temperatureWeights.at(HOT) << endl;
+        cout << "\t\tWind: " << weatherWeights.at(WIND) << ", None: " << weatherWeights.at(NO_WEATHER) << endl; 
+    }
+ };
 
 //hold weights for locale as a struct for organization purposes
 struct LocationProfile {
+    string name;
+    double baseTemperature;
     map<GeographicMultipliers, double> multipliers;
-    map<AgeEvent, int> randomEventWegiths;
+    map<AgeEvent, int> randomEventWeights;
+
+    LocationProfile() {
+        name = "No name";
+        baseTemperature = 70.0;
+        multipliers = {{TEMPERATURE_COEFFICIENT, 0}, {HUMIDITY_COEFFICIENT, 0}, {WIND_COEFFICIENT, 0}, {SEVERITY_COEFFICIENT, 0}};
+        randomEventWeights = {{DISEASE, 0}, {EATEN, 0}};
+    }
+
+    /**
+     * Outputs weather profile details
+     */
+    void Print() {
+        auto oldPrecision = cout.precision();
+        cout << "Locale \"" << name << "\": " << endl;
+        cout << "\tBase temperature: " << setprecision(2) << baseTemperature << "F" << endl;
+        cout << "\tMultipliers: " << endl;
+        cout << "\t\tTemperature: " << multipliers.at(TEMPERATURE_COEFFICIENT) << ", Humidity: " << multipliers.at(HUMIDITY_COEFFICIENT) 
+             << ", Wind: " << multipliers.at(WIND_COEFFICIENT) << ", Severity: " << multipliers.at(SEVERITY_COEFFICIENT) << endl;
+        cout << "\tRandom events: " << endl;
+        cout << "\t\tDisease: " << randomEventWeights.at(DISEASE) << ", Eaten: " << randomEventWeights.at(EATEN) << endl; 
+    }
 };
-
-//Define function to read weights of weather weights
-    //Parameters: name of file to read from; should contain one weather profile (i.e. winter.txt separate from spring.txt)
-    //Structured to read until file end, with each line as a string of event name then a number (double or int)
-    //Attempt to add to the map; map will not add if already added
-WeatherProfile ReadWeatherProfile(string filename);
-
-//Define function to read weights of location weights
-    //Parameters: name of file to read from; should contain one location (i.e. desert.txt separate from coast.txt)
-    //Structured to read until file end, with each line as a string of event name then a number (double or int)
-    //Attempt to add to the map; map will not add if already added
-LocationProfile ReadLocationProfile(string filename);
 
 //Define function to simulate affects of weather events on nutrient levels for one day
     //Parameters: farm plot, Weather profile and location profile
@@ -168,11 +204,38 @@ struct Weather {
                 case LIGHT: mult = pow(mult, LIGHT_TEMP_EXP); break;
                 case HEAVY: mult = pow(mult, HEAVY_TEMP_EXP); break;
             }
-            temperature = weatherProfile.baselineTemperature * mult;
+            temperature = locationProfile.baseTemperature * weatherProfile.baselineTemperatureMult * mult;
         }
         //Outside of temperature persistance, add slight variations in temperature each day, in a range of +/- DAILY_TEMP_VARIATION
         temperature += (rand() % (DAILY_TEMP_VARIATION * 2 + 1)) - DAILY_TEMP_VARIATION;
     }
+
+    //Define function to read weights of weather weights
+    //Parameters: name of file to read from; should contain one weather profile (i.e. winter.txt separate from spring.txt)
+    //Structured to read until file end, with each line as a string of event name then a number (double or int)
+    //Attempt to add to the map; map will not add if already added
+    void ReadWeatherProfile(string filename) {
+        ifstream infile;
+        Util::VerifyFileOpen(infile, filename);
+        string name, rainLine, temperatureLine, weatherLine, severityLine;
+        double baselineTemperature;
+        stringstream ss;
+
+        getline(infile, name);
+        getline(infile, rainLine);
+        getline(infile, temperatureLine);
+        getline(infile, weatherLine);
+        infile >> baselineTemperature;
+        infile.close();
+
+        
+    }
+
+//Define function to read weights of location weights
+    //Parameters: name of file to read from; should contain one location (i.e. desert.txt separate from coast.txt)
+    //Structured to read until file end, with each line as a string of event name then a number (double or int)
+    //Attempt to add to the map; map will not add if already added
+    void ReadLocationProfile(string filename);
 
     /**
      * Given a map of events with associated integer weights, rolls a random event

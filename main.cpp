@@ -41,7 +41,7 @@ struct WeatherProfile {
 //hold weights for locale as a struct for organization purposes
 struct LocationProfile {
     map<GeographicMultipliers, double> multipliers;
-    map<AgeEvent, int> randomEventWegiths;
+    map<AgeEvent, int> randomEventWeights;
 };
 
 //Define function to read weights of weather weights
@@ -164,7 +164,7 @@ LocationProfile ReadLocationProfile(string filename) {
     
     //dummy weights for now
     locale.multipliers = {{TEMPERATURE_COEFFICIENT, 1}, {HUMIDITY_COEFFICIENT, 1}, {WIND_COEFFICIENT, 1}, {SEVERITY_COEFFICIENT, 1}};
-    locale.randomEventWegiths = {{EATEN, 1}, {DISEASE, 1}};
+    locale.randomEventWeights = {{EATEN, 1}, {DISEASE, 1}};
 
     return locale;
 }
