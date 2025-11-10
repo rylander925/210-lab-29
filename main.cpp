@@ -16,7 +16,9 @@ using namespace std;
 
 //Define main function
 int main() {
-    const string FILENAME_SEASON = "data/weatherProfiles/spring.txt";
+    srand(time(0));
+
+    const string FILENAME_SEASON = "data/weatherProfiles/winter.txt";
     const string FILENAME_LOCALE = "data/locationProfiles/plains.txt";
     const string FILENAME_SPECIES = "data/speciesInfo.txt";
     const string FILENAME_PLANT_DATA = "data/plantData.txt";
@@ -24,6 +26,7 @@ int main() {
     const int OUTPUT_INTERVAL = 30;
     const double FERTILIZATION_AMOUNT = 0.1;
     const double WATERING_AMOUNT = 0.003;
+    const int NUM_PLANTS = 10;
 
     //Declare variables
     string name = "Farmplot";
@@ -34,7 +37,7 @@ int main() {
     cout << fixed << setprecision(3); 
     
     //Read garden node data into map of crops through constructor
-    FarmPlot farm(name, FILENAME_SPECIES, FILENAME_PLANT_DATA);
+    FarmPlot farm(name, FILENAME_SPECIES, FILENAME_PLANT_DATA, NUM_PLANTS);
     farm.PrintInformation();
 
     //Read weather node data and output information
@@ -45,8 +48,6 @@ int main() {
 
     //Begin time based simulation: (Total of 90 one day time intervals)
     for (int day = 1; day <= SIMULATION_PERIOD && !farm.HasDied(); day++) {
-        
-        
         Util::CoutLine(Util::LINE_DEFAULT_WIDTH / 5, '_');
         cout << "Day " << day + 1 << endl;
         
@@ -67,9 +68,6 @@ int main() {
         weather.Print();
         weather.WeatherFarm(farm);
         
-        //simulate growth cycle (call FarmPlot method)
-        farm.GrowthCycle(temperature);
-        
         //Every 7 time intervals (1 week), output map contents and 2D garden plot (Call Print functions for FarmPlot)
         if (day % OUTPUT_INTERVAL == 0) {
             Util::CoutLine(Util::LINE_DEFAULT_WIDTH, '~');
@@ -77,6 +75,10 @@ int main() {
             cout << "Period " << (day / OUTPUT_INTERVAL) + 1 << endl;
             farm.PrintPlot();
         }
+        
+        //simulate growth cycle (call FarmPlot method)
+        farm.GrowthCycle(temperature);
+
     }
     
     //After simulation, output garden and plant data

@@ -31,9 +31,9 @@ class FarmPlot {
         FarmPlot(string name, map<PlantSpecies, array<list<double>, 3>> plotData);
 
         //Constructor instantiates a framplot with a given name by reading data from specified file
-        FarmPlot(string name, string speciesFilename, string plantDataFilename){
+        FarmPlot(string name, string speciesFilename, string plantDataFilename, int defaultPlantNumber = 0){
             this->name = name;
-            ReadData(speciesFilename, plantDataFilename);
+            ReadData(speciesFilename, plantDataFilename, defaultPlantNumber);
         }
 
         //Standard name getter
@@ -48,8 +48,9 @@ class FarmPlot {
          * Read data from files into map of crops
          * @param speciesFilename File containing information about plant species. Formatted as "name \n tokenCharacter R G B biomeType plantType \n"
          * @param plantDataFilename File containing information about intial plant conditions for each species. Formatted as "numPlants growth water soil"
+         * @param setDefaultPlantNumber If specified as a number greater than 0, will use that default number of plants instead of number in file data
          */
-        void ReadData(string speciesFilename, string plantDataFilename) {
+        void ReadData(string speciesFilename, string plantDataFilename, int setDefaultPlantNumber = 0) {
             static const map<string, BiomeClass> BIOME_MAP = {{"plain", PLAIN}, {"coast", COAST}, {"forest", FOREST}, {"tropic", TROPIC}, {"desert", DESERT}};
             static const map<string, PlantTypeModifier> PLANT_MAP = {{"plant", PLANT}, {"flower", FLOWER}, {"tree", TREE}};
 
@@ -86,6 +87,11 @@ class FarmPlot {
                 plantDataSS.str(plantDataLine);
                 plantDataSS >> numPlants >> growth >> water >> soil;
 
+                //If parameter specifies plant number ,use that instead
+                if (setDefaultPlantNumber > 0) {
+                    numPlants = setDefaultPlantNumber;
+                }
+
                 //instantiate an array of lists holding plant data for each species
                 array<list<double>, 3> dataArray;
                 dataArray.at(GROWTH) = list<double>(numPlants, growth);
@@ -115,7 +121,7 @@ class FarmPlot {
             cout << "Farm plot \"" << name << "\" information:" << endl;
             for (const auto& cropPair : crops) {
                 if (!cropPair.second.at(GROWTH).empty() || showDead) {
-                    Util::CoutLine();
+                    Util::CoutLine(TABLE_DATA_WIDTH * cropPair.second.at(0).size() + Util::TABLE_DEFAULT_WIDTH);
                     
                     //Display information about plant species
                     if (showDetail) cropPair.first.Print();
@@ -138,7 +144,7 @@ class FarmPlot {
                         cout << fixed << setprecision(3);
                         Util::CoutTable(columnHeaders, rowHeaders, cropPair.second, TABLE_DATA_WIDTH);
                     }
-                    Util::CoutLine();
+                    Util::CoutLine(TABLE_DATA_WIDTH * cropPair.second.at(0).size() + Util::TABLE_DEFAULT_WIDTH);
                 }
             }
         }
@@ -290,6 +296,6 @@ class FarmPlot {
         string name;
 };
 
-const double FarmPlot::DEFAULT_UPDATE_PROBABILITY = 0.6;
+const double FarmPlot::DEFAULT_UPDATE_PROBABILITY = 0.3;
 
 #endif
