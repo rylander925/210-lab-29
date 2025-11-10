@@ -20,3 +20,9 @@ Originally placed number of crops as part of file data, but that would make hist
 However, for the crops that survive the whole season, usually all or no crops survive
     Seeded random number so results would actually be random each time. To prevent all-or-nothing survival of crops, decreased update probability for more randomness.
     Also allows some crops to sometimes survive the winter.
+
+Off by one error when displaying number of days
+    Issue was because # of days started from 1 instead of 0, but modified everything else to be consistent with starting from 1
+
+No crops survived the desert in the summer, not even desert crops
+    Adjusted weights of desert crops to be more resilient to extreme temperatures

@@ -18,8 +18,8 @@ using namespace std;
 int main() {
     srand(time(0));
 
-    const string FILENAME_SEASON = "data/weatherProfiles/winter.txt";
-    const string FILENAME_LOCALE = "data/locationProfiles/plains.txt";
+    const string FILENAME_SEASON = "data/weatherProfiles/summer.txt";
+    const string FILENAME_LOCALE = "data/locationProfiles/tropic.txt";
     const string FILENAME_SPECIES = "data/speciesInfo.txt";
     const string FILENAME_PLANT_DATA = "data/plantData.txt";
     const int SIMULATION_PERIOD = 90;
@@ -29,7 +29,7 @@ int main() {
     const int NUM_PLANTS = 10;
 
     //Declare variables
-    string name = "Farmplot";
+    string name = "Farm";
     int fertilizationInterval = 30;
     int wateringInterval = 1;
     double temperature = 60;
@@ -49,7 +49,7 @@ int main() {
     //Begin time based simulation: (Total of 90 one day time intervals)
     for (int day = 1; day <= SIMULATION_PERIOD && !farm.HasDied(); day++) {
         Util::CoutLine(Util::LINE_DEFAULT_WIDTH / 5, '_');
-        cout << "Day " << day + 1 << endl;
+        cout << "Day " << day << endl;
         
         //Every fertilization frequency number of time intervals, simulate fertilization events (call UpdateSoil FarmPlot method)
         if (day % fertilizationInterval == 0) {
@@ -74,13 +74,14 @@ int main() {
             Util::CoutLine(Util::LINE_DEFAULT_WIDTH, '~');
             cout << "Period " << (day / OUTPUT_INTERVAL) + 1 << endl;
             farm.PrintPlot();
+            farm.PrintInformation();
         }
-        
+
         //simulate growth cycle (call FarmPlot method)
         farm.GrowthCycle(temperature);
 
     }
-    
+    Util::CoutLine(200, '|');
     //After simulation, output garden and plant data
     //(Add some message that simulation is over)
     farm.PrintInformation();
