@@ -35,6 +35,7 @@ struct WeatherProfile {
     map<WeatherEvent, int> weatherWeights;
     map<EffectMultipliers, int> severityWeights;
     double baselineTemperatureMult;
+    double persistance;
 
     WeatherProfile() {
         name = "No name";
@@ -43,6 +44,7 @@ struct WeatherProfile {
         weatherWeights = {{WIND, 0}, {NO_WEATHER, 0}};
         severityWeights = {{LIGHT, 0}, {MEDIUM, 0}, {HEAVY, 0}};
         baselineTemperatureMult = 1.0;
+        persistance = 0;
     }
 
     /**
@@ -69,6 +71,7 @@ struct WeatherProfile {
         getline(infile, weatherLine);
         getline(infile, severityLine);
         infile >> baselineTemperatureMult;
+        infile >> persistance;
         infile.close();
 
         //Store lines holding weights into stringstream, and read into maps for each map of weights
@@ -106,6 +109,7 @@ struct WeatherProfile {
         auto oldPrecision = cout.precision();
         cout << "Weather profile \"" << name << "\": " << endl;
         cout << "\tTemperature multiplier: " << setprecision(2) << baselineTemperatureMult << endl;
+        cout << "\tWeather persistance: " << persistance * 100 << "%" << endl;
         cout << "\tWeights: " << endl;
         cout << "\t\tLight: " << severityWeights.at(LIGHT) << ", Medium: " << severityWeights.at(MEDIUM) << ", Heavy: " << severityWeights.at(HEAVY) << endl;
         cout << "\t\tRain: " << precipitationWeights.at(RAIN) << ", Snow: " << precipitationWeights.at(SNOW) << ", None: " << precipitationWeights.at(NO_PRECIPITATION) << endl;
@@ -118,12 +122,14 @@ struct WeatherProfile {
 struct LocationProfile {
     string name;
     double baseTemperature;
+    double persistance;
     map<GeographicMultipliers, double> multipliers;
     map<AgeEvent, int> randomEventWeights;
 
     LocationProfile() {
         name = "No name";
         baseTemperature = 70.0;
+        persistance = 0;
         multipliers = {{HUMIDITY_COEFFICIENT, 0}, {WIND_COEFFICIENT, 0}, {SEVERITY_COEFFICIENT, 0}};
         randomEventWeights = {{DISEASE, 0}, {EATEN, 0}, {NO_RANDOM_EVENTS, 0}};
     }
@@ -134,6 +140,7 @@ struct LocationProfile {
      * humidityK windK severityK
      * disease eaten none
      * baseline temperature
+     * persistance
      * @param filename
      * 
      */
@@ -148,6 +155,7 @@ struct LocationProfile {
         getline(infile, multiplierLine);
         getline(infile, randomEventLine);
         infile >> baseTemperature;
+        infile >> persistance;
         infile.close();
 
         //Store lines holding weights into stringstream, and read into maps for each map of weights
@@ -173,11 +181,11 @@ struct LocationProfile {
         auto oldPrecision = cout.precision();
         cout << "Locale \"" << name << "\": " << endl;
         cout << "\tBase temperature: " << setprecision(2) << baseTemperature << "F" << endl;
+        cout << "\tWeather persistance: " << persistance * 100 << "%" << endl;
         cout << "\tMultipliers: " << endl;
         cout << "\t\tHumidity: " << multipliers.at(HUMIDITY_COEFFICIENT) << ", Wind: " << multipliers.at(WIND_COEFFICIENT) << ", Severity: " << multipliers.at(SEVERITY_COEFFICIENT) << endl;
         cout << "\tRandom events: " << endl;
-        cout << "\t\tDisease: " << randomEventWeights.at(DISEASE) << ", Eaten: " << randomEventWeights.at(EATEN) 
-             << ", None: " << randomEventWeights.at(NO_RANDOM_EVENTS) << endl; 
+        cout << "\t\tDisease: " << randomEventWeights.at(DISEASE) << ", Eaten: " << randomEventWeights.at(EATEN) << ", None: " << randomEventWeights.at(NO_RANDOM_EVENTS) << endl; 
     }
 };
 
@@ -186,7 +194,6 @@ struct LocationProfile {
 void WeatherFarm(FarmPlot& farm, WeatherProfile season, LocationProfile locale);
 
 struct Weather {
-    double persistance; //percent chance a weather condition does not change
     double temperature; //temperature in F
     PrecipitationEvent precipitation;
     WeatherEvent wind; 
@@ -232,7 +239,7 @@ struct Weather {
     void CycleWeather() {
         //random chance to keep current weather condition, or roll weather conditions again (allowing repeats)
         //roll severity
-        if (!RollProbability(persistance)) {
+        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance))) {
             //Increase probabilities based on geopraphic multipliers
             auto effectiveWeights = weatherProfile.severityWeights;
             effectiveWeights.at(MEDIUM) *= locationProfile.multipliers.at(SEVERITY_COEFFICIENT);
@@ -243,7 +250,7 @@ struct Weather {
         }
 
         //roll precipitation
-        if (!RollProbability(persistance)) {
+        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance))) {
             auto effectiveWeights = weatherProfile.precipitationWeights;
             effectiveWeights.at(RAIN) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
             effectiveWeights.at(SNOW) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
@@ -252,7 +259,7 @@ struct Weather {
         }
 
         //roll wind
-        if (!RollProbability(persistance)) {
+        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance))) {
             auto effectiveWeights = weatherProfile.weatherWeights;
             effectiveWeights.at(WIND) *= locationProfile.multipliers.at(WIND_COEFFICIENT);
 
@@ -260,7 +267,7 @@ struct Weather {
         }
 
         //roll temperature
-        if (!RollProbability(persistance)) {
+        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance))) {
             auto effectiveWeights = weatherProfile.temperatureWeights;
 
             //Increase probability of cold based on rain/snow and severity
