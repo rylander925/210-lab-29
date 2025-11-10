@@ -189,14 +189,11 @@ struct LocationProfile {
     }
 };
 
-//Define function to simulate affects of weather events on nutrient levels for one day
-    //Parameters: farm plot, Weather profile and location profile
-void WeatherFarm(FarmPlot& farm, WeatherProfile season, LocationProfile locale);
-
 struct Weather {
     double temperature; //temperature in F
     PrecipitationEvent precipitation;
     WeatherEvent wind; 
+    TemperatureEvent temperatureType;
     EffectMultipliers severity;
     WeatherProfile weatherProfile;
     LocationProfile locationProfile;
@@ -232,6 +229,51 @@ struct Weather {
         cout << "Current weather conditions:" << modifier << ", " << rain << ", " << miscWeather;
         cout << "\tTemperature: " << setprecision(1) << temperature << "F";
     }
+
+    //Define function to simulate affects of weather events on water and nutrient levels for one day
+    //Does not determine weather, nor cycle crop growth
+    //Parameters: farm plot, Weather profile and location profile
+    void WeatherFarm(FarmPlot& farm, bool showFlags = false) {
+        static const double PRECIPITATION_AMOUNT = 0.02;
+        static const double TEMPERATURE_WATER_DRAIN = 0.01;
+        static const double TEMPERATUE_NUTRIENT_DRAIN = 0.005;
+        static const double RAIN_NUTRIENT_GAIN = 0.01;
+        static const double WIND_NUTRIENT_DRAIN = 0.005;
+        static const double SNOW_MULT = 0.5;
+        static const double HEAVY_MULT = 2;
+        static const double LIGHT_MULT = 0.5;
+        static const double DRY_TEMPERATURE = 80.0;
+        static const double FROST_TEMPERATURE = 45;
+        static const double WEATHER_DAMAGE = 0.05;
+
+        double mult, effectivePrecipitation, effectiveNutrients, effectiveGrowth;
+
+        if (showFlags) cout << "Executing Weather::WeatherFarm: " << endl;
+
+        //Calculate a multiplier based on weather severity
+        mult = (severity == HEAVY) ? HEAVY_MULT : (severity == LIGHT) ? LIGHT_MULT : 1;
+
+        //Calculate precipitation from rain/snow
+        effectivePrecipitation = (precipitation == NO_PRECIPITATION) ? 0 : PRECIPITATION_AMOUNT * mult * (precipitation == SNOW ? SNOW_MULT : 1.0);
+        if (showFlags && precipitation != NO_PRECIPITATION) cout << "\tPrecipitation increased from " << ((precipitation == RAIN) ? "rain" : "snow") << endl;
+
+        //Calculate nutrient gain from rain minus drain from wind
+        effectiveNutrients =  ((precipitation == RAIN) ? RAIN_NUTRIENT_GAIN * mult : 0) - ((wind == WIND) ? WIND_NUTRIENT_DRAIN * mult : 0);
+        if (showFlags && wind == WIND) cout << "\tWind drained some nutrients" << endl;
+
+        //Calculate how dry/freezing weather affects nutrients/water levels and plant growth
+        effectivePrecipitation -= (temperature >= DRY_TEMPERATURE) ? TEMPERATURE_WATER_DRAIN * mult : 0;
+        if (showFlags && temperature >= DRY_TEMPERATURE) cout << "\tDry temperatures caused growth, nutrient, and water loss" << endl;
+        effectiveNutrients -= (temperature >= DRY_TEMPERATURE || temperature <= FROST_TEMPERATURE) ? TEMPERATUE_NUTRIENT_DRAIN * mult : 0;
+        effectiveGrowth -= (temperature >= DRY_TEMPERATURE || temperature <= FROST_TEMPERATURE) ? WEATHER_DAMAGE * mult : 0;
+        if (showFlags && temperature <= FROST_TEMPERATURE) cout << "\tFreezing caused nutrient and growth loss" << endl;
+
+        if (showFlags) cout << "\t(G, W, S): " << "(" << effectiveGrowth << ", " << effectivePrecipitation << ", " << effectiveNutrients << ")" << endl;
+
+        //Update farm based on accumulated growth/precipitation/nutrients
+        farm.Update(effectiveGrowth, effectivePrecipitation, effectiveNutrients);
+    }
+
 
     /**
      * Rolls weather events to determine weather conditions
@@ -293,7 +335,8 @@ struct Weather {
 
             //Roll temperature event based on modified weights and determine temperature
             double mult = 1;
-            switch(RollWeights(effectiveWeights)) {
+            temperatureType = RollWeights(effectiveWeights);
+            switch(temperatureType) {
                 case COLD: mult *= COLD_TEMP_MULT; break;
                 case HOT:  mult *= HOT_TEMP_MULT;  break;
             }
@@ -307,12 +350,6 @@ struct Weather {
         //Outside of temperature persistance, add slight variations in temperature each day, in a range of +/- DAILY_TEMP_VARIATION
         temperature += (rand() % (DAILY_TEMP_VARIATION * 2 + 1)) - DAILY_TEMP_VARIATION;
     }
-
-//Define function to read weights of location weights
-    //Parameters: name of file to read from; should contain one location (i.e. desert.txt separate from coast.txt)
-    //Structured to read until file end, with each line as a string of event name then a number (double or int)
-    //Attempt to add to the map; map will not add if already added
-    void ReadLocationProfile(string filename);
 
     /**
      * Given a map of events with associated integer weights, rolls a random event
