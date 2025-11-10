@@ -43,11 +43,6 @@ int main() {
     weather.locationProfile.Print();
     weather.Print();
 
-    //Determine fertilzation frequency from input
-    //Add prompt statements and input validation
-    //cin >> fertilizationInterval;
-    //cin >> wateringInterval;
-
     //Begin time based simulation: (Total of 90 one day time intervals)
     for (int day = 1; day <= SIMULATION_PERIOD && !farm.HasDied(); day++) {
         //Every 7 time intervals (1 week), output map contents and 2D garden plot (Call Print functions for FarmPlot)
