@@ -221,7 +221,6 @@ struct Weather {
             //Increase liklihood that when one weather condition changes, multiple weather conditions change
             static const double BASE_CASCADE_PROBABILITY;
 
-
     //Weights for WeatherFarm function
         //Effects of precipitation
             static const double PRECIPITATION_AMOUNT; //% water level gained from 1 day of rain or snow
@@ -319,7 +318,6 @@ struct Weather {
         //Update farm based on accumulated growth/precipitation/nutrients
         farm.Update(effectiveGrowth, effectivePrecipitation, effectiveNutrients);
     }
-
 
     /**
      * Rolls weather events to determine weather conditions
