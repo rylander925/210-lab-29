@@ -29,3 +29,5 @@ No crops survived the desert in the summer, not even desert crops
 
 Location profile modifiers were undertuned, causing plants to dry up in the tropics
     Adjusted weights to be more exaggerated, especially with rain modifiers for the tropics
+
+Fixed a small typo in output and some variable names ("persistance")

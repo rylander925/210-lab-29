@@ -18,8 +18,8 @@ using namespace std;
 int main() {
     srand(time(0));
 
-    const string FILENAME_SEASON = "data/weatherProfiles/summer.txt";
-    const string FILENAME_LOCALE = "data/locationProfiles/tropic.txt";
+    const string FILENAME_SEASON = "data/weatherProfiles/winter.txt";
+    const string FILENAME_LOCALE = "data/locationProfiles/plains.txt";
     const string FILENAME_SPECIES = "data/speciesInfo.txt";
     const string FILENAME_PLANT_DATA = "data/plantData.txt";
     const int SIMULATION_PERIOD = 90;
@@ -74,12 +74,10 @@ int main() {
             Util::CoutLine(Util::LINE_DEFAULT_WIDTH, '~');
             cout << "Period " << (day / OUTPUT_INTERVAL) + 1 << endl;
             farm.PrintPlot();
-            //farm.PrintInformation();
         }
 
         //simulate growth cycle (call FarmPlot method)
         farm.GrowthCycle(temperature);
-
     }
     Util::CoutLine(200, '|');
     //After simulation, output garden and plant data
