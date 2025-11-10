@@ -159,10 +159,10 @@ void FarmPlotUpdate() {
 
 void WeatherProfileRead() {
     WeatherProfile defaultWeather, winter, spring, summer, fall;
-    winter.ReadWeatherProfile("data/weatherProfiles/winter.txt");
-    spring.ReadWeatherProfile("data/weatherProfiles/spring.txt");
-    summer.ReadWeatherProfile("data/weatherProfiles/summer.txt");
-    fall.ReadWeatherProfile("data/weatherProfiles/fall.txt");
+    winter.ReadProfile("data/weatherProfiles/winter.txt");
+    spring.ReadProfile("data/weatherProfiles/spring.txt");
+    summer.ReadProfile("data/weatherProfiles/summer.txt");
+    fall.ReadProfile("data/weatherProfiles/fall.txt");
     defaultWeather.Print();
     winter.Print();
     spring.Print();

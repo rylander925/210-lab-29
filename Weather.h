@@ -56,7 +56,7 @@ struct WeatherProfile {
      * @param filename
      * 
      */
-    void ReadWeatherProfile(string filename) {
+    void ReadProfile(string filename) {
         string rainLine, temperatureLine, weatherLine, severityLine;
         stringstream ss;
 
@@ -126,6 +126,44 @@ struct LocationProfile {
         baseTemperature = 70.0;
         multipliers = {{TEMPERATURE_COEFFICIENT, 0}, {HUMIDITY_COEFFICIENT, 0}, {WIND_COEFFICIENT, 0}, {SEVERITY_COEFFICIENT, 0}};
         randomEventWeights = {{DISEASE, 0}, {EATEN, 0}};
+    }
+
+    /**
+     * Read location profile data from file, formatted with weights as integers:
+     * name (as string)
+     * temperatureK humidityK windK severityK
+     * disease eaten
+     * baseline temperature
+     * @param filename
+     * 
+     */
+    void ReadProfile(string filename) {
+        string multiplierLine, randomEventLine;
+        stringstream ss;
+
+        //Open file stream and read contents to variables and lines holding weights
+        ifstream infile;
+        Util::VerifyFileOpen(infile, filename);
+        getline(infile, name);
+        getline(infile, multiplierLine);
+        getline(infile, randomEventLine);
+        infile >> baseTemperature;
+        infile.close();
+
+        //Store lines holding weights into stringstream, and read into maps for each map of weights
+        ss.str(multiplierLine);
+        for(auto& pair : multipliers) {
+            ss >> pair.second;
+        }
+        ss.clear();
+        ss.str("");
+
+        ss.str(randomEventLine);
+        for(auto& pair : randomEventWeights) {
+            ss >> pair.second;
+        }
+        ss.clear();
+        ss.str("");  
     }
 
     /**
