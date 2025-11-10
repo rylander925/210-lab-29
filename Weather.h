@@ -256,6 +256,9 @@ struct Weather {
         locationProfile.persistance = oldLocationPersistance;
     }
 
+    /**
+     * Outputs current weather conditions
+     */
     void Print() {
         static const int PRECISION = 1;
         auto oldPrecision = cout.precision();
@@ -280,9 +283,11 @@ struct Weather {
         cout << "\tTemperature: " << fixed << setprecision(1) << temperature << "F" << endl;
     }
 
-    //Define function to simulate affects of weather events on water and nutrient levels for one day
-    //Does not determine weather, nor cycle crop growth
-    //Parameters: farm plot, Weather profile and location profile
+    /**
+     * Simulates effects of weather events for one day.
+     * @param farm Farm plot of crops to simulate effects on
+     * @param showFlags If true, will show flags associated with changes to each crop
+     */
     void WeatherFarm(FarmPlot& farm, bool showFlags = false) {
         double mult = 0, effectiveWindMult = 0, effectivePrecipitation = 0, effectiveNutrients = 0, effectiveGrowth = 0;
 
@@ -326,8 +331,8 @@ struct Weather {
         double cascadeProbability = 0;
         //random chance to keep current weather condition, or roll weather conditions again (allowing repeats)
         //roll severity
-        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance)) 
-            || RollProbability(cascadeProbability)) {
+        if (!(Util::RollProbability(weatherProfile.persistance) || Util::RollProbability(locationProfile.persistance)) 
+            || Util::RollProbability(cascadeProbability)) {
             if (showFlags) cout << "Severity roll succeeded" << endl;
             cascadeProbability = BASE_CASCADE_PROBABILITY;
             //Increase probabilities based on geopraphic multipliers
@@ -336,12 +341,12 @@ struct Weather {
             effectiveWeights.at(HEAVY) *= locationProfile.multipliers.at(SEVERITY_COEFFICIENT);
             
             //Roll modified weights 
-           severity = RollWeights(effectiveWeights);
+           severity = Util::RollWeights(effectiveWeights);
         }
 
         //roll precipitation
-        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance)) 
-            || RollProbability(cascadeProbability)) {
+        if (!(Util::RollProbability(weatherProfile.persistance) || Util::RollProbability(locationProfile.persistance)) 
+            || Util::RollProbability(cascadeProbability)) {
             if (showFlags) cout << "Precipitation roll succeeded" << endl;
             cascadeProbability = BASE_CASCADE_PROBABILITY;
 
@@ -349,24 +354,24 @@ struct Weather {
             effectiveWeights.at(RAIN) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
             effectiveWeights.at(SNOW) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
 
-            precipitation = RollWeights(effectiveWeights);
+            precipitation = Util::RollWeights(effectiveWeights);
         }
 
         //roll wind
-        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance)) 
-            || RollProbability(cascadeProbability)) {
+        if (!(Util::RollProbability(weatherProfile.persistance) || Util::RollProbability(locationProfile.persistance)) 
+            || Util::RollProbability(cascadeProbability)) {
             if (showFlags) cout << "Wind roll succeeded" << endl;
             cascadeProbability = BASE_CASCADE_PROBABILITY;
 
             auto effectiveWeights = weatherProfile.weatherWeights;
             effectiveWeights.at(WIND) *= locationProfile.multipliers.at(WIND_COEFFICIENT);
 
-            wind = RollWeights(effectiveWeights);
+            wind = Util::RollWeights(effectiveWeights);
         }
 
         //roll temperature
-        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance)) 
-            || RollProbability(pow(cascadeProbability, 0.5))) { //Temperature is most likely to change after another condition changes
+        if (!(Util::RollProbability(weatherProfile.persistance) || Util::RollProbability(locationProfile.persistance)) 
+            || Util::RollProbability(pow(cascadeProbability, 0.5))) { //Temperature is most likely to change after another condition changes
             if (showFlags) cout << "Temperature roll succeeded" << endl;
             auto effectiveWeights = weatherProfile.temperatureWeights;
             cascadeProbability = BASE_CASCADE_PROBABILITY;
@@ -394,7 +399,7 @@ struct Weather {
 
             //Roll temperature event based on modified weights and determine temperature
             double mult = 1;
-            temperatureType = RollWeights(effectiveWeights);
+            temperatureType = Util::RollWeights(effectiveWeights);
             switch(temperatureType) {
                 case COLD: mult *= COLD_TEMP_MULT; break;
                 case HOT:  mult *= HOT_TEMP_MULT;  break;
@@ -409,50 +414,6 @@ struct Weather {
         }
         //Outside of temperature persistance, add slight variations in temperature each day, in a range of +/- DAILY_TEMP_VARIATION
         temperature += (rand() % (DAILY_TEMP_VARIATION * 2 + 1)) - DAILY_TEMP_VARIATION;
-    }
-
-    /**
-     * Given a map of events with associated integer weights, rolls a random event
-     * @param weights Map of events with an integer representing the 'weight' of that event occuring relative to other events
-     * @return Key associated with rolled event
-     * @note Assumes events are mutually exclusive
-     */
-    template <typename T>
-    T RollWeights (map<T, int> weights) {
-        int total = 0;
-        int num;
-        T result;
-        for (auto pair : weights) total += pair.second;
-        num = rand() % total;           //number from 0 to total - 1
-        for (auto pair : weights) { 
-            num -= pair.second;         //since max is total - 1, negative val indicates num is in current weight range 
-            if (num < 0) {
-                result = pair.first;
-                break;                  //store resulting range, and exit loop; uses break to make use of ranged based for loop
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Given the weights of a true or false condition, rolls true or false
-     * @param trueWeight Weight of true probability occuring, as an integer representing relative likelihood
-     * @param falseWeight Weight of false probability occuring
-     * @return Bool based on result of the roll
-     */
-    bool RollWeights (int trueWeight, int falseWeight) {
-        return (rand() % (trueWeight + falseWeight) ) < trueWeight;
-    }
-
-    /**
-     * Rolls a probability
-     * @param probability Fraction from (0, 1) of probability occuring
-     * @param decimals Decimal places considered in the probability, e.g. for 0.12345, a decimal of 2 will roll 12%, and a default decimal of 5 will roll 12.345%.
-     * @return Bool based on result of roll
-     */
-    bool RollProbability(double probability, int decimals = 5) {
-        int mult = pow(10, decimals); //represents decimal places of probability to consider
-        return RollWeights(mult * probability, mult * (1 - probability)); //rolls probability by converting to weights, and rolling the weights
     }
 };
 

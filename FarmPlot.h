@@ -108,7 +108,7 @@ class FarmPlot {
         /**
          * Outputs information of each plant species and each plant associated with each plant species as a table
          */
-        void PrintInformation(bool showDead = false, bool showDetail = true) const {
+        void PrintInformation(bool showDead = false, bool showDetail = false) const {
             const static int TABLE_ROWS = 3;
             const static int TABLE_DATA_WIDTH = 10;
 
@@ -141,6 +141,24 @@ class FarmPlot {
                     Util::CoutLine();
                 }
             }
+        }
+
+        /**
+         * Outputs list if dead crops
+         */
+        void PrintDead(int columns = 10, int width = 20) {
+            stringstream deadCropList;
+            int numCrops = 0;
+            int i = 0;
+            for (const auto& cropPair : crops) {
+                if (cropPair.second.at(GROWTH).empty()) {
+                    deadCropList << setw(width) << cropPair.first.GetName();
+                    numCrops++;
+                    if (numCrops % columns == 0) deadCropList << endl;
+                }
+            }
+            cout << "List of " << numCrops << " dead crops: " << endl;
+            cout << deadCropList.str() << endl;
         }
 
         /**
@@ -221,7 +239,7 @@ class FarmPlot {
          * @param showDeathFlag If true, display a message whenever a plant dies, along with its health information
          * @param showGrowthFlag If true, displays a message with every update to growth levels (from PlantSpecies::GrowthCycle()), as well as when function is called
          */
-        void GrowthCycle(double temperature, bool showDeathFlag = false, bool showGrowthFlags = false) {
+        void GrowthCycle(double temperature, double updateProbability = DEFAULT_UPDATE_PROBABILITY,  bool showDeathFlag = false, bool showGrowthFlags = false) {
             if (showGrowthFlags) cout << "Called FarmPlot::GrowthCycle()" << endl;
 
             //Calls update function on each crop, removing them from the list if they die
@@ -230,8 +248,10 @@ class FarmPlot {
                                        soilIt = cropPair.second.at(SOIL).begin(),
                                        growthIt = cropPair.second.at(GROWTH).begin(); 
                 while(waterIt != cropPair.second.at(WATER).end()) { //only one conditional for now, assumes each list has equal size
-                    //update crops by running a growth cycle
-                    cropPair.first.GrowthCycle(*growthIt,*waterIt, *soilIt, temperature, showGrowthFlags);
+                    if (Util::RollProbability(updateProbability)) { //don't update probabilities every single time
+                        //update crops by running a growth cycle
+                        cropPair.first.GrowthCycle(*growthIt,*waterIt, *soilIt, temperature, showGrowthFlags);
+                    }
 
                     //remove dead crops
                     if (*growthIt < 0) {
@@ -254,11 +274,14 @@ class FarmPlot {
         //Enum for readability of the map's value array's list indeces, publicly accessible
         enum CropData {GROWTH, WATER, SOIL};
     private:
+        const static double DEFAULT_UPDATE_PROBABILITY;
         //Declare map holding plant details
         //list array holds double of growth, water level, and soil health in that order
         map<PlantSpecies, array<list<double>, 3>> crops;
 
         string name;
 };
+
+const double FarmPlot::DEFAULT_UPDATE_PROBABILITY = 0.6;
 
 #endif

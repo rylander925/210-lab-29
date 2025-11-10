@@ -1,2 +1,8 @@
 Minor unintended behavior: Farmplot print function always shows dead crops.
     Added flag that is by default false to choose whether or not to show dead crops.
+
+Issue with include errors when changing probability functions in Weather to static. 
+    Just moved probability functions to Util class
+
+Off by one error when implementing a function to show dead crops
+    Found while testing and counting each plant; started counter at 0 instead of 1

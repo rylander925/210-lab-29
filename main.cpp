@@ -79,6 +79,7 @@ int main() {
     
     //After simulation, output garden and plant data
     //(Add some message that simulation is over)
-    farm.PrintInformation(false);
+    farm.PrintInformation();
     farm.PrintPlot();
+    farm.PrintDead();
 }
