@@ -137,8 +137,8 @@ class PlantSpecies {
                     healthyNutrientRange = 0.1;
                     healthyTemperatureRange = 5;
 
-                    tolerableWaterRange = 0.15;
-                    tolerableNutrientRange = 0.2;
+                    tolerableWaterRange = 0.2;
+                    tolerableNutrientRange = 0.3;
                     tolerableTemperatureRange = 10;
 
                     cycleGrowthIncrease = 0.05;

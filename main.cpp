@@ -74,7 +74,7 @@ int main() {
             Util::CoutLine(Util::LINE_DEFAULT_WIDTH, '~');
             cout << "Period " << (day / OUTPUT_INTERVAL) + 1 << endl;
             farm.PrintPlot();
-            farm.PrintInformation();
+            //farm.PrintInformation();
         }
 
         //simulate growth cycle (call FarmPlot method)

@@ -26,3 +26,6 @@ Off by one error when displaying number of days
 
 No crops survived the desert in the summer, not even desert crops
     Adjusted weights of desert crops to be more resilient to extreme temperatures
+
+Location profile modifiers were undertuned, causing plants to dry up in the tropics
+    Adjusted weights to be more exaggerated, especially with rain modifiers for the tropics
