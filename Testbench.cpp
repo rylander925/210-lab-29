@@ -189,9 +189,11 @@ void WeatherEffects() {
     const string LOCATION_FILE = "data/locationProfiles/plains.txt";
     const string WEATHER_FILE = "data/weatherProfiles/spring.txt";
     Weather weather(WEATHER_FILE, LOCATION_FILE);
+    weather.weatherProfile.Print();
+    weather.locationProfile.Print();
     for (int i = 0; i < 20; i++) {
         weather.Print();
-        weather.Cycle();
+        weather.Cycle(true);
     }
 }
 

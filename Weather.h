@@ -108,7 +108,7 @@ struct WeatherProfile {
     void Print() {
         auto oldPrecision = cout.precision();
         cout << "Weather profile \"" << name << "\": " << endl;
-        cout << "\tTemperature multiplier: " << setprecision(2) << baselineTemperatureMult << endl;
+        cout << "\tTemperature multiplier: " << fixed << setprecision(2) << baselineTemperatureMult << endl;
         cout << "\tWeather persistance: " << persistance * 100 << "%" << endl;
         cout << "\tWeights: " << endl;
         cout << "\t\tLight: " << severityWeights.at(LIGHT) << ", Medium: " << severityWeights.at(MEDIUM) << ", Heavy: " << severityWeights.at(HEAVY) << endl;
@@ -180,7 +180,7 @@ struct LocationProfile {
     void Print() {
         auto oldPrecision = cout.precision();
         cout << "Locale \"" << name << "\": " << endl;
-        cout << "\tBase temperature: " << setprecision(2) << baseTemperature << "F" << endl;
+        cout << "\tBase temperature: " << fixed << setprecision(2) << baseTemperature << "F" << endl;
         cout << "\tWeather persistance: " << persistance * 100 << "%" << endl;
         cout << "\tMultipliers: " << endl;
         cout << "\t\tHumidity: " << multipliers.at(HUMIDITY_COEFFICIENT) << ", Wind: " << multipliers.at(WIND_COEFFICIENT) << ", Severity: " << multipliers.at(SEVERITY_COEFFICIENT) << endl;
@@ -242,6 +242,8 @@ struct Weather {
     Weather(string weatherFile, string localeFile) {
         weatherProfile.ReadProfile(weatherFile);
         locationProfile.ReadProfile(localeFile);
+        double oldWeatherPresistance = weatherProfile.persistance;
+        double oldLocationPersistance = locationProfile.persistance;
         temperature = locationProfile.baseTemperature;
     }
 
@@ -261,6 +263,8 @@ struct Weather {
         }
         if (wind == WIND) {
             miscWeather = "Windy";
+        } else {
+            miscWeather = "Rain";
         }
         cout << "Weather for " << locationProfile.name << " in " << weatherProfile.name << endl;
         cout << "\tConditions: " << modifier << ", " << rain << ", " << miscWeather << endl;
@@ -308,10 +312,11 @@ struct Weather {
     /**
      * Rolls weather events to determine weather conditions
      */
-    void Cycle() {
+    void Cycle(bool showFlags = false) {
         //random chance to keep current weather condition, or roll weather conditions again (allowing repeats)
         //roll severity
         if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance))) {
+            if (showFlags) cout << "Severity roll succeeded" << endl;
             //Increase probabilities based on geopraphic multipliers
             auto effectiveWeights = weatherProfile.severityWeights;
             effectiveWeights.at(MEDIUM) *= locationProfile.multipliers.at(SEVERITY_COEFFICIENT);
@@ -323,6 +328,7 @@ struct Weather {
 
         //roll precipitation
         if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance))) {
+            if (showFlags) cout << "Precipitation roll succeeded" << endl;
             auto effectiveWeights = weatherProfile.precipitationWeights;
             effectiveWeights.at(RAIN) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
             effectiveWeights.at(SNOW) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
@@ -332,6 +338,7 @@ struct Weather {
 
         //roll wind
         if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance))) {
+            if (showFlags) cout << "Wind roll succeeded" << endl;
             auto effectiveWeights = weatherProfile.weatherWeights;
             effectiveWeights.at(WIND) *= locationProfile.multipliers.at(WIND_COEFFICIENT);
 
@@ -340,8 +347,8 @@ struct Weather {
 
         //roll temperature
         if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance))) {
+            if (showFlags) cout << "Temperature roll succeeded" << endl;
             auto effectiveWeights = weatherProfile.temperatureWeights;
-
             //Increase probability of cold based on rain/snow and severity
             switch(precipitation) {
                 case SNOW: effectiveWeights.at(COLD) *= SNOW_COLD_MULT; //allow follow through
