@@ -185,6 +185,16 @@ void LocationProfileRead() {
     tropic.Print();
 }
 
+void WeatherEffects() {
+    const string LOCATION_FILE = "data/locationProfiles/plains.txt";
+    const string WEATHER_FILE = "data/weatherProfiles/spring.txt";
+    Weather weather(WEATHER_FILE, LOCATION_FILE);
+    for (int i = 0; i < 20; i++) {
+        weather.Print();
+        weather.Cycle();
+    }
+}
+
 int main() {
-    LocationProfileRead();
+    WeatherEffects();
 }

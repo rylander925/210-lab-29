@@ -12,9 +12,9 @@ using namespace std;
 
 //Define enum of possible weather events
 //Values are stored as weights
-enum PrecipitationEvent { RAIN, SNOW, NO_PRECIPITATION };
+enum PrecipitationEvent { NO_PRECIPITATION, RAIN, SNOW, };
 enum TemperatureEvent { COLD, TEMPERATE, HOT };
-enum WeatherEvent { WIND, NO_WEATHER };
+enum WeatherEvent { NO_WEATHER, WIND};
 
 //Increase severity of event, does not apply to temperate condition
 //Values stored as weights of probability, effect is termined in weather function
@@ -226,15 +226,24 @@ struct Weather {
         
         //Effects of wind
             static const double WIND_NUTRIENT_DRAIN; //% nutrients drained from 1 day of wind
-            static const double WIND_MULT;     //Multiplies effects of dry/freezing weather
+            static const double WIND_MULT;           //Multiplies effects of dry/freezing weather, compounds with severity
 
-            static const double TEMPERATURE_WATER_DRAIN;
-            static const double TEMPERATUE_NUTRIENT_DRAIN;
-            static const double DRY_TEMPERATURE;
-            static const double FROST_TEMPERATURE;
-            static const double WEATHER_DAMAGE;
+        //Effects of temperatures
+            static const double DRY_TEMPERATURE;           //Dry temperature threshold
+            static const double FROST_TEMPERATURE;         //Frosty temperature theshold
+            static const double TEMPERATURE_WATER_DRAIN;   //% water drained from dry temperatures
+            static const double TEMPERATUE_NUTRIENT_DRAIN; //% nutrients lost from dry/frosty temperatures
+            static const double WEATHER_DAMAGE;            //% growth lost from dry/frosty temperatures
+        
+        //Severity multipliers
             static const double HEAVY_MULT;
             static const double LIGHT_MULT;
+    
+    Weather(string weatherFile, string localeFile) {
+        weatherProfile.ReadProfile(weatherFile);
+        locationProfile.ReadProfile(localeFile);
+        temperature = locationProfile.baseTemperature;
+    }
 
     void Print() {
         static const int PRECISION = 1;
@@ -253,8 +262,9 @@ struct Weather {
         if (wind == WIND) {
             miscWeather = "Windy";
         }
-        cout << "Current weather conditions:" << modifier << ", " << rain << ", " << miscWeather;
-        cout << "\tTemperature: " << setprecision(1) << temperature << "F";
+        cout << "Weather for " << locationProfile.name << " in " << weatherProfile.name << endl;
+        cout << "\tConditions: " << modifier << ", " << rain << ", " << miscWeather << endl;
+        cout << "\tTemperature: " << fixed << setprecision(1) << temperature << "F" << endl;
     }
 
     //Define function to simulate affects of weather events on water and nutrient levels for one day
@@ -298,7 +308,7 @@ struct Weather {
     /**
      * Rolls weather events to determine weather conditions
      */
-    void CycleWeather() {
+    void Cycle() {
         //random chance to keep current weather condition, or roll weather conditions again (allowing repeats)
         //roll severity
         if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance))) {
