@@ -6,6 +6,11 @@
         "iostream": "cpp",
         "array": "cpp",
         "list": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "iosfwd": "cpp",
+        "map": "cpp",
+        "string": "cpp",
+        "sstream": "cpp",
+        "iomanip": "cpp"
     }
 }

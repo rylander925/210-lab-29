@@ -1,0 +1,79 @@
+All test functions are in Testbench.cpp
+
+main
+
+FarmPlot
+    FarmPlot(), ReadData(), PrintInformation(), PrintPlot()
+        Tested farmplot read with print and plot functions, by checking if it read correct values. 
+        FarmPlot() constructor calls ReadData(), only other functionality sets farm name.
+        Initially tested with smaller amount of data before filling in the entire file with data
+        See FarmPlotConstruction() for test code
+    
+    GrowthCycle()
+        Instantiates a farm plot, and run cycles, tracking plant death and plant conditions throughout
+        See FarmPlotGrowthCycle() for test code
+    
+    UpdateCycle()
+        Instantiated a farm plot, and run updates for given values of growth/soil/water changes.
+        Use both negative and positive values, and check large values for valid maximum ranges,
+        and low values for valid minimum ranges and crops properly die.
+        See FarmPlotUpdate() for test code
+
+PlantSpecies
+    Constructors
+        Test via PlantSpecies::Print() function, which has already been tested to function via default constructor
+        Call various constructors with values, check that it prints correct values
+
+        code is in void PlantSpeciesConstruction() in TestBench.cpp
+    
+    Print()
+        Tested via a PlantSpecies object initialized w/ default constructor, and checking values
+            PlantSpecies defaultPlant;
+            defaultPlant.Print();
+        
+    GrowthCycle()
+        Test by running with various conditions, and checking if growth values are correct.
+            Check: Values where growth/water/nutrients shouldn't change
+                    (growth does not increase above 1, water/nutrients do not decrease below 0)
+                   Boundary values for tolerance/healthy ranges
+
+        See PlantSpeciesGrowthCycle() for code
+
+Weather
+    WeatherProfile constructor, print, and read functions
+        Tested in conjunction with eachother by constructing several weatherProfile objects, reading to some of them, and printing all of them
+        See WeatherProfileRead()
+    LocationProfile constructor,print, and read functions tested the same way as weatherProfile
+        See LocationProfileRead()
+
+    Cycle()
+        Tested by initializing a weather object (with a weather & location profile), 
+        and running through 20 cycles, printing weather information each time.
+        Make sure temperatures make sense, and conditions change regularly
+        See WeatherCycles()
+    
+    WeatherFarm()
+        Test by initializing a weather object and a farmplot object, 
+        cycling multiple weather cycles and running WeatherFarm() multiple times, displaying farm information
+        Tested to make sure WeatherFarm() responded properly to changes in whether, and that farm information was properly updated
+        See WeatherEffects()
+
+Util
+    CoutLine()
+        Test by executing with different values
+            Util::CoutLine(10, '+');
+            Util::CoutLine(10);
+            Util::CoutLine();
+        Expected output is 10 + signs, 10 = signs, 100 = signs
+    
+    CoutTable()
+        Test as part of Print functions by FarmPlot and PlantSpecies
+        e.g. in PlantSpecies::Print(),
+            array<string, COLUMNS> columnTitles = {"Ideal", "Healthy (+\\-)", "Tolerable (+\\-)"};
+            array<string, ROWS> rowTitles = {"Water", "Nutrients", "Temperature (F)"}; 
+            array<array<double, COLUMNS>, ROWS> tableData = { array<double, COLUMNS>{idealWater, healthyWaterRange, tolerableWaterRange},
+                                                              array<double, COLUMNS>{idealNutrients, healthyNutrientRange, tolerableNutrientRange},
+                                                              array<double, COLUMNS>{idealTemperature, healthyTemperatureRange, tolerableTemperatureRange}
+                                                            };
+            Util::CoutTable(columnTitles, rowTitles, tableData);
+        Expected output is a table, titled according to the column and row titles, with proper data values

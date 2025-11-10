@@ -1,0 +1,6 @@
+Sunflower
+S 250 230 70 plain flower
+Maple Tree
+M 200 80 60 forest tree
+Bamboo
+B 130 230 90 tropic plant

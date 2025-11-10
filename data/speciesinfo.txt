@@ -1,0 +1,268 @@
+Rose
+R 255 80 100 plain flower
+Sunflower
+S 250 230 70 plain flower
+Oak Tree
+O 60 120 50 forest tree
+Maple Tree
+M 200 80 60 forest tree
+Cactus
+C 60 200 100 desert plant
+Lavender
+L 180 120 230 plain flower
+Daisy
+D 255 255 150 plain flower
+Pine Tree
+P 30 100 50 forest tree
+Aloe Vera
+A 90 210 150 desert plant
+Bamboo
+B 130 230 90 tropic plant
+Fern
+F 60 180 100 forest plant
+Tulip
+T 255 100 160 plain flower
+Lily
+L 240 230 255 coast flower
+Cedar
+C 50 110 70 forest tree
+Palm Tree
+P 120 210 110 tropic tree
+Hibiscus
+H 255 90 150 tropic flower
+Moss
+M 50 160 70 forest plant
+Willow
+W 80 170 100 forest tree
+Orchid
+O 230 160 250 tropic flower
+Clover
+C 100 255 100 plain plant
+Ivy
+I 70 160 80 forest plant
+Mangrove
+M 50 120 90 coast tree
+Succulent
+S 100 210 130 desert plant
+Peony
+P 250 90 120 plain flower
+Birch Tree
+B 160 180 140 forest tree
+Thistle
+T 190 110 200 plain plant
+Agave
+A 80 190 120 desert plant
+Magnolia
+M 255 200 210 coast flower
+Basil
+B 70 200 90 plain plant
+Sage
+S 110 180 110 plain plant
+Oleander
+O 230 100 140 coast flower
+Eucalyptus
+E 90 180 130 forest tree
+Jasmine
+J 255 255 200 tropic flower
+Heather
+H 210 160 220 plain flower
+Yucca
+Y 150 230 130 desert plant
+Mint
+M 90 200 120 plain plant
+Camellia
+C 230 120 160 plain flower
+Poplar
+P 100 190 110 forest tree
+Violet
+V 160 90 200 plain flower
+Acacia
+A 180 200 90 desert tree
+Marigold
+M 250 200 60 plain flower
+Sandalwood
+S 170 140 100 forest tree
+Papaya
+P 200 230 100 tropic plant
+Lemongrass
+L 180 220 120 tropic plant
+Saguaro
+S 70 190 100 desert plant
+Honeysuckle
+H 255 210 180 coast flower
+Ficus
+F 90 160 90 tropic tree
+Briar
+B 160 100 80 plain plant
+Oleaster
+O 140 180 120 coast plant
+Cholla
+C 80 160 90 desert plant
+Walnut
+W 100 130 70 forest tree
+Cypress
+C 70 110 70 coast tree
+Geranium
+G 240 80 140 plain flower
+Iris
+I 190 100 250 plain flower
+Juniper
+J 60 120 80 forest tree
+Larch
+L 110 180 100 forest tree
+Mango Tree
+M 255 190 80 tropic tree
+Nettle
+N 60 150 60 plain plant
+Olive Tree
+O 120 180 80 coast tree
+Petunia
+P 250 100 180 plain flower
+Raspberry
+R 220 60 90 forest plant
+Strawberry
+S 255 80 110 plain plant
+Tamarind Tree
+T 150 170 90 tropic tree
+Verbena
+V 220 100 220 plain flower
+Water Lily
+W 200 230 255 coast flower
+Yarrow
+Y 255 240 100 plain flower
+Zinnia
+Z 255 120 150 plain flower
+Amaranth
+A 230 100 120 plain flower
+Barrel Cactus
+B 80 180 70 desert plant
+Coral Tree
+C 200 90 90 tropic tree
+Dragon Tree
+D 120 150 100 desert tree
+Edelweiss
+E 255 255 240 plain flower
+Foxglove
+F 200 130 220 plain flower
+Gardenia
+G 255 240 220 coast flower
+Hyacinth
+H 180 110 240 plain flower
+Indian Fig
+I 90 160 100 desert plant
+Jackfruit
+J 200 210 100 tropic tree
+Kauri Tree
+K 100 150 90 forest tree
+Lantana
+L 240 150 80 tropic flower
+Mimosa
+M 230 190 110 tropic plant
+Poinsettia
+P 255 70 90 tropic flower
+Quinoa
+Q 190 210 130 plain plant
+Rhododendron
+R 220 100 150 forest flower
+Sorghum
+S 210 200 90 plain plant
+Teak Tree
+T 120 160 100 tropic tree
+Umbrella Plant
+U 100 170 130 tropic plant
+Wheat
+W 230 220 120 plain plant
+Yucca Palm
+Y 130 200 120 desert tree
+Zebra Plant
+Z 100 180 120 tropic plant
+Corn
+C 230 230 90 plain plant
+Rice
+R 230 230 150 plain plant
+Tomato
+T 240 60 60 plain plant
+Potato
+P 210 180 100 plain plant
+Carrot
+C 250 150 50 plain plant
+Lettuce
+L 130 230 90 plain plant
+Spinach
+S 100 210 80 plain plant
+Broccoli
+B 90 170 70 plain plant
+Cabbage
+C 100 200 100 plain plant
+Onion
+O 220 190 140 plain plant
+Garlic
+G 240 230 190 plain plant
+Pepper
+P 250 80 70 plain plant
+Eggplant
+E 150 60 180 plain plant
+Apple Tree
+A 230 90 80 forest tree
+Pear Tree
+P 230 200 130 forest tree
+Cherry Tree
+C 230 70 100 forest tree
+Peach Tree
+P 255 160 110 forest tree
+Plum Tree
+P 200 90 150 forest tree
+Banana Tree
+B 240 230 90 tropic tree
+Coconut Palm
+C 180 210 100 tropic tree
+Date Palm
+D 180 190 90 desert tree
+Fig Tree
+F 150 130 100 tropic tree
+Guava Tree
+G 200 220 130 tropic tree
+Lemon Tree
+L 240 240 100 coast tree
+Orange Tree
+O 255 200 80 coast tree
+Papaya Tree
+P 220 220 90 tropic tree
+Avocado Tree
+A 130 180 90 tropic tree
+Pomegranate
+P 200 80 90 tropic plant
+Blueberry Bush
+B 70 90 200 forest plant
+Blackberry Bush
+B 60 80 120 forest plant
+Cranberry
+C 150 60 80 coast plant
+Kiwi Vine
+K 130 190 100 tropic plant
+Mulberry
+M 100 70 120 forest tree
+Hazel Tree
+H 120 150 80 forest tree
+Chestnut Tree
+C 110 100 70 forest tree
+Walnut Tree
+W 100 130 70 forest tree
+Beech Tree
+B 90 120 80 forest tree
+Elm Tree
+E 80 140 100 forest tree
+Ash Tree
+A 100 160 90 forest tree
+Sycamore
+S 120 150 100 forest tree
+Hemlock
+H 70 100 60 forest tree
+Spruce
+S 60 100 70 forest tree
+Fir Tree
+F 60 110 70 forest tree
+Joshua Tree
+J 110 160 90 desert tree
+Prickly Pear
+P 90 200 110 desert plant
