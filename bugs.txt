@@ -1,0 +1,33 @@
+Minor unintended behavior: Farmplot print function always shows dead crops.
+    Added flag that is by default false to choose whether or not to show dead crops.
+
+Issue with include errors when changing probability functions in Weather to static. 
+    Just moved probability functions to Util class
+
+Off by one error when implementing a function to show dead crops
+    Found while testing and counting each plant; started counter at 0 instead of 1
+
+Small issue with output order where plant plot would be output before the new day signifier, 
+making it appear like it belonged to the previos day.
+    Simply adjusted the order
+
+Lines above each table would be a constant amount, but often be too short to accomodate full table width
+    Used a formula to calculate table with rather than a constant value
+
+Originally placed number of crops as part of file data, but that would make histogram less useful to gauge how plants did relative to eachother
+    Added an option to specify default number of crops.
+
+However, for the crops that survive the whole season, usually all or no crops survive
+    Seeded random number so results would actually be random each time. To prevent all-or-nothing survival of crops, decreased update probability for more randomness.
+    Also allows some crops to sometimes survive the winter.
+
+Off by one error when displaying number of days
+    Issue was because # of days started from 1 instead of 0, but modified everything else to be consistent with starting from 1
+
+No crops survived the desert in the summer, not even desert crops
+    Adjusted weights of desert crops to be more resilient to extreme temperatures
+
+Location profile modifiers were undertuned, causing plants to dry up in the tropics
+    Adjusted weights to be more exaggerated, especially with rain modifiers for the tropics
+
+Fixed a small typo in output and some variable names ("persistance")

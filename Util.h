@@ -7,6 +7,7 @@
 #include <array>
 #include <list>
 #include <fstream>
+#include <cmath>
 
 using namespace std;
 
@@ -91,6 +92,51 @@ class Util {
             throw ios_base::failure("File open error");
             }
     }
+
+    /**
+     * Given a map of events with associated integer weights, rolls a random event
+     * @param weights Map of events with an integer representing the 'weight' of that event occuring relative to other events
+     * @return Key associated with rolled event
+     * @note Assumes events are mutually exclusive
+     */
+    template <typename T>
+    static T RollWeights (map<T, int> weights) {
+        int total = 0;
+        int num;
+        T result;
+        for (auto pair : weights) total += pair.second;
+        num = rand() % total;           //number from 0 to total - 1
+        for (auto pair : weights) { 
+            num -= pair.second;         //since max is total - 1, negative val indicates num is in current weight range 
+            if (num < 0) {
+                result = pair.first;
+                break;                  //store resulting range, and exit loop; uses break to make use of ranged based for loop
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Given the weights of a true or false condition, rolls true or false
+     * @param trueWeight Weight of true probability occuring, as an integer representing relative likelihood
+     * @param falseWeight Weight of false probability occuring
+     * @return Bool based on result of the roll
+     */
+    static bool RollWeights (int trueWeight, int falseWeight) {
+        return (rand() % (trueWeight + falseWeight) ) < trueWeight;
+    }
+
+    /**
+     * Rolls a probability
+     * @param probability Fraction from (0, 1) of probability occuring
+     * @param decimals Decimal places considered in the probability, e.g. for 0.12345, a decimal of 2 will roll 12%, and a default decimal of 5 will roll 12.345%.
+     * @return Bool based on result of roll
+     */
+    static bool RollProbability(double probability, int decimals = 5) {
+        int mult = pow(10, decimals); //represents decimal places of probability to consider
+        return RollWeights(mult * probability, mult * (1 - probability)); //rolls probability by converting to weights, and rolling the weights
+    }
+
     static const int TABLE_DEFAULT_WIDTH = 20;
     static const int LINE_DEFAULT_WIDTH = 100;
     static const char LINE_DEFAULT_CHAR = '=';
