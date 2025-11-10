@@ -21,7 +21,7 @@ int main() {
     const string FILENAME_SPECIES = "data/speciesInfo.txt";
     const string FILENAME_PLANT_DATA = "data/plantData.txt";
     const int SIMULATION_PERIOD = 90;
-    const int OUTPUT_INTERVAL = 7;
+    const int OUTPUT_INTERVAL = 30;
     const double FERTILIZATION_AMOUNT = 0.1;
     const double WATERING_AMOUNT = 0.003;
 
@@ -55,7 +55,6 @@ int main() {
             Util::CoutLine(Util::LINE_DEFAULT_WIDTH, '~');
             Util::CoutLine(Util::LINE_DEFAULT_WIDTH, '~');
             cout << "Period " << (day / OUTPUT_INTERVAL) + 1 << endl;
-            farm.PrintInformation(false);
             farm.PrintPlot();
         }
         
@@ -81,7 +80,6 @@ int main() {
 
         //simulate growth cycle (call FarmPlot method)
         farm.GrowthCycle(temperature);
-
     }
     
     //After simulation, output garden and plant data
