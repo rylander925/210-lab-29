@@ -158,6 +158,7 @@ void FarmPlotUpdate() {
 }
 
 void WeatherProfileRead() {
+    //Initialize and display profiles for each season; verify weights make sense 
     WeatherProfile defaultWeather, winter, spring, summer, fall;
     winter.ReadProfile("data/weatherProfiles/winter.txt");
     spring.ReadProfile("data/weatherProfiles/spring.txt");
@@ -171,6 +172,7 @@ void WeatherProfileRead() {
 }
 
 void LocationProfileRead() {
+    //Initialize and display profiles for each location; verify weights make sense 
     LocationProfile defaultLocale, plains, forest, coast, desert, tropic;
     plains.ReadProfile("data/locationProfiles/plains.txt");
     forest.ReadProfile("data/locationProfiles/forest.txt");
@@ -185,16 +187,51 @@ void LocationProfileRead() {
     tropic.Print();
 }
 
-void WeatherEffects() {
-    const string LOCATION_FILE = "data/locationProfiles/desert.txt";
-    const string WEATHER_FILE = "data/weatherProfiles/summer.txt";
+void WeatherCycles() {
+    //Initialize a weather object and display basic information
+    const string LOCATION_FILE = "data/locationProfiles/coast.txt";
+    const string WEATHER_FILE = "data/weatherProfiles/fall.txt";
     Weather weather(WEATHER_FILE, LOCATION_FILE);
     weather.weatherProfile.Print();
     weather.locationProfile.Print();
+
+    //Run through 20 weather cycles, displaying information
     for (int i = 0; i < 20; i++) {
         weather.Print();
         weather.Cycle(true);
     }
+
+    //Display weather profile again to ensure nothing changed
+    weather.weatherProfile.Print();
+    weather.locationProfile.Print();
+}
+
+void WeatherEffects() {
+    //Initialize a weather object and display basic information
+    const string LOCATION_FILE = "data/locationProfiles/coast.txt";
+    const string WEATHER_FILE = "data/weatherProfiles/fall.txt";
+    Weather weather(WEATHER_FILE, LOCATION_FILE);
+    weather.weatherProfile.Print();
+    weather.locationProfile.Print();
+
+    //Initialize a farm plot and display basic information
+    FarmPlot filePlot("File plot", "data/reducedSpeciesInfo.txt", "data/reducedPlantData.txt");
+    filePlot.PrintInformation();
+    filePlot.PrintPlot();
+
+    
+    //Run through weather cycles, display information, and weather the farm
+    //Show farm information after each cycle
+    for (int i = 0; i < 3; i++) {
+        weather.Cycle();
+        weather.Print();
+        for (int j = 0; j < 5; j++) {
+            weather.WeatherFarm(filePlot, true);
+        }
+        filePlot.PrintInformation();
+    }
+
+    //Display weather profile again to ensure nothing changed
     weather.weatherProfile.Print();
     weather.locationProfile.Print();
 }

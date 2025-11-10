@@ -46,6 +46,12 @@ Weather
     LocationProfile constructor,print, and read functions tested the same way as weatherProfile
         See LocationProfileRead()
 
+    Cycle()
+        Tested by initializing a weather object (with a weather & location profile), 
+        and running through 20 cycles, printing weather information each time.
+        Make sure temperatures make sense, and conditions change regularly
+        See WeatherCycles()
+
 Util
     CoutLine()
         Test by executing with different values

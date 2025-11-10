@@ -312,7 +312,7 @@ struct Weather {
         effectiveGrowth -= (temperature >= DRY_TEMPERATURE || temperature <= FROST_TEMPERATURE) ? WEATHER_DAMAGE * mult * effectiveWindMult : 0;
         if (showFlags && temperature <= FROST_TEMPERATURE) cout << "\tFreezing caused nutrient and growth loss" << endl;
 
-        if (showFlags) cout << "\t(G, W, S): " << "(" << effectiveGrowth << ", " << effectivePrecipitation << ", " << effectiveNutrients << ")" << endl;
+        if (showFlags) cout << "\t(G, W, S): " << fixed << setprecision(3) << "(" << effectiveGrowth << ", " << effectivePrecipitation << ", " << effectiveNutrients << ")" << endl;
 
         //Update farm based on accumulated growth/precipitation/nutrients
         farm.Update(effectiveGrowth, effectivePrecipitation, effectiveNutrients);
