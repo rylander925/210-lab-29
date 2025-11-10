@@ -1,20 +1,6 @@
-Rose
-R 255 80 100 plain flower
 Sunflower
 S 250 230 70 plain flower
-Oak Tree
-O 60 120 50 forest tree
 Maple Tree
 M 200 80 60 forest tree
-Cactus
-C 60 200 100 desert plant
-Lavender
-L 180 120 230 plain flower
-Daisy
-D 255 255 150 plain flower
-Pine Tree
-P 30 100 50 forest tree
-Aloe Vera
-A 90 210 150 desert plant
 Bamboo
 B 130 230 90 tropic plant

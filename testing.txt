@@ -51,6 +51,12 @@ Weather
         and running through 20 cycles, printing weather information each time.
         Make sure temperatures make sense, and conditions change regularly
         See WeatherCycles()
+    
+    WeatherFarm()
+        Test by initializing a weather object and a farmplot object, 
+        cycling multiple weather cycles and running WeatherFarm() multiple times, displaying farm information
+        Tested to make sure WeatherFarm() responded properly to changes in whether, and that farm information was properly updated
+        See WeatherEffects()
 
 Util
     CoutLine()

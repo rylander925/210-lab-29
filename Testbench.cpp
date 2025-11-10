@@ -214,6 +214,10 @@ void WeatherEffects() {
     weather.weatherProfile.Print();
     weather.locationProfile.Print();
 
+    //set persistance to 0 so each cycle likely changes weather
+    weather.weatherProfile.persistance = 0;
+    weather.locationProfile.persistance = 0;
+
     //Initialize a farm plot and display basic information
     FarmPlot filePlot("File plot", "data/reducedSpeciesInfo.txt", "data/reducedPlantData.txt");
     filePlot.PrintInformation();
@@ -222,7 +226,7 @@ void WeatherEffects() {
     
     //Run through weather cycles, display information, and weather the farm
     //Show farm information after each cycle
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 5; i++) {
         weather.Cycle();
         weather.Print();
         for (int j = 0; j < 5; j++) {

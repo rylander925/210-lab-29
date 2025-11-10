@@ -108,16 +108,17 @@ class FarmPlot {
         /**
          * Outputs information of each plant species and each plant associated with each plant species as a table
          */
-        void PrintInformation() const {
+        void PrintInformation(bool showDetail = true) const {
             const static int TABLE_ROWS = 3;
             const static int TABLE_DATA_WIDTH = 10;
 
             cout << "Farm plot \"" << name << "\" information:" << endl;
-            for (auto cropPair : crops) {
+            for (const auto& cropPair : crops) {
                 Util::CoutLine();
                 
                 //Display information about plant species
-                cropPair.first.Print();
+                if (showDetail) cropPair.first.Print();
+                else cout << cropPair.first.GetName() << " (" << cropPair.first.GetDisplayToken() << ")" << endl;
 
                 if (cropPair.second.at(GROWTH).empty()) {
                     cout << "All plants died" << endl;
@@ -138,6 +139,14 @@ class FarmPlot {
                 }
                 Util::CoutLine();
             }
+        }
+
+        bool HasDied() {
+            bool output = true;
+            for (const auto& cropPair : crops) {
+                if (!cropPair.second.at(GROWTH).empty()) output = false;
+            }
+            return output;
         }
 
         /**

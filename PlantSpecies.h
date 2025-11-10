@@ -359,8 +359,8 @@ class PlantSpecies {
         //How much plant grows/shrinks per growth cycle
         //May change from constant values to custom per plant later
         double cycleGrowthIncrease = 0.05;
-        double cycleGrowthDecrease = 0.1;
-        double cycleWaterDecrease = 0.05;
+        double cycleGrowthDecrease = 0.05;
+        double cycleWaterDecrease = 0.02;
         double cycleNutrientDecrease = 0.005;
 };
 #endif

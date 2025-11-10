@@ -285,9 +285,9 @@ struct Weather {
     //Does not determine weather, nor cycle crop growth
     //Parameters: farm plot, Weather profile and location profile
     void WeatherFarm(FarmPlot& farm, bool showFlags = false) {
-        double mult, effectiveWindMult, effectivePrecipitation, effectiveNutrients, effectiveGrowth;
+        double mult = 0, effectiveWindMult = 0, effectivePrecipitation = 0, effectiveNutrients = 0, effectiveGrowth = 0;
 
-        if (showFlags) cout << "Executing Weather::WeatherFarm: " << endl;
+        if (showFlags) cout << fixed << setprecision(3) << "Executing Weather::WeatherFarm: " << endl;
 
         //Calculate a multiplier based on weather severity
         mult = (severity == HEAVY) ? HEAVY_MULT : (severity == LIGHT) ? LIGHT_MULT : 1;
@@ -297,20 +297,22 @@ struct Weather {
 
         //Calculate precipitation from rain/snow
         effectivePrecipitation = (precipitation == NO_PRECIPITATION) ? 0 : PRECIPITATION_AMOUNT * mult * (precipitation == SNOW ? SNOW_MULT : 1.0);
-        if (showFlags && precipitation != NO_PRECIPITATION) cout << "\tPrecipitation increased from " << ((precipitation == RAIN) ? "rain" : "snow") << endl;
+        if (showFlags && precipitation != NO_PRECIPITATION) cout << "\tPrecipitation increased " << effectivePrecipitation << " from " << ((precipitation == RAIN) ? "rain" : "snow") << endl;
 
         //Calculate nutrient gain from rain minus drain from wind
         effectiveNutrients += ((precipitation == RAIN) ? RAIN_NUTRIENT_GAIN * mult : 0);
+        if (showFlags && precipitation == RAIN) cout << "\tNutrients increased " << effectiveNutrients << " from rain" << endl;
+
         effectiveNutrients -= ((wind == WIND) ? WIND_NUTRIENT_DRAIN * mult : 0);
-        if (showFlags && wind == WIND) cout << "\tWind drained some nutrients" << endl;
+        if (showFlags && wind == WIND) cout << "\tWind drained some nutrients: " << effectiveNutrients << endl;
 
         //Calculate how dry/freezing weather affects nutrients/water levels and plant growth
         effectivePrecipitation -= (temperature >= DRY_TEMPERATURE) ? TEMPERATURE_WATER_DRAIN * mult * effectiveWindMult : 0;
-        if (showFlags && temperature >= DRY_TEMPERATURE) cout << "\tDry temperatures caused growth, nutrient, and water loss" << endl;
+        if (showFlags && temperature >= DRY_TEMPERATURE) cout << "\tDry temperatures caused growth, nutrient, and water loss: " << effectivePrecipitation << endl;
 
         effectiveNutrients -= (temperature >= DRY_TEMPERATURE || temperature <= FROST_TEMPERATURE) ? TEMPERATUE_NUTRIENT_DRAIN * mult * effectiveWindMult : 0;
         effectiveGrowth -= (temperature >= DRY_TEMPERATURE || temperature <= FROST_TEMPERATURE) ? WEATHER_DAMAGE * mult * effectiveWindMult : 0;
-        if (showFlags && temperature <= FROST_TEMPERATURE) cout << "\tFreezing caused nutrient and growth loss" << endl;
+        if (showFlags && temperature <= FROST_TEMPERATURE) cout << "\tFreezing caused nutrient and growth loss: N" << effectiveNutrients << ", G" << effectiveGrowth << endl;
 
         if (showFlags) cout << "\t(G, W, S): " << fixed << setprecision(3) << "(" << effectiveGrowth << ", " << effectivePrecipitation << ", " << effectiveNutrients << ")" << endl;
 
@@ -472,7 +474,7 @@ const double Weather::BASE_CASCADE_PROBABILITY = 0.60;
 const double Weather::PRECIPITATION_AMOUNT = 0.02;
 const double Weather::TEMPERATURE_WATER_DRAIN = 0.01;
 const double Weather::TEMPERATUE_NUTRIENT_DRAIN = 0.005;
-const double Weather::RAIN_NUTRIENT_GAIN = 0.01;
+const double Weather::RAIN_NUTRIENT_GAIN = 0.005;
 const double Weather::WIND_NUTRIENT_DRAIN = 0.005;
 const double Weather::WIND_MULT = 1.5; 
 const double Weather::SNOW_MULT = 0.5;
@@ -480,6 +482,6 @@ const double Weather::HEAVY_MULT = 2;
 const double Weather::LIGHT_MULT = 0.5;
 const double Weather::DRY_TEMPERATURE = 80.0;
 const double Weather::FROST_TEMPERATURE = 45;
-const double Weather::WEATHER_DAMAGE = 0.05;
+const double Weather::WEATHER_DAMAGE = 0.01;
 
 #endif
