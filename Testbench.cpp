@@ -186,8 +186,8 @@ void LocationProfileRead() {
 }
 
 void WeatherEffects() {
-    const string LOCATION_FILE = "data/locationProfiles/plains.txt";
-    const string WEATHER_FILE = "data/weatherProfiles/spring.txt";
+    const string LOCATION_FILE = "data/locationProfiles/desert.txt";
+    const string WEATHER_FILE = "data/weatherProfiles/summer.txt";
     Weather weather(WEATHER_FILE, LOCATION_FILE);
     weather.weatherProfile.Print();
     weather.locationProfile.Print();
@@ -195,6 +195,8 @@ void WeatherEffects() {
         weather.Print();
         weather.Cycle(true);
     }
+    weather.weatherProfile.Print();
+    weather.locationProfile.Print();
 }
 
 int main() {

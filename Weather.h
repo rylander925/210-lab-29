@@ -12,9 +12,9 @@ using namespace std;
 
 //Define enum of possible weather events
 //Values are stored as weights
-enum PrecipitationEvent { NO_PRECIPITATION, RAIN, SNOW, };
+enum PrecipitationEvent { RAIN, SNOW, NO_PRECIPITATION };
 enum TemperatureEvent { COLD, TEMPERATE, HOT };
-enum WeatherEvent { NO_WEATHER, WIND};
+enum WeatherEvent { WIND, NO_WEATHER };
 
 //Increase severity of event, does not apply to temperate condition
 //Values stored as weights of probability, effect is termined in weather function
@@ -200,6 +200,7 @@ struct Weather {
 
     //Weights for CycleWeather function
         //Temperature modifiers
+            static const double SNOW_TEMP_MULT; //How much snowy weather decreases temperature
             static const double COLD_TEMP_MULT; //How much "COLD" weather decreases from baseline temperature
             static const double HOT_TEMP_MULT;  //How much "HOT"  weather increases from baseline temperature
             //Exponentiates cold/hot multipliers based on light/heavy weather
@@ -216,6 +217,9 @@ struct Weather {
             //Multiplies probabilities of "COLD" weather further based on "LIGHT" or "HEAVY" wheather (assume temperate is default)
             static const double LIGHT_PROBABILITY_MULT; 
             static const double HEAVY_PROBABILITY_MULT;
+
+            //Increase liklihood that when one weather condition changes, multiple weather conditions change
+            static const double BASE_CASCADE_PROBABILITY;
 
 
     //Weights for WeatherFarm function
@@ -242,9 +246,15 @@ struct Weather {
     Weather(string weatherFile, string localeFile) {
         weatherProfile.ReadProfile(weatherFile);
         locationProfile.ReadProfile(localeFile);
-        double oldWeatherPresistance = weatherProfile.persistance;
+        
+        //Set initial weather conditions by setting presistance to 0, cycling weather, than reseting persistance
+        double oldWeatherPersistance = weatherProfile.persistance;
         double oldLocationPersistance = locationProfile.persistance;
-        temperature = locationProfile.baseTemperature;
+        weatherProfile.persistance = 0;
+        locationProfile.persistance = 0;
+        Cycle();
+        weatherProfile.persistance = oldWeatherPersistance;
+        locationProfile.persistance = oldLocationPersistance;
     }
 
     void Print() {
@@ -264,7 +274,7 @@ struct Weather {
         if (wind == WIND) {
             miscWeather = "Windy";
         } else {
-            miscWeather = "Rain";
+            miscWeather = "No wind";
         }
         cout << "Weather for " << locationProfile.name << " in " << weatherProfile.name << endl;
         cout << "\tConditions: " << modifier << ", " << rain << ", " << miscWeather << endl;
@@ -313,10 +323,13 @@ struct Weather {
      * Rolls weather events to determine weather conditions
      */
     void Cycle(bool showFlags = false) {
+        double cascadeProbability = 0;
         //random chance to keep current weather condition, or roll weather conditions again (allowing repeats)
         //roll severity
-        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance))) {
+        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance)) 
+            || RollProbability(cascadeProbability)) {
             if (showFlags) cout << "Severity roll succeeded" << endl;
+            cascadeProbability = BASE_CASCADE_PROBABILITY;
             //Increase probabilities based on geopraphic multipliers
             auto effectiveWeights = weatherProfile.severityWeights;
             effectiveWeights.at(MEDIUM) *= locationProfile.multipliers.at(SEVERITY_COEFFICIENT);
@@ -327,8 +340,11 @@ struct Weather {
         }
 
         //roll precipitation
-        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance))) {
+        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance)) 
+            || RollProbability(cascadeProbability)) {
             if (showFlags) cout << "Precipitation roll succeeded" << endl;
+            cascadeProbability = BASE_CASCADE_PROBABILITY;
+
             auto effectiveWeights = weatherProfile.precipitationWeights;
             effectiveWeights.at(RAIN) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
             effectiveWeights.at(SNOW) *= locationProfile.multipliers.at(HUMIDITY_COEFFICIENT);
@@ -337,8 +353,11 @@ struct Weather {
         }
 
         //roll wind
-        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance))) {
+        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance)) 
+            || RollProbability(cascadeProbability)) {
             if (showFlags) cout << "Wind roll succeeded" << endl;
+            cascadeProbability = BASE_CASCADE_PROBABILITY;
+
             auto effectiveWeights = weatherProfile.weatherWeights;
             effectiveWeights.at(WIND) *= locationProfile.multipliers.at(WIND_COEFFICIENT);
 
@@ -346,9 +365,12 @@ struct Weather {
         }
 
         //roll temperature
-        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance))) {
+        if (!(RollProbability(weatherProfile.persistance) || RollProbability(locationProfile.persistance)) 
+            || RollProbability(pow(cascadeProbability, 0.5))) { //Temperature is most likely to change after another condition changes
             if (showFlags) cout << "Temperature roll succeeded" << endl;
             auto effectiveWeights = weatherProfile.temperatureWeights;
+            cascadeProbability = BASE_CASCADE_PROBABILITY;
+
             //Increase probability of cold based on rain/snow and severity
             switch(precipitation) {
                 case SNOW: effectiveWeights.at(COLD) *= SNOW_COLD_MULT; //allow follow through
@@ -382,6 +404,7 @@ struct Weather {
                 case LIGHT: mult = pow(mult, LIGHT_TEMP_EXP); break;
                 case HEAVY: mult = pow(mult, HEAVY_TEMP_EXP); break;
             }
+            if (precipitation == SNOW) mult *= SNOW_TEMP_MULT;
             temperature = locationProfile.baseTemperature * weatherProfile.baselineTemperatureMult * mult;
         }
         //Outside of temperature persistance, add slight variations in temperature each day, in a range of +/- DAILY_TEMP_VARIATION
@@ -436,6 +459,7 @@ struct Weather {
 //Weights for 
 const double Weather::COLD_TEMP_MULT = 0.85;
 const double Weather::HOT_TEMP_MULT = 1.15;
+const double Weather::SNOW_TEMP_MULT = 0.85;
 const double Weather::SNOW_COLD_MULT = 5;
 const double Weather::RAIN_COLD_MULT = 2;
 const double Weather::WIND_COLD_MULT = 1.5;
@@ -443,6 +467,7 @@ const double Weather::LIGHT_PROBABILITY_MULT = 0.75;
 const double Weather::HEAVY_PROBABILITY_MULT = 2; 
 const double Weather::LIGHT_TEMP_EXP = 0.5;
 const double Weather::HEAVY_TEMP_EXP = 2;
+const double Weather::BASE_CASCADE_PROBABILITY = 0.60;
 
 const double Weather::PRECIPITATION_AMOUNT = 0.02;
 const double Weather::TEMPERATURE_WATER_DRAIN = 0.01;
