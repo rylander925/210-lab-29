@@ -1,0 +1,2 @@
+Minor unintended behavior: Farmplot print function always shows dead crops.
+    Added flag that is by default false to choose whether or not to show dead crops.
