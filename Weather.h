@@ -199,38 +199,42 @@ struct Weather {
     LocationProfile locationProfile;
 
     //Weights for CycleWeather function
+        //Temperature modifiers
+            static const double COLD_TEMP_MULT; //How much "COLD" weather decreases from baseline temperature
+            static const double HOT_TEMP_MULT;  //How much "HOT"  weather increases from baseline temperature
+            //Exponentiates cold/hot multipliers based on light/heavy weather
+            static const double LIGHT_TEMP_EXP;
+            static const double HEAVY_TEMP_EXP;
+            //Daily range (+/-) of temperatures irregardless of other wheather conditions
+            static const int DAILY_TEMP_VARIATION = 3;
 
-    //Temperature modifiers
-        static const double COLD_TEMP_MULT; //How much "COLD" weather decreases from baseline temperature
-        static const double HOT_TEMP_MULT;  //How much "HOT"  weather increases from baseline temperature
-        //Exponentiates cold/hot multipliers based on light/heavy weather
-        static const double LIGHT_TEMP_EXP;
-        static const double HEAVY_TEMP_EXP;
-        //Daily range (+/-) of temperatures irregardless of other wheather conditions
-        static const int DAILY_TEMP_VARIATION = 3;
-
-    //Probability modifiers
-        //Multiplies weight of "COLD" weather in snowy, rainy, or windy conditions
-        static const double SNOW_COLD_MULT; //Snow compounds with the rain multiplier
-        static const double RAIN_COLD_MULT;
-        static const double WIND_COLD_MULT;
-        //Multiplies probabilities of "COLD" weather further based on "LIGHT" or "HEAVY" wheather (assume temperate is default)
-        static const double LIGHT_PROBABILITY_MULT; 
-        static const double HEAVY_PROBABILITY_MULT;
-
+        //Probability modifiers
+            //Multiplies weight of "COLD" weather in snowy, rainy, or windy conditions
+            static const double SNOW_COLD_MULT; //Snow compounds with the rain multiplier
+            static const double RAIN_COLD_MULT;
+            static const double WIND_COLD_MULT;
+            //Multiplies probabilities of "COLD" weather further based on "LIGHT" or "HEAVY" wheather (assume temperate is default)
+            static const double LIGHT_PROBABILITY_MULT; 
+            static const double HEAVY_PROBABILITY_MULT;
 
 
-    static const double PRECIPITATION_AMOUNT;
-    static const double TEMPERATURE_WATER_DRAIN;
-    static const double TEMPERATUE_NUTRIENT_DRAIN;
-    static const double RAIN_NUTRIENT_GAIN;
-    static const double WIND_NUTRIENT_DRAIN;
-    static const double SNOW_MULT;
-    static const double HEAVY_MULT;
-    static const double LIGHT_MULT;
-    static const double DRY_TEMPERATURE;
-    static const double FROST_TEMPERATURE;
-    static const double WEATHER_DAMAGE;
+    //Weights for WeatherFarm function
+        //Effects of precipitation
+            static const double PRECIPITATION_AMOUNT; //% water level gained from 1 day of rain or snow
+            static const double SNOW_MULT;            //Multiplier (decrease) during snow
+            static const double RAIN_NUTRIENT_GAIN;   //% nutrients gained from 1 day of rain only
+        
+        //Effects of wind
+            static const double WIND_NUTRIENT_DRAIN; //% nutrients drained from 1 day of wind
+            static const double WIND_MULT;     //Multiplies effects of dry/freezing weather
+
+            static const double TEMPERATURE_WATER_DRAIN;
+            static const double TEMPERATUE_NUTRIENT_DRAIN;
+            static const double DRY_TEMPERATURE;
+            static const double FROST_TEMPERATURE;
+            static const double WEATHER_DAMAGE;
+            static const double HEAVY_MULT;
+            static const double LIGHT_MULT;
 
     void Print() {
         static const int PRECISION = 1;
@@ -257,26 +261,31 @@ struct Weather {
     //Does not determine weather, nor cycle crop growth
     //Parameters: farm plot, Weather profile and location profile
     void WeatherFarm(FarmPlot& farm, bool showFlags = false) {
-        double mult, effectivePrecipitation, effectiveNutrients, effectiveGrowth;
+        double mult, effectiveWindMult, effectivePrecipitation, effectiveNutrients, effectiveGrowth;
 
         if (showFlags) cout << "Executing Weather::WeatherFarm: " << endl;
 
         //Calculate a multiplier based on weather severity
         mult = (severity == HEAVY) ? HEAVY_MULT : (severity == LIGHT) ? LIGHT_MULT : 1;
 
+        //Wind multiplier compounds with heavy/light wind NOTE: MAY BE OVERTUNED
+        effectiveWindMult = (wind == WIND) ? WIND_MULT * mult : 1;
+
         //Calculate precipitation from rain/snow
         effectivePrecipitation = (precipitation == NO_PRECIPITATION) ? 0 : PRECIPITATION_AMOUNT * mult * (precipitation == SNOW ? SNOW_MULT : 1.0);
         if (showFlags && precipitation != NO_PRECIPITATION) cout << "\tPrecipitation increased from " << ((precipitation == RAIN) ? "rain" : "snow") << endl;
 
         //Calculate nutrient gain from rain minus drain from wind
-        effectiveNutrients =  ((precipitation == RAIN) ? RAIN_NUTRIENT_GAIN * mult : 0) - ((wind == WIND) ? WIND_NUTRIENT_DRAIN * mult : 0);
+        effectiveNutrients += ((precipitation == RAIN) ? RAIN_NUTRIENT_GAIN * mult : 0);
+        effectiveNutrients -= ((wind == WIND) ? WIND_NUTRIENT_DRAIN * mult : 0);
         if (showFlags && wind == WIND) cout << "\tWind drained some nutrients" << endl;
 
         //Calculate how dry/freezing weather affects nutrients/water levels and plant growth
-        effectivePrecipitation -= (temperature >= DRY_TEMPERATURE) ? TEMPERATURE_WATER_DRAIN * mult : 0;
+        effectivePrecipitation -= (temperature >= DRY_TEMPERATURE) ? TEMPERATURE_WATER_DRAIN * mult * effectiveWindMult : 0;
         if (showFlags && temperature >= DRY_TEMPERATURE) cout << "\tDry temperatures caused growth, nutrient, and water loss" << endl;
-        effectiveNutrients -= (temperature >= DRY_TEMPERATURE || temperature <= FROST_TEMPERATURE) ? TEMPERATUE_NUTRIENT_DRAIN * mult : 0;
-        effectiveGrowth -= (temperature >= DRY_TEMPERATURE || temperature <= FROST_TEMPERATURE) ? WEATHER_DAMAGE * mult : 0;
+
+        effectiveNutrients -= (temperature >= DRY_TEMPERATURE || temperature <= FROST_TEMPERATURE) ? TEMPERATUE_NUTRIENT_DRAIN * mult * effectiveWindMult : 0;
+        effectiveGrowth -= (temperature >= DRY_TEMPERATURE || temperature <= FROST_TEMPERATURE) ? WEATHER_DAMAGE * mult * effectiveWindMult : 0;
         if (showFlags && temperature <= FROST_TEMPERATURE) cout << "\tFreezing caused nutrient and growth loss" << endl;
 
         if (showFlags) cout << "\t(G, W, S): " << "(" << effectiveGrowth << ", " << effectivePrecipitation << ", " << effectiveNutrients << ")" << endl;
@@ -423,6 +432,7 @@ const double Weather::TEMPERATURE_WATER_DRAIN = 0.01;
 const double Weather::TEMPERATUE_NUTRIENT_DRAIN = 0.005;
 const double Weather::RAIN_NUTRIENT_GAIN = 0.01;
 const double Weather::WIND_NUTRIENT_DRAIN = 0.005;
+const double Weather::WIND_MULT = 1.5; 
 const double Weather::SNOW_MULT = 0.5;
 const double Weather::HEAVY_MULT = 2;
 const double Weather::LIGHT_MULT = 0.5;
