@@ -198,16 +198,39 @@ struct Weather {
     WeatherProfile weatherProfile;
     LocationProfile locationProfile;
 
-    static const double COLD_TEMP_MULT;
-    static const double HOT_TEMP_MULT;
-    static const double SNOW_COLD_MULT;
-    static const double RAIN_COLD_MULT;
-    static const double WIND_COLD_MULT;
-    static const double LIGHT_PROBABILITY_MULT; 
-    static const double HEAVY_PROBABILITY_MULT;
-    static const double LIGHT_TEMP_EXP;
-    static const double HEAVY_TEMP_EXP;
-    static const int DAILY_TEMP_VARIATION = 3;
+    //Weights for CycleWeather function
+
+    //Temperature modifiers
+        static const double COLD_TEMP_MULT; //How much "COLD" weather decreases from baseline temperature
+        static const double HOT_TEMP_MULT;  //How much "HOT"  weather increases from baseline temperature
+        //Exponentiates cold/hot multipliers based on light/heavy weather
+        static const double LIGHT_TEMP_EXP;
+        static const double HEAVY_TEMP_EXP;
+        //Daily range (+/-) of temperatures irregardless of other wheather conditions
+        static const int DAILY_TEMP_VARIATION = 3;
+
+    //Probability modifiers
+        //Multiplies weight of "COLD" weather in snowy, rainy, or windy conditions
+        static const double SNOW_COLD_MULT; //Snow compounds with the rain multiplier
+        static const double RAIN_COLD_MULT;
+        static const double WIND_COLD_MULT;
+        //Multiplies probabilities of "COLD" weather further based on "LIGHT" or "HEAVY" wheather (assume temperate is default)
+        static const double LIGHT_PROBABILITY_MULT; 
+        static const double HEAVY_PROBABILITY_MULT;
+
+
+
+    static const double PRECIPITATION_AMOUNT;
+    static const double TEMPERATURE_WATER_DRAIN;
+    static const double TEMPERATUE_NUTRIENT_DRAIN;
+    static const double RAIN_NUTRIENT_GAIN;
+    static const double WIND_NUTRIENT_DRAIN;
+    static const double SNOW_MULT;
+    static const double HEAVY_MULT;
+    static const double LIGHT_MULT;
+    static const double DRY_TEMPERATURE;
+    static const double FROST_TEMPERATURE;
+    static const double WEATHER_DAMAGE;
 
     void Print() {
         static const int PRECISION = 1;
@@ -234,18 +257,6 @@ struct Weather {
     //Does not determine weather, nor cycle crop growth
     //Parameters: farm plot, Weather profile and location profile
     void WeatherFarm(FarmPlot& farm, bool showFlags = false) {
-        static const double PRECIPITATION_AMOUNT = 0.02;
-        static const double TEMPERATURE_WATER_DRAIN = 0.01;
-        static const double TEMPERATUE_NUTRIENT_DRAIN = 0.005;
-        static const double RAIN_NUTRIENT_GAIN = 0.01;
-        static const double WIND_NUTRIENT_DRAIN = 0.005;
-        static const double SNOW_MULT = 0.5;
-        static const double HEAVY_MULT = 2;
-        static const double LIGHT_MULT = 0.5;
-        static const double DRY_TEMPERATURE = 80.0;
-        static const double FROST_TEMPERATURE = 45;
-        static const double WEATHER_DAMAGE = 0.05;
-
         double mult, effectivePrecipitation, effectiveNutrients, effectiveGrowth;
 
         if (showFlags) cout << "Executing Weather::WeatherFarm: " << endl;
@@ -396,6 +407,7 @@ struct Weather {
     }
 };
 
+//Weights for 
 const double Weather::COLD_TEMP_MULT = 0.85;
 const double Weather::HOT_TEMP_MULT = 1.15;
 const double Weather::SNOW_COLD_MULT = 5;
@@ -405,5 +417,17 @@ const double Weather::LIGHT_PROBABILITY_MULT = 0.75;
 const double Weather::HEAVY_PROBABILITY_MULT = 2; 
 const double Weather::LIGHT_TEMP_EXP = 0.5;
 const double Weather::HEAVY_TEMP_EXP = 2;
+
+const double Weather::PRECIPITATION_AMOUNT = 0.02;
+const double Weather::TEMPERATURE_WATER_DRAIN = 0.01;
+const double Weather::TEMPERATUE_NUTRIENT_DRAIN = 0.005;
+const double Weather::RAIN_NUTRIENT_GAIN = 0.01;
+const double Weather::WIND_NUTRIENT_DRAIN = 0.005;
+const double Weather::SNOW_MULT = 0.5;
+const double Weather::HEAVY_MULT = 2;
+const double Weather::LIGHT_MULT = 0.5;
+const double Weather::DRY_TEMPERATURE = 80.0;
+const double Weather::FROST_TEMPERATURE = 45;
+const double Weather::WEATHER_DAMAGE = 0.05;
 
 #endif
