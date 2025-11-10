@@ -21,10 +21,10 @@ enum WeatherEvent { WIND, NO_WEATHER };
 enum EffectMultipliers { LIGHT, MEDIUM, HEAVY };
 
 //Raise the weights of certain events
-enum GeographicMultipliers { TEMPERATURE_COEFFICIENT, HUMIDITY_COEFFICIENT, WIND_COEFFICIENT, SEVERITY_COEFFICIENT};
+enum GeographicMultipliers { HUMIDITY_COEFFICIENT, WIND_COEFFICIENT, SEVERITY_COEFFICIENT};
 
 //Define enum of possible age events, maps should be stored as integer weights
-enum AgeEvent { DISEASE, EATEN };
+enum AgeEvent { DISEASE, EATEN, NO_RANDOM_EVENTS };
 
 //hold weights for climate as a struct for organization purposes
 //Pass maps of probabilities; can use an array w/ enums as indeces, but map forces explicit use of names
@@ -124,15 +124,15 @@ struct LocationProfile {
     LocationProfile() {
         name = "No name";
         baseTemperature = 70.0;
-        multipliers = {{TEMPERATURE_COEFFICIENT, 0}, {HUMIDITY_COEFFICIENT, 0}, {WIND_COEFFICIENT, 0}, {SEVERITY_COEFFICIENT, 0}};
-        randomEventWeights = {{DISEASE, 0}, {EATEN, 0}};
+        multipliers = {{HUMIDITY_COEFFICIENT, 0}, {WIND_COEFFICIENT, 0}, {SEVERITY_COEFFICIENT, 0}};
+        randomEventWeights = {{DISEASE, 0}, {EATEN, 0}, {NO_RANDOM_EVENTS, 0}};
     }
 
     /**
      * Read location profile data from file, formatted with weights as integers:
      * name (as string)
-     * temperatureK humidityK windK severityK
-     * disease eaten
+     * humidityK windK severityK
+     * disease eaten none
      * baseline temperature
      * @param filename
      * 
@@ -174,10 +174,10 @@ struct LocationProfile {
         cout << "Locale \"" << name << "\": " << endl;
         cout << "\tBase temperature: " << setprecision(2) << baseTemperature << "F" << endl;
         cout << "\tMultipliers: " << endl;
-        cout << "\t\tTemperature: " << multipliers.at(TEMPERATURE_COEFFICIENT) << ", Humidity: " << multipliers.at(HUMIDITY_COEFFICIENT) 
-             << ", Wind: " << multipliers.at(WIND_COEFFICIENT) << ", Severity: " << multipliers.at(SEVERITY_COEFFICIENT) << endl;
+        cout << "\t\tHumidity: " << multipliers.at(HUMIDITY_COEFFICIENT) << ", Wind: " << multipliers.at(WIND_COEFFICIENT) << ", Severity: " << multipliers.at(SEVERITY_COEFFICIENT) << endl;
         cout << "\tRandom events: " << endl;
-        cout << "\t\tDisease: " << randomEventWeights.at(DISEASE) << ", Eaten: " << randomEventWeights.at(EATEN) << endl; 
+        cout << "\t\tDisease: " << randomEventWeights.at(DISEASE) << ", Eaten: " << randomEventWeights.at(EATEN) 
+             << ", None: " << randomEventWeights.at(NO_RANDOM_EVENTS) << endl; 
     }
 };
 

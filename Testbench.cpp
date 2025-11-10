@@ -170,6 +170,21 @@ void WeatherProfileRead() {
     fall.Print();
 }
 
+void LocationProfileRead() {
+    LocationProfile defaultLocale, plains, forest, coast, desert, tropic;
+    plains.ReadProfile("data/locationProfiles/plains.txt");
+    forest.ReadProfile("data/locationProfiles/forest.txt");
+    coast.ReadProfile("data/locationProfiles/coast.txt");
+    desert.ReadProfile("data/locationProfiles/desert.txt");
+    tropic.ReadProfile("data/locationProfiles/tropic.txt");
+    defaultLocale.Print();
+    plains.Print();
+    forest.Print();
+    coast.Print();
+    desert.Print();
+    tropic.Print();
+}
+
 int main() {
-    WeatherProfileRead();
+    LocationProfileRead();
 }

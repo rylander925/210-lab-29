@@ -43,6 +43,8 @@ Weather
     WeatherProfile constructor, print, and read functions
         Tested in conjunction with eachother by constructing several weatherProfile objects, reading to some of them, and printing all of them
         See WeatherProfileRead()
+    LocationProfile constructor,print, and read functions tested the same way as weatherProfile
+        See LocationProfileRead()
 
 Util
     CoutLine()
