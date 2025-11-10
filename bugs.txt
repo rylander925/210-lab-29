@@ -6,3 +6,7 @@ Issue with include errors when changing probability functions in Weather to stat
 
 Off by one error when implementing a function to show dead crops
     Found while testing and counting each plant; started counter at 0 instead of 1
+
+Small issue with output order where plant plot would be output before the new day signifier, 
+making it appear like it belonged to the previos day.
+    Simply adjusted the order

@@ -45,13 +45,10 @@ int main() {
 
     //Begin time based simulation: (Total of 90 one day time intervals)
     for (int day = 1; day <= SIMULATION_PERIOD && !farm.HasDied(); day++) {
-        //Every 7 time intervals (1 week), output map contents and 2D garden plot (Call Print functions for FarmPlot)
-        if (day % OUTPUT_INTERVAL == 0) {
-            Util::CoutLine(Util::LINE_DEFAULT_WIDTH, '~');
-            Util::CoutLine(Util::LINE_DEFAULT_WIDTH, '~');
-            cout << "Period " << (day / OUTPUT_INTERVAL) + 1 << endl;
-            farm.PrintPlot();
-        }
+        
+        
+        Util::CoutLine(Util::LINE_DEFAULT_WIDTH / 5, '_');
+        cout << "Day " << day + 1 << endl;
         
         //Every fertilization frequency number of time intervals, simulate fertilization events (call UpdateSoil FarmPlot method)
         if (day % fertilizationInterval == 0) {
@@ -65,16 +62,21 @@ int main() {
             cout << "Watered crops" << endl;
         }
         
-        Util::CoutLine(Util::LINE_DEFAULT_WIDTH / 5, '_');
-        cout << "Day " << day + 1 << endl;
-        
         //simulate weather events and random time events
         weather.Cycle();
         weather.Print();
         weather.WeatherFarm(farm);
-
+        
         //simulate growth cycle (call FarmPlot method)
         farm.GrowthCycle(temperature);
+        
+        //Every 7 time intervals (1 week), output map contents and 2D garden plot (Call Print functions for FarmPlot)
+        if (day % OUTPUT_INTERVAL == 0) {
+            Util::CoutLine(Util::LINE_DEFAULT_WIDTH, '~');
+            Util::CoutLine(Util::LINE_DEFAULT_WIDTH, '~');
+            cout << "Period " << (day / OUTPUT_INTERVAL) + 1 << endl;
+            farm.PrintPlot();
+        }
     }
     
     //After simulation, output garden and plant data

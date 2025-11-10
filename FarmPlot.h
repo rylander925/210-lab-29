@@ -145,15 +145,23 @@ class FarmPlot {
 
         /**
          * Outputs list if dead crops
+         * @param columns Number of columns when displaying list of crops
+         * @param width Width occupied by each dead crop
          */
         void PrintDead(int columns = 10, int width = 20) {
+            //input in streamstream first to update number of dead crops at the top
             stringstream deadCropList;
+
+            //keep track of number of dead crops
             int numCrops = 0;
-            int i = 0;
+
+            //iterate through crops and add name of dead crops to  stringstream
             for (const auto& cropPair : crops) {
                 if (cropPair.second.at(GROWTH).empty()) {
                     deadCropList << setw(width) << cropPair.first.GetName();
                     numCrops++;
+                    
+                    //add a newline every number of columns
                     if (numCrops % columns == 0) deadCropList << endl;
                 }
             }
